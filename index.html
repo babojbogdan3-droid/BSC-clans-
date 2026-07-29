@@ -397,7 +397,7 @@
 
     <script>
         // ============================================================
-        // НАСТРОЙКИ APPRWRITE (ТВОИ ID)
+        // APPRWRITE НАСТРОЙКИ (ТВОИ)
         // ============================================================
         const APPRWRITE_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
         const APPRWRITE_PROJECT = '6a6a5749002c13556ce1';
@@ -773,8 +773,16 @@
         }
 
         // ============================================================
-        // ДЕЙСТВИЯ
+        // ОБРАБОТЧИКИ КНОПОК
         // ============================================================
+
+        function closeApp() {
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.close();
+            } else {
+                alert('Закрыть приложение');
+            }
+        }
 
         function openCreateModal() {
             if (currentUser.clanId) {
@@ -983,19 +991,4 @@
             const clan = allClans.find(c => c.$id === clanId);
             if (!clan) return alert('❌ Клан не найден');
 
-            if (clan.leaderId !== currentUser.userId) {
-                return alert('❌ Только лидер может распустить клан!');
-            }
-
-            if (!confirm(`❌ Точно распустить клан "${clan.name}"?`)) return;
-
-            try {
-                await deleteDocument(COLLECTIONS.clans, clanId);
-
-                if (currentUser.clanId === clanId) {
-                    await updateDocument(COLLECTIONS.users, currentUser.$id, {
-                        clanId: '',
-                        clanName: ''
-                    });
-                    currentUser.clanId = null;
-                    currentUser
+            if (cl
