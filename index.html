@@ -335,13 +335,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
             <button class="back-btn" onclick="closeApp()">←</button>
             <h1>⚔️ Block Strike Clans</h1>
         </div>
 
-        <!-- USER INFO -->
         <div class="user-card" id="userCard">
             <div class="name" id="userName">Загрузка...</div>
             <div class="id" id="userId">ID: —</div>
@@ -352,7 +350,6 @@
             </div>
         </div>
 
-        <!-- MENU -->
         <div class="menu">
             <button class="menu-btn active" onclick="showClans()">
                 <span class="icon">🔴</span>
@@ -368,7 +365,6 @@
             </button>
         </div>
 
-        <!-- CONTENT -->
         <div class="content" id="content">
             <div class="loading">
                 <div class="spinner"></div>
@@ -376,12 +372,10 @@
             </div>
         </div>
 
-        <!-- CREATE BUTTON -->
         <button class="btn btn-primary btn-block" onclick="openCreateModal()" style="margin-top:12px;">
             ➕ СОЗДАТЬ КЛАН
         </button>
 
-        <!-- FOOTER -->
         <div class="footer">
             Создатель: @NoisyBoy141
         </div>
@@ -403,11 +397,11 @@
 
     <script>
         // ============================================================
-        // ТВОИ НАСТРОЙКИ APPRWRITE (ВСЁ ЗАПОЛНЕНО!)
+        // НАСТРОЙКИ APPRWRITE (ТВОИ ID)
         // ============================================================
         const APPRWRITE_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
         const APPRWRITE_PROJECT = '6a6a5749002c13556ce1';
-        const APPRWRITE_DATABASE = '6a6a58e5002dd814376c';  // ✅ ЭТО ТВОЁ!
+        const APPRWRITE_DATABASE = '6a6a58e5002dd814376c';
 
         const COLLECTIONS = {
             users: 'users',
@@ -416,7 +410,7 @@
         };
 
         // ============================================================
-        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+        // ПЕРЕМЕННЫЕ
         // ============================================================
         let currentUser = {};
         let allClans = [];
@@ -424,9 +418,8 @@
         let editingClanId = null;
 
         // ============================================================
-        // РАБОТА С APPRWRITE
+        // ЗАПРОСЫ К APPRWRITE
         // ============================================================
-
         async function appwriteRequest(method, path, data = null) {
             const url = `${APPRWRITE_ENDPOINT}/databases/${APPRWRITE_DATABASE}/collections/${path}/documents`;
 
@@ -609,10 +602,6 @@
             }
         }
 
-        // ============================================================
-        // ОТОБРАЖЕНИЕ
-        // ============================================================
-
         function setActiveMenu(index) {
             document.querySelectorAll('.menu-btn').forEach((btn, i) => {
                 btn.classList.toggle('active', i === index);
@@ -626,4 +615,387 @@
 
             await loadClans();
 
-         
+            if (!allClans || allClans.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <span class="icon">📭</span>
+                        <p>Нет созданных кланов</p>
+                        <p style="font-size:13px;margin-top:8px;">Нажми "Создать клан" чтобы начать</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            allClans.forEach(clan => {
+                const members = clan.members || [];
+                const isLeader = clan.leaderId === currentUser.userId;
+                const isMember = members.includes(currentUser.userId);
+
+                html += `
+                    <div class="clan-card">
+                        <div class="top">
+                            <div>
+                                <span class="name">${clan.name}</span>
+                                <span class="tag">[${clan.tag}]</span>
+                            </div>
+                            <div>
+                                ${isLeader ? '<span class="badge badge-leader">👑 Лидер</span>' : ''}
+                                ${isMember && !isLeader ? '<span class="badge badge-member">✓ Участник</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="info">
+                            👥 ${members.length} участников • ⭐ ${clan.rating || 0} • Уровень ${clan.level || 1}
+                            ${clan.leaderName ? ` • Лидер: ${clan.leaderName}` : ''}
+                        </div>
+                        ${clan.description ? `<div class="desc">📝 ${clan.description}</div>` : ''}
+                        <div class="actions">
+                            ${!isMember && !isLeader && !currentUser.clanId ? `<button class="btn btn-success btn-sm" onclick="applyToClan('${clan.$id}')">📩 Вступить</button>` : ''}
+                            ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.$id}')">🗑 Распустить</button>` : ''}
+                            ${isMember && !isLeader ? `<button class="btn btn-danger btn-sm" onclick="leaveClan('${clan.$id}')">🚪 Выйти</button>` : ''}
+                            ${isLeader ? `<button class="btn btn-primary btn-sm" onclick="openEditModal('${clan.$id}')">✏️ Редактировать</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        async function showRequests() {
+            setActiveMenu(1);
+            const container = document.getElementById('content');
+
+            if (!currentUser.clanId) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <span class="icon">📩</span>
+                        <p>Вы не состоите в клане</p>
+                        <p style="font-size:13px;margin-top:8px;">Создайте клан или вступите в существующий</p>
+                    </div>
+                `;
+                return;
+            }
+
+            await loadRequests();
+            const myRequests = allRequests.filter(r => r.clanId === currentUser.clanId && r.status === 'pending');
+
+            if (myRequests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <span class="icon">✅</span>
+                        <p>Нет входящих заявок</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `<div style="color:var(--muted);margin-bottom:12px;">📨 Входящие заявки (${myRequests.length}):</div>`;
+            myRequests.forEach(req => {
+                html += `
+                    <div class="request-item">
+                        <div>
+                            <div class="name">${req.userName || 'Игрок'}</div>
+                            <div class="date">ID: ${req.userId}</div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn btn-success btn-sm" onclick="acceptRequest('${req.$id}', '${req.userId}', '${req.clanId}')">✅ Принять</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectRequest('${req.$id}')">❌ Отклонить</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        async function showMyClan() {
+            setActiveMenu(2);
+            const container = document.getElementById('content');
+
+            if (!currentUser.clanId) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <span class="icon">⭐</span>
+                        <p>Вы не состоите в клане</p>
+                        <p style="font-size:13px;margin-top:8px;">Создайте свой клан или вступите в существующий</p>
+                    </div>
+                `;
+                return;
+            }
+
+            await loadClans();
+            const myClan = allClans.find(c => c.$id === currentUser.clanId);
+
+            if (!myClan) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <span class="icon">⚠️</span>
+                        <p>Ваш клан был удалён</p>
+                        <button class="btn btn-primary" style="margin-top:12px;" onclick="clearUserClan()">Обновить</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const members = myClan.members || [];
+            const isLeader = myClan.leaderId === currentUser.userId;
+
+            let membersList = members.map(id => {
+                if (id === myClan.leaderId) return `👑 ${myClan.leaderName || 'Лидер'}`;
+                return `👤 Игрок ${id}`;
+            }).join('<br>');
+
+            container.innerHTML = `
+                <div class="clan-card" style="border-color:var(--accent);">
+                    <div class="top">
+                        <div>
+                            <span class="name">${myClan.name}</span>
+                            <span class="tag">[${myClan.tag}]</span>
+                        </div>
+                        <span class="badge badge-leader">${isLeader ? '👑 Ваш клан' : '✓ Участник'}</span>
+                    </div>
+                    <div class="info">
+                        ⭐ Рейтинг: ${myClan.rating || 0} • Уровень: ${myClan.level || 1}
+                    </div>
+                    ${myClan.description ? `<div class="desc">📝 ${myClan.description}</div>` : ''}
+                    <div style="margin-top:12px;">
+                        <div style="color:var(--muted);font-size:13px;margin-bottom:8px;">👥 Участники (${members.length}):</div>
+                        <div style="font-size:14px;line-height:1.8;">${membersList || 'Нет участников'}</div>
+                    </div>
+                    <div class="actions">
+                        ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${myClan.$id}')">🗑 Распустить клан</button>` : ''}
+                        ${!isLeader ? `<button class="btn btn-danger btn-sm" onclick="leaveClan('${myClan.$id}')">🚪 Выйти из клана</button>` : ''}
+                        ${isLeader ? `<button class="btn btn-primary btn-sm" onclick="openEditModal('${myClan.$id}')">✏️ Редактировать</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        // ДЕЙСТВИЯ
+        // ============================================================
+
+        function openCreateModal() {
+            if (currentUser.clanId) {
+                alert('❌ Вы уже в клане!');
+                return;
+            }
+            editingClanId = null;
+            document.getElementById('modalTitle').textContent = '➕ Создать клан';
+            document.getElementById('modalBtn').textContent = 'Создать';
+            document.getElementById('clanName').value = '';
+            document.getElementById('clanTag').value = '';
+            document.getElementById('clanDesc').value = '';
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function openEditModal(clanId) {
+            const clan = allClans.find(c => c.$id === clanId);
+            if (!clan) return;
+            editingClanId = clanId;
+            document.getElementById('modalTitle').textContent = '✏️ Редактировать клан';
+            document.getElementById('modalBtn').textContent = 'Сохранить';
+            document.getElementById('clanName').value = clan.name;
+            document.getElementById('clanTag').value = clan.tag;
+            document.getElementById('clanDesc').value = clan.description || '';
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        async function submitClan() {
+            const name = document.getElementById('clanName').value.trim();
+            const tag = document.getElementById('clanTag').value.trim().toUpperCase();
+            const desc = document.getElementById('clanDesc').value.trim();
+
+            if (!name) return alert('❌ Введите название');
+            if (!tag) return alert('❌ Введите тег');
+            if (tag.length > 6) return alert('❌ Тег максимум 6 символов');
+
+            try {
+                const existing = allClans.find(c =>
+                    c.name.toLowerCase() === name.toLowerCase() && c.$id !== editingClanId
+                );
+                if (existing) return alert('❌ Клан с таким названием уже существует');
+
+                if (editingClanId) {
+                    const clan = allClans.find(c => c.$id === editingClanId);
+                    if (!clan || clan.leaderId !== currentUser.userId) {
+                        return alert('❌ Вы не лидер этого клана');
+                    }
+
+                    await updateDocument(COLLECTIONS.clans, editingClanId, {
+                        name: name,
+                        tag: tag,
+                        description: desc
+                    });
+
+                    alert('✅ Клан обновлён!');
+                } else {
+                    if (currentUser.clanId) return alert('❌ Вы уже в клане!');
+
+                    const newClan = {
+                        clanId: 'clan_' + Date.now(),
+                        name: name,
+                        tag: tag,
+                        leaderId: currentUser.userId,
+                        leaderName: currentUser.name,
+                        members: [currentUser.userId],
+                        rating: 0,
+                        level: 1,
+                        description: desc
+                    };
+
+                    const result = await createDocument(COLLECTIONS.clans, newClan);
+
+                    currentUser.clanId = result.$id;
+                    currentUser.clanName = name;
+                    await updateDocument(COLLECTIONS.users, currentUser.$id, {
+                        clanId: result.$id,
+                        clanName: name
+                    });
+                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+
+                    alert('✅ Клан создан!');
+                }
+
+                closeModal();
+                await loadClans();
+                updateUserInfo();
+                showClans();
+
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function applyToClan(clanId) {
+            if (currentUser.clanId) return alert('❌ Вы уже в клане!');
+
+            const clan = allClans.find(c => c.$id === clanId);
+            if (!clan) return alert('❌ Клан не найден');
+
+            const existing = allRequests.find(r =>
+                r.clanId === clanId && r.userId === currentUser.userId && r.status === 'pending'
+            );
+            if (existing) return alert('⏳ Вы уже подали заявку!');
+
+            if (!confirm(`Вступить в клан "${clan.name}" [${clan.tag}]?`)) return;
+
+            try {
+                await createDocument(COLLECTIONS.requests, {
+                    requestId: 'req_' + Date.now(),
+                    clanId: clanId,
+                    userId: currentUser.userId,
+                    userName: currentUser.name,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                });
+
+                alert('✅ Заявка отправлена!');
+                await loadRequests();
+                showClans();
+
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function acceptRequest(requestId, userId, clanId) {
+            try {
+                await updateDocument(COLLECTIONS.requests, requestId, { status: 'accepted' });
+
+                const clan = allClans.find(c => c.$id === clanId);
+                if (clan) {
+                    const members = clan.members || [];
+                    if (!members.includes(userId)) {
+                        members.push(userId);
+                        await updateDocument(COLLECTIONS.clans, clanId, { members: members });
+                    }
+                }
+
+                const user = await getDocuments(COLLECTIONS.users, [`userId=${userId}`]);
+                if (user.length > 0) {
+                    await updateDocument(COLLECTIONS.users, user[0].$id, {
+                        clanId: clanId,
+                        clanName: clan ? clan.name : ''
+                    });
+                }
+
+                alert('✅ Заявка принята!');
+                await loadRequests();
+                await loadClans();
+                showRequests();
+
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function rejectRequest(requestId) {
+            try {
+                await updateDocument(COLLECTIONS.requests, requestId, { status: 'rejected' });
+                alert('❌ Заявка отклонена');
+                await loadRequests();
+                showRequests();
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function leaveClan(clanId) {
+            if (!confirm('🚪 Точно выйти из клана?')) return;
+
+            try {
+                const clan = allClans.find(c => c.$id === clanId);
+                if (!clan) return alert('❌ Клан не найден');
+
+                if (clan.leaderId === currentUser.userId) {
+                    return alert('❌ Вы лидер! Сначала распустите клан.');
+                }
+
+                const members = clan.members.filter(id => id !== currentUser.userId);
+                await updateDocument(COLLECTIONS.clans, clanId, { members: members });
+
+                await updateDocument(COLLECTIONS.users, currentUser.$id, {
+                    clanId: '',
+                    clanName: ''
+                });
+
+                currentUser.clanId = null;
+                currentUser.clanName = null;
+                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+
+                alert('✅ Вы вышли из клана');
+                updateUserInfo();
+                await loadClans();
+                showClans();
+
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function deleteClan(clanId) {
+            const clan = allClans.find(c => c.$id === clanId);
+            if (!clan) return alert('❌ Клан не найден');
+
+            if (clan.leaderId !== currentUser.userId) {
+                return alert('❌ Только лидер может распустить клан!');
+            }
+
+            if (!confirm(`❌ Точно распустить клан "${clan.name}"?`)) return;
+
+            try {
+                await deleteDocument(COLLECTIONS.clans, clanId);
+
+                if (currentUser.clanId === clanId) {
+                    await updateDocument(COLLECTIONS.users, currentUser.$id, {
+                        clanId: '',
+                        clanName: ''
+                    });
+                    currentUser.clanId = null;
+                    currentUser
