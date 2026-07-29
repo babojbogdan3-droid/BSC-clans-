@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Strike Clans</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent: #00f0ff;
+            --accent-glow: rgba(0, 240, 255, 0.3);
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --border: #30363d;
+            --danger: #f85149;
+            --success: #2ea043;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent);
+            border-radius: 20px;
+            box-shadow: 0 0 25px var(--accent-glow);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .user-info {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.03);
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: var(--accent);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .menu-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+            transition: transform 0.1s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status-box {
+            background: rgba(46, 160, 67, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .clan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .clan-info h3 {
+            font-size: 16px;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .clan-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .action-sm-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        form input, form textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 10px;
+            outline: none;
+        }
+
+        form input:focus, form textarea:focus {
+            border-color: var(--accent);
+        }
+
+        #reg-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="reg-modal" style="display: none;">
+    <div class="container" style="border-color: var(--success); box-shadow: 0 0 30px rgba(46,160,67,0.3);">
+        <div class="header">
+            <h1>Регистрация</h1>
+            <div class="subtitle">Добро пожаловать в BSC</div>
+        </div>
+        <form onsubmit="completeRegistration(event)">
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Укажи свой игровой ник в Block Strike:</p>
+            <input type="text" id="reg-nickname" placeholder="Твой Никнейм" required autocomplete="off">
+            
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 10px;">Твой игровой уровень:</p>
+            <input type="number" id="reg-level" placeholder="Уровень (например, 45)" min="1" max="999" required>
+            
+            <button type="submit" class="menu-btn" style="background: linear-gradient(135deg, #2ea043, #238636); margin-top: 10px;">Войти в игру</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <div id="main-view" class="view active">
+        <div class="header">
+            <div class="user-info">
+                <span id="tg-username">Игрок: ...</span>
+                <span id="tg-id">ID: ...</span>
+            </div>
+            <h1>BSC</h1>
+            <div class="subtitle">Block Strike Clans</div>
+        </div>
+
+        <button class="menu-btn" onclick="switchView('clans-view')">🛡️ Список кланов</button>
+        <button class="menu-btn" onclick="switchView('apply-view')">📁 Создать клан</button>
+        <button class="menu-btn" onclick="switchView('my-clan-view')">⭐ Мой клан</button>
+        <button class="menu-btn" onclick="switchView('profile-view')" style="background: linear-gradient(135deg, #8957e5, #6e40c9);">👤 Мой профиль</button>
+
+        <div id="status-box" class="status-box">
+            🌐 Облачная сеть активна
+        </div>
+
+        <div class="footer">Создатель: @NoisyBoy141</div>
+    </div>
+
+    <div id="clans-view" class="view">
+        <button class="back-btn" onclick="switchView('main-view')">← Назад</button>
+        <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent);">Список кланов</h2>
+        <div id="clans-list">Загрузка с сервера...</div>
+    </div>
+
+    <div id="apply-view" class="view">
+        <button class="back-btn" onclick="switchView('main-view')">← Назад</button>
+        <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent);">Создать свой клан</h2>
+        <form id="create-clan-form" onsubmit="createClan(event)">
+            <input type="text" id="clan-name" placeholder="Название клана (например, [PRO])" required autocomplete="off">
+            <textarea id="clan-desc" placeholder="Описание и требования клана" rows="3" required></textarea>
+            <button type="submit" class="menu-btn">Создать клан</button>
+        </form>
+    </div>
+
+    <div id="my-clan-view" class="view">
+        <button class="back-btn" onclick="switchView('main-view')">← Назад</button>
+        <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent);">Мой клан</h2>
+        <div id="my-clan-content">
+            <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 20px;">Вы еще не состоите ни в одном клане.</p>
+        </div>
+    </div>
+
+    <div id="profile-view" class="view">
+        <button class="back-btn" onclick="switchView('main-view')">← Назад</button>
+        <h2 style="font-size: 18px; margin-bottom: 12px; color: var(--accent);">Профиль игрока</h2>
+        <div id="profile-content" class="clan-card"></div>
+    </div>
+</div>
+
+    <script>
+    const JSON_BIN_ID = '6a69f615da38895dfe9fba09';
+    const JSON_BIN_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF';
+    
+
+    let tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) { tg.expand(); }
+
+    let user = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : {
+        first_name: "Игрок",
+        id: Math.floor(Math.random() * 100000000),
+        username: "user_" + Math.floor(Math.random() * 1000)
+    };
+
+    document.getElementById('tg-username').innerText = `Игрок: ${user.first_name}`;
+    document.getElementById('tg-id').innerText = `ID: ${user.id}`;
+
+    let myProfile = JSON.parse(localStorage.getItem('bsc_my_profile') || 'null');
+    if (!myProfile) {
+        document.getElementById('reg-modal').style.display = 'flex';
+    }
+
+    function completeRegistration(e) {
+        e.preventDefault();
+        let nickname = document.getElementById('reg-nickname').value.trim();
+        let level = document.getElementById('reg-level').value.trim();
+
+        myProfile = {
+            id: user.id,
+            name: nickname,
+            level: level,
+            username: user.username || user.first_name,
+            clan: null
+        };
+
+        localStorage.setItem('bsc_my_profile', JSON.stringify(myProfile));
+        document.getElementById('reg-modal').style.display = 'none';
+        alert('Регистрация успешно завершена!');
+    }
+
+    async function loadClans() {
+        let container = document.getElementById('clans-list');
+        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; font-size:13px;">Синхронизация с сервером...</p>';
+        
+        try {
+            let response = await fetch(`https://api.jsonbin.io/v3/b/${JSON_BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': JSON_BIN_KEY }
+            });
+            let result = await response.json();
+            let clans = result.record || [];
+            renderClansList(clans);
+        } catch (e) {
+            container.innerHTML = '<p style="color:var(--danger); text-align:center; font-size:13px;">Ошибка соединения с сервером!</p>';
+        }
+    }
+
+    function renderClansList(clans) {
+        let container = document.getElementById('clans-list');
+        if (!clans || clans.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-muted); text-align:center; font-size:13px;">Кланов пока нет на сервере.</p>';
+            return;
+        }
+        container.innerHTML = clans.map(c => `
+            <div class="clan-card">
+                <div class="clan-info">
+                    <h3>${escapeHtml(c.name)}</h3>
+                    <p>${escapeHtml(c.desc)}</p>
+                    <p style="font-size:11px; color:var(--accent); margin-top:6px;">Глава: @${escapeHtml(c.owner)} | Участников: ${c.members}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function createClan(e) {
+        e.preventDefault();
+        let name = document.getElementById('clan-name').value.trim();
+        let desc = document.getElementById('clan-desc').value.trim();
+        
+        let btn = e.target.querySelector('button');
+        btn.disabled = true;
+        btn.innerText = 'Создание...';
+
+        try {
+            let getRes = await fetch(`https://api.jsonbin.io/v3/b/${JSON_BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': JSON_BIN_KEY }
+            });
+            let getResult = await getRes.json();
+            let clans = getResult.record || [];
+
+            let newClan = {
+                id: Date.now(),
+                name: name,
+                desc: desc,
+                owner: myProfile.name,
+                ownerId: user.id,
+                members: 1
+            };
+            clans.push(newClan);
+
+            let putRes = await fetch(`https://api.jsonbin.io/v3/b/${JSON_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSON_BIN_KEY
+                },
+                body: JSON.stringify(clans)
+            });
+
+            if (putRes.ok) {
+                myProfile.clan = name;
+                localStorage.setItem('bsc_my_profile', JSON.stringify(myProfile));
+                localStorage.setItem('bsc_my_clan', JSON.stringify(newClan));
+                alert('Клан успешно создан на сервере!');
+                document.getElementById('create-clan-form').reset();
+                switchView('my-clan-view');
+            } else {
+                alert('Ошибка сохранения на сервер.');
+            }
+        } catch (err) {
+            alert('Сетевая ошибка при создании клана.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = 'Создать клан';
+        }
+    }
+
+    function switchView(viewId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        if (viewId === 'clans-view') loadClans();
+        if (viewId === 'my-clan-view') renderMyClan();
+        if (viewId === 'profile-view') renderProfile();
+    }
+
+    function renderProfile() {
+        let container = document.getElementById('profile-content');
+        container.innerHTML = `
+            <h3 style="color: var(--accent); font-size: 18px; margin-bottom: 6px;">${escapeHtml(myProfile.name)}</h3>
+            <p style="font-size: 13px; margin-bottom: 4px;">Игровой уровень: <b>${myProfile.level}</b></p>
+            <p style="font-size: 13px; margin-bottom: 4px;">Telegram: @${escapeHtml(myProfile.username)}</p>
+            <p style="font-size: 13px;">Клан: <b>${myProfile.clan ? escapeHtml(myProfile.clan) : 'Нет клана'}</b></p>
+        `;
+    }
+
+    function renderMyClan() {
+        let myClan = localStorage.getItem('bsc_my_clan');
+        let container = document.getElementById('my-clan-content');
+        if (!myClan) {
+            container.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-top: 20px;">Вы не состоите в клане.</p>';
+            return;
+        }
+        let c = JSON.parse(myClan);
+        let isOwner = c.ownerId === user.id;
+
+        container.innerHTML = `
+            <div class="clan-card" style="border: none; background: none; padding: 0;">
+                <h3 style="color: var(--accent); font-size: 18px; margin-bottom: 6px;">${escapeHtml(c.name)}</h3>
+                <p style="font-size: 13px; margin-bottom: 6px;">${escapeHtml(c.desc)}</p>
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Основатель: ${escapeHtml(c.owner)}</p>
+                
+                ${isOwner ? 
+                    `<button class="action-sm-btn" style="background: var(--danger); color: white; width: 100%; margin-bottom: 8px;" onclick="deleteClan(${c.id})">Распустить клан</button>` : 
+                    `<button class="action-sm-btn" style="background: var(--danger); color: white; width: 100%;" onclick="leaveClan()">Покинуть клан</button>`
+                }
+            </div>
+        `;
+    }
+
+    function leaveClan() {
+        localStorage.removeItem('bsc_my_clan');
+        myProfile.clan = null;
+        localStorage.setItem('bsc_my_profile', JSON.stringify(myProfile));
+        alert('Вы вышли из клана.');
+        renderMyClan();
+    }
+
+    async function deleteClan(clanId) {
+        if (!confirm("Точно распустить клан?")) return;
+        
+        try {
+            let getRes = await fetch(`https://api.jsonbin.io/v3/b/${JSON_BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': JSON_BIN_KEY }
+            });
+            let getResult = await getRes.json();
+            let clans = getResult.record || [];
+
+            let updatedClans = clans.filter(c => c.id !== clanId);
+
+            let putRes = await fetch(`https://api.jsonbin.io/v3/b/${JSON_BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSON_BIN_KEY
+                },
+                body: JSON.stringify(updatedClans)
+            });
+
+            if (putRes.ok) {
+                localStorage.removeItem('bsc_my_clan');
+                myProfile.clan = null;
+                localStorage.setItem('bsc_my_profile', JSON.stringify(myProfile));
+                alert('Клан успешно распущен!');
+                renderMyClan();
+            } else {
+                alert('Ошибка при удалении с сервера.');
+            }
+        } catch (e) {
+            alert('Сетевая ошибка.');
+        }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+</script>
+
+</body>
+</html>
