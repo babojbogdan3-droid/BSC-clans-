@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Block Strike Clans</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: system-ui;
+            background: #0d1117;
+            color: #f0f6fc;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        button {
+            background: #00f0ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 4px;
+        }
+        .btn-danger {
+            background: #f85149;
+            color: white;
+        }
+        .btn-success {
+            background: #2ea043;
+            color: white;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: white;
+            border-radius: 8px;
+        }
+        .hidden {
+            display: none;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .status.online {
+            background: #2ea043;
+            color: white;
+        }
+        .status.offline {
+            background: #f85149;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚔️ Block Strike Clans</h1>
+
+    <div id="userInfo" class="card">
+        <div id="userName">Загрузка...</div>
+        <div id="statusText">Подключение...</div>
+    </div>
+
+    <div id="menu">
+        <button onclick="loadClans()">🔴 КЛАНЫ</button>
+        <button onclick="showMyClan()">⭐ МОЙ КЛАН</button>
+    </div>
+
+    <div id="content" class="card">Загрузка...</div>
+
+    <button onclick="showCreateForm()" style="width:100%;">➕ СОЗДАТЬ КЛАН</button>
+
+    <div id="createForm" class="hidden" class="card" style="margin-top:12px;">
+        <input id="clanName" placeholder="Название клана">
+        <input id="clanTag" placeholder="Тег (3-6 символов)">
+        <button onclick="createClan()" style="width:100%;">Создать</button>
+    </div>
+
+    <script>
+        // ============================================================
+        // ТВОИ НАСТРОЙКИ (ВСЁ ЗАПОЛНЕНО!)
+        // ============================================================
+        const APPRWRITE_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
+        const APPRWRITE_PROJECT = '6a6a5749002c13556ce1';
+        const APPRWRITE_DATABASE = '6a6a58e5002dd814376c';
+        const APPRWRITE_API_KEY = 'standard_5e13a102ac395f0560f0bd55cd82e793aac4b29327a5394e07e59dc79d51e91bd676f4908d9057f66fefde2898ebef2b0902871357f6008a1c68846ec4c9024412e0daf1908c5818a1fed7b1adebde86c695591f4213fd628335b1498c30eaf5dd77f0e966a7b7838770014f82e775c13136d7ee7b15994b64501110bde57e28';
+
+        // ============================================================
+        // ПЕРЕМЕННЫЕ
+        // ============================================================
+        let currentUser = {};
+        let allClans = [];
+
+        // ============================================================
+        // ЗАПРОСЫ К APPRWRITE
+        // ============================================================
+        async function appwriteRequest(method, path, data = null) {
+            const url = `${APPRWRITE_ENDPOINT}/databases/${APPRWRITE_DATABASE}/collections/${path}/documents`;
+
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Appwrite-Project': APPRWRITE_PROJECT,
+                    'X-Appwrite-Key': APPRWRITE_API_KEY
+                }
+            };
+
+            if (data && (method === 'POST' || method === 'PATCH')) {
+                options.body = JSON.stringify(data);
+            }
+
+            const response = await fetch(url, options);
+            const result = await response.json();
+
+            if (result.code) {
+                throw new Error(result.message || 'Ошибка запроса');
+            }
+
+            return result;
+        }
+
+        async function getDocuments(collection) {
+            const result = await appwriteRequest('GET', collection);
+            return result.documents || [];
+        }
+
+        async function createDocument(collection, data) {
+            return await appwriteRequest('POST', collection, data);
+        }
+
+        async function deleteDocument(collection, id) {
+            return await appwriteRequest('DELETE', `${collection}/${id}`);
+        }
+
+        // ============================================================
+        // ОСНОВНЫЕ ФУНКЦИИ
+        // ============================================================
+
+        async function init() {
+            try {
+                // Получаем пользователя из Telegram
+                const tg = window.Telegram?.WebApp;
+                if (tg && tg.initDataUnsafe?.user) {
+                    const u = tg.initDataUnsafe.user;
+                    currentUser = {
+                        id: u.id.toString(),
+                        name: `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Игрок'
+                    };
+                } else {
+                    // Тестовый режим
+                    const saved = localStorage.getItem('bsc_user');
+                    if (saved) {
+                        currentUser = JSON.parse(saved);
+                    } else {
+                        currentUser = {
+                            id: 'test_' + Date.now(),
+                            name: 'TestUser'
+                        };
+                        localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                    }
+                }
+
+                document.getElementById('userName').textContent = `Игрок: ${currentUser.name}`;
+                document.getElementById('statusText').innerHTML = '<span class="status online">✅ Подключено</span>';
+
+                await loadClans();
+
+            } catch (error) {
+                console.error('Init error:', error);
+                document.getElementById('statusText').innerHTML = `<span class="status offline">❌ ${error.message}</span>`;
+                document.getElementById('content').innerHTML = `
+                    <div style="color:#f85149;">
+                        ❌ Ошибка подключения<br>
+                        <small style="color:#8b949e;">${error.message}</small>
+                        <br><br>
+                        <button onclick="init()">🔄 Обновить</button>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadClans() {
+            try {
+                document.getElementById('content').innerHTML = 'Загрузка...';
+                allClans = await getDocuments('clans');
+
+                if (allClans.length === 0) {
+                    document.getElementById('content').innerHTML = `
+                        <div style="text-align:center;padding:20px;color:#8b949e;">
+                            📭 Нет созданных кланов<br>
+                            <small>Нажми "Создать клан" чтобы начать</small>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                allClans.forEach(clan => {
+                    const members = clan.members || [];
+                    const isLeader = clan.leaderId === currentUser.id;
+                    const isMember = members.includes(currentUser.id);
+
+                    html += `
+                        <div class="card">
+                            <div style="display:flex;justify-content:space-between;">
+                                <div>
+                                    <strong>${clan.name}</strong>
+                                    <span style="color:#00f0ff;">[${clan.tag}]</span>
+                                </div>
+                                ${isLeader ? '<span style="color:#2ea043;">👑 Лидер</span>' : ''}
+                                ${isMember && !isLeader ? '<span style="color:#00f0ff;">✓ Участник</span>' : ''}
+                            </div>
+                            <div style="color:#8b949e;font-size:14px;margin:4px 0;">
+                                👥 ${members.length} участников
+                            </div>
+                            ${clan.description ? `<div style="color:#8b949e;font-size:13px;">${clan.description}</div>` : ''}
+                            <div style="margin-top:8px;">
+                                ${!isMember && !isLeader ? `<button class="btn-success" onclick="joinClan('${clan.$id}')">📩 Вступить</button>` : ''}
+                                ${isLeader ? `<button class="btn-danger" onclick="deleteClan('${clan.$id}')">🗑 Распустить</button>` : ''}
+                                ${isMember && !isLeader ? `<button class="btn-danger" onclick="leaveClan('${clan.$id}')">🚪 Выйти</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('content').innerHTML = html;
+
+            } catch (error) {
+                document.getElementById('content').innerHTML = `
+                    <div style="color:#f85149;">❌ ${error.message}</div>
+                    <button onclick="loadClans()">🔄 Попробовать снова</button>
+                `;
+                console.error(error);
+            }
+        }
+
+        function showCreateForm() {
+            const form = document.getElementById('createForm');
+            form.classList.toggle('hidden');
+        }
+
+        async function createClan() {
+            const name = document.getElementById('clanName').value.trim();
+            const tag = document.getElementById('clanTag').value.trim().toUpperCase();
+
+            if (!name) {
+                alert('❌ Введите название клана');
+                return;
+            }
+            if (!tag || tag.length < 2 || tag.length > 6) {
+                alert('❌ Тег должен быть 2-6 символов');
+                return;
+            }
+
+            try {
+                await createDocument('clans', {
+                    clanId: 'clan_' + Date.now(),
+                    name: name,
+                    tag: tag,
+                    leaderId: currentUser.id,
+                    leaderName: currentUser.name,
+                    members: [currentUser.id],
+                    rating: 0,
+                    level: 1,
+                    description: ''
+                });
+
+                alert('✅ Клан создан!');
+                document.getElementById('clanName').value = '';
+                document.getElementById('clanTag').value = '';
+                document.getElementById('createForm').classList.add('hidden');
+                await loadClans();
+
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function joinClan(clanId) {
+            try {
+                await createDocument('requests', {
+                    requestId: 'req_' + Date.now(),
+                    clanId: clanId,
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                });
+                alert('✅ Заявка отправлена!');
+                await loadClans();
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function deleteClan(clanId) {
+            if (!confirm('❌ Точно распустить клан?')) return;
+            try {
+                await deleteDocument('clans', clanId);
+                alert('✅ Клан распущен');
+                await loadClans();
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function leaveClan(clanId) {
+            if (!confirm('🚪 Выйти из клана?')) return;
+            alert('⚠️ Функция выхода из клана пока в разработке');
+        }
+
+        function showMyClan() {
+            const clan = allClans.find(c => c.members?.includes(currentUser.id));
+            if (!clan) {
+                document.getElementById('content').innerHTML = `
+                    <div style="text-align:center;padding:20px;color:#8b949e;">
+                        ⭐ Вы не состоите в клане
+                    </div>
+                `;
+                return;
+            }
+            const members = clan.members || [];
+            document.getElementById('content').innerHTML = `
+                <div class="card">
+                    <h3>${clan.name} [${clan.tag}]</h3>
+                    <div style="color:#8b949e;margin:8px 0;">
+                        👥 ${members.length} участников
+                    </div>
+                    <div style="color:#8b949e;">
+                        👑 Лидер: ${clan.leaderName || 'Неизвестен'}
+                    </div>
+                    <div style="margin-top:8px;">
+                        ${clan.leaderId === currentUser.id ? `<button class="btn-danger" onclick="deleteClan('${clan.$id}')">🗑 Распустить клан</button>` : ''}
+                        ${clan.leaderId !== currentUser.id ? `<button class="btn-danger" onclick="leaveClan('${clan.$id}')">🚪 Выйти из клана</button>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        // ЗАПУСК
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>
