@@ -95,7 +95,7 @@
 
     <script>
         // ============================================================
-        // ТВОИ НАСТРОЙКИ (ВСЁ ЗАПОЛНЕНО!)
+        // ТВОИ НАСТРОЙКИ
         // ============================================================
         const APPRWRITE_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
         const APPRWRITE_PROJECT = '6a6a5749002c13556ce1';
@@ -109,10 +109,16 @@
         let allClans = [];
 
         // ============================================================
-        // ЗАПРОСЫ К APPRWRITE
+        // ЗАПРОСЫ К APPRWRITE (С ПОДРОБНЫМ ЛОГИРОВАНИЕМ)
         // ============================================================
         async function appwriteRequest(method, path, data = null) {
             const url = `${APPRWRITE_ENDPOINT}/databases/${APPRWRITE_DATABASE}/collections/${path}/documents`;
+
+            console.log('📤 Отправка запроса:', {
+                url: url,
+                method: method,
+                data: data
+            });
 
             const options = {
                 method: method,
@@ -127,14 +133,25 @@
                 options.body = JSON.stringify(data);
             }
 
-            const response = await fetch(url, options);
-            const result = await response.json();
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
 
-            if (result.code) {
-                throw new Error(result.message || 'Ошибка запроса');
+                console.log('📥 Ответ сервера:', {
+                    status: response.status,
+                    ok: response.ok,
+                    result: result
+                });
+
+                if (result.code) {
+                    throw new Error(`Ошибка ${result.code}: ${result.message}`);
+                }
+
+                return result;
+            } catch (error) {
+                console.error('❌ Ошибка запроса:', error);
+                throw error;
             }
-
-            return result;
         }
 
         async function getDocuments(collection) {
@@ -245,8 +262,11 @@
 
             } catch (error) {
                 document.getElementById('content').innerHTML = `
-                    <div style="color:#f85149;">❌ ${error.message}</div>
-                    <button onclick="loadClans()">🔄 Попробовать снова</button>
+                    <div style="color:#f85149;">
+                        ❌ ${error.message}
+                        <br><br>
+                        <button onclick="loadClans()">🔄 Попробовать снова</button>
+                    </div>
                 `;
                 console.error(error);
             }
