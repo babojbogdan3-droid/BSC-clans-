@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
         /* ============================================================
-           СТИЛИ (БЕЗ ИЗМЕНЕНИЙ)
+           СТИЛИ (ТЕ ЖЕ, БЕЗ ИЗМЕНЕНИЙ)
            ============================================================ */
         * {
             margin: 0;
@@ -446,7 +446,7 @@
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКА РЕГИСТРАЦИИ -->
+    <!-- МОДАЛКИ (ТЕ ЖЕ) -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать!</h2>
@@ -456,7 +456,7 @@
             <label>Telegram username (без @)</label>
             <input type="text" id="regTelegram" placeholder="NoisyBoy141" maxlength="32">
             <label>Игровой ID (число)</label>
-            <input type="text" id="regGameId" placeholder="5749326657" maxlength="15">
+            <input type="text" id="regGameId" placeholder="22887924" maxlength="15">
             <label>Роль</label>
             <select id="regRole">
                 <option value="member">Игрок</option>
@@ -468,7 +468,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ ПРОФИЛЯ -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
             <h2>✏️ Редактировать профиль</h2>
@@ -485,7 +484,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА СОЗДАНИЯ КЛАНА -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
             <h2>➕ Создать клан</h2>
@@ -502,7 +500,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ПРОСМОТРА КЛАНА -->
     <div class="modal-overlay" id="clanDetailModal">
         <div class="modal">
             <h2 id="detailClanName">🏰 Название</h2>
@@ -514,7 +511,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ КЛАНА -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
             <h2>✏️ Редактировать клан</h2>
@@ -537,7 +533,6 @@
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
-        const ADMIN_ID = '5749326657';
 
         let currentUser = null;
         let allUsers = [];
@@ -545,6 +540,7 @@
         let allRequests = [];
         let currentTab = 'clans';
         let editingClanId = null;
+        let adminGameId = '22887924'; // ТВОЙ ИГРОВОЙ ID
 
         // ============================================================
         // РАБОТА С JSONBin
@@ -555,7 +551,12 @@
             });
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             const json = await resp.json();
-            return json.record || { users: [], clans: [], requests: [], settings: { adminId: ADMIN_ID } };
+            const record = json.record || { users: [], clans: [], requests: [], settings: { adminGameId: adminGameId } };
+            // Обновляем adminGameId из настроек, если он там есть
+            if (record.settings && record.settings.adminGameId) {
+                adminGameId = record.settings.adminGameId;
+            }
+            return record;
         }
 
         async function saveData(data) {
@@ -572,8 +573,12 @@
         }
 
         // ============================================================
-        // ОБЩИЕ ФУНКЦИИ
+        // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
+        function isAdmin(user) {
+            return user && user.gameId === adminGameId;
+        }
+
         function getUserName(id) {
             const user = allUsers.find(u => u.id === id);
             return user ? user.name : id;
@@ -601,6 +606,9 @@
                 allUsers = data.users || [];
                 allClans = data.clans || [];
                 allRequests = data.requests || [];
+                if (data.settings && data.settings.adminGameId) {
+                    adminGameId = data.settings.adminGameId;
+                }
 
                 const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 let tgId = tg ? tg.id.toString() : null;
@@ -617,6 +625,28 @@
                 let user = allUsers.find(u => u.id === tgId);
 
                 if (user) {
+                    // Проверка на бан
+                    if (user.banned === true) {
+                        document.getElementById('content').innerHTML = `
+                            <div class="card" style="border-color:var(--danger);">
+                                <div style="color:var(--danger);font-size:20px;">⛔ ДОСТУП ЗАПРЕЩЁН</div>
+                                <div style="color:var(--muted);">Ваш аккаунт был забанен администратором.</div>
+                            </div>
+                        `;
+                        return;
+                    }
+                    // Проверка на админа по gameId
+                    if (isAdmin(user) && user.role !== 'admin') {
+                        user.role = 'admin';
+                        // Обновляем в базе
+                        const updateData = await loadData();
+                        const target = updateData.users.find(u => u.id === user.id);
+                        if (target) {
+                            target.role = 'admin';
+                            await saveData(updateData);
+                        }
+                        allUsers = updateData.users || [];
+                    }
                     currentUser = user;
                     localStorage.setItem('bsc_user', JSON.stringify(currentUser));
                 } else {
@@ -670,12 +700,15 @@
                 return;
             }
 
+            // Проверка — является ли этот игровой ID админским
+            const isAdminUser = gameId === adminGameId;
+
             const newUser = {
                 id: tgId,
                 name: name,
                 telegramUsername: telegram.startsWith('@') ? telegram : '@' + telegram,
                 gameId: gameId,
-                role: role,
+                role: isAdminUser ? 'admin' : role,
                 clanId: null
             };
 
@@ -694,55 +727,6 @@
         }
 
         // ============================================================
-        // РЕДАКТИРОВАНИЕ ПРОФИЛЯ
-        // ============================================================
-        function openEditProfile() {
-            document.getElementById('editProfName').value = currentUser.name || '';
-            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
-            document.getElementById('editProfGameId').value = currentUser.gameId || '';
-            document.getElementById('editProfileModal').classList.add('show');
-            document.getElementById('profileDropdown').classList.remove('show');
-        }
-
-        async function saveProfile() {
-            const name = document.getElementById('editProfName').value.trim();
-            const telegram = document.getElementById('editProfTelegram').value.trim();
-            const gameId = document.getElementById('editProfGameId').value.trim();
-
-            if (!name) return alert('❌ Введите никнейм');
-            if (!telegram) return alert('❌ Введите Telegram username');
-            if (!gameId) return alert('❌ Введите игровой ID');
-            if (isNaN(gameId)) return alert('❌ Игровой ID должен быть числом');
-
-            try {
-                const data = await loadData();
-                const user = data.users.find(u => u.id === currentUser.id);
-                if (!user) return alert('Пользователь не найден');
-
-                if (user.name.toLowerCase() !== name.toLowerCase()) {
-                    if (data.users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                        alert('❌ Этот ник уже занят');
-                        return;
-                    }
-                }
-
-                user.name = name;
-                user.telegramUsername = telegram.startsWith('@') ? telegram : '@' + telegram;
-                user.gameId = gameId;
-
-                await saveData(data);
-                await refreshData();
-                closeModal('editProfileModal');
-                alert('✅ Профиль обновлён!');
-                updateUI();
-                showTab(currentTab);
-
-            } catch (error) {
-                alert(`❌ ${error.message}`);
-            }
-        }
-
-        // ============================================================
         // ОБНОВЛЕНИЕ UI
         // ============================================================
         function updateUI() {
@@ -755,7 +739,7 @@
             document.getElementById('profRole').textContent = `Роль: ${currentUser.role === 'admin' ? 'Админ' : currentUser.role === 'leader' ? 'Лидер' : 'Игрок'}`;
 
             const adminTab = document.getElementById('tabAdmin');
-            if (currentUser.id === ADMIN_ID) {
+            if (isAdmin(currentUser)) {
                 adminTab.style.display = 'inline-block';
             } else {
                 adminTab.style.display = 'none';
@@ -844,12 +828,12 @@
                 const members = getClanMembers(clan);
                 const isLeader = clan.leaderId === currentUser.id;
                 const isMember = members.includes(currentUser.id);
-                const isAdmin = currentUser.id === ADMIN_ID;
+                const isAdminUser = isAdmin(currentUser);
                 const leader = getClanLeader(clan);
 
                 const showApply = !isMember && !isLeader && !currentUser.clanId;
-                const showDelete = isLeader || isAdmin;
-                const showEdit = isLeader || isAdmin;
+                const showDelete = isLeader || isAdminUser;
+                const showEdit = isLeader || isAdminUser;
 
                 const leaderDisplay = leader ?
                     `${leader.name} (${leader.telegramUsername || 'нет username'})` :
@@ -989,7 +973,7 @@
                     </div>
                     <div class="card-actions">
                         ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 Распустить клан</button>` : ''}
-                        ${(isLeader || currentUser.id === ADMIN_ID) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ Редактировать</button>` : ''}
+                        ${(isLeader || isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ Редактировать</button>` : ''}
                     </div>
                 </div>
             `;
@@ -999,7 +983,7 @@
         // РЕНДЕР АДМИНКИ
         // ============================================================
         async function renderAdmin(container) {
-            if (currentUser.id !== ADMIN_ID) {
+            if (!isAdmin(currentUser)) {
                 container.innerHTML = '<div class="empty">⛔ Доступ запрещён</div>';
                 return;
             }
@@ -1015,6 +999,7 @@
                         <div style="color:var(--muted);">Всего кланов: ${allClans.length}</div>
                         <div style="color:var(--muted);">Всего пользователей: ${allUsers.length}</div>
                         <div style="color:var(--muted);">Заявок в обработке: ${allRequests.filter(r => r.status === 'pending').length}</div>
+                        <div style="color:var(--muted);">Админ Game ID: ${adminGameId}</div>
                     </div>
                     <div style="margin-top:12px;">
                         <button class="btn btn-danger btn-sm" onclick="clearAllData()">⚠️ Очистить все данные</button>
@@ -1022,23 +1007,34 @@
                 </div>
             `;
 
-            if (allClans.length > 0) {
-                html += `<div style="margin-top:16px;"><h4>Все кланы:</h4>`;
-                allClans.forEach(clan => {
-                    const leader = getClanLeader(clan);
+            // Список пользователей
+            if (allUsers.length > 0) {
+                html += `<div style="margin-top:16px;"><h4>Все пользователи:</h4>`;
+                allUsers.forEach(user => {
+                    const isUserAdmin = isAdmin(user);
+                    const isBanned = user.banned === true;
                     html += `
-                        <div class="card" style="border-color:var(--border);">
-                            <div style="display:flex;justify-content:space-between;">
+                        <div class="card" style="border-color:${isUserAdmin ? 'var(--gold)' : 'var(--border)'};">
+                            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
                                 <div>
-                                    <strong>${clan.name}</strong> <span style="color:var(--accent);">[${clan.tag}]</span>
+                                    <strong>${user.name}</strong>
+                                    ${isUserAdmin ? '👑' : ''}
+                                    ${isBanned ? '🔨' : ''}
+                                    <div style="color:var(--muted);font-size:12px;">ID: ${user.id}</div>
+                                    <div style="color:var(--muted);font-size:12px;">Game ID: ${user.gameId}</div>
                                 </div>
-                                <div>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 Удалить</button>
-                                    <button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ Редактировать</button>
+                                <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                                    ${!isUserAdmin ? `
+                                        <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌ Удалить</button>
+                                        ${isBanned ? 
+                                            `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅ Разбанить</button>` :
+                                            `<button class="btn btn-danger btn-sm" onclick="adminBanUser('${user.id}')">🔨 Забанить</button>`
+                                        }
+                                    ` : `
+                                        <span style="color:var(--gold);font-size:12px;">👑 Администратор</span>
+                                    `}
                                 </div>
                             </div>
-                            <div style="color:var(--muted);font-size:13px;">Глава: ${leader ? `${leader.name} (${leader.telegramUsername || 'нет username'})` : 'Неизвестен'}</div>
-                            <div style="color:var(--muted);font-size:13px;">Участников: ${(clan.members || []).length}</div>
                         </div>
                     `;
                 });
@@ -1046,6 +1042,87 @@
             }
 
             container.innerHTML = html;
+        }
+
+        // ============================================================
+        // АДМИН: УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ
+        // ============================================================
+        async function adminDeleteUser(userId) {
+            if (!isAdmin(currentUser)) return alert('⛔ Доступ запрещён');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return alert('Пользователь не найден');
+            if (isAdmin(user)) return alert('❌ Нельзя удалить администратора!');
+            if (!confirm(`❌ Точно удалить пользователя "${user.name}" (${user.id})?\nВсе его данные будут удалены.`)) return;
+
+            try {
+                const data = await loadData();
+                data.users = data.users.filter(u => u.id !== userId);
+                data.clans.forEach(clan => {
+                    if (clan.members) {
+                        clan.members = clan.members.filter(m => m !== userId);
+                    }
+                    if (clan.leaderId === userId) {
+                        const newLeader = clan.members && clan.members.length > 0 ? clan.members[0] : null;
+                        if (newLeader) {
+                            const leaderUser = data.users.find(u => u.id === newLeader);
+                            clan.leaderId = newLeader;
+                            clan.leaderName = leaderUser ? leaderUser.name : 'Неизвестен';
+                        } else {
+                            data.clans = data.clans.filter(c => c.id !== clan.id);
+                        }
+                    }
+                });
+                data.requests = data.requests.filter(r => r.userId !== userId);
+                await saveData(data);
+                await refreshData();
+                alert(`✅ Пользователь "${user.name}" удалён`);
+                showTab('admin');
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function adminBanUser(userId) {
+            if (!isAdmin(currentUser)) return alert('⛔ Доступ запрещён');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return alert('Пользователь не найден');
+            if (isAdmin(user)) return alert('❌ Нельзя забанить администратора!');
+            if (!confirm(`🔨 Забанить пользователя "${user.name}" (${user.id})?\nОн не сможет войти в систему.`)) return;
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === userId);
+                if (target) {
+                    target.banned = true;
+                }
+                await saveData(data);
+                await refreshData();
+                alert(`✅ Пользователь "${user.name}" забанен`);
+                showTab('admin');
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
+        }
+
+        async function adminUnbanUser(userId) {
+            if (!isAdmin(currentUser)) return alert('⛔ Доступ запрещён');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return alert('Пользователь не найден');
+            if (!confirm(`✅ Разбанить пользователя "${user.name}"?`)) return;
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === userId);
+                if (target) {
+                    target.banned = false;
+                }
+                await saveData(data);
+                await refreshData();
+                alert(`✅ Пользователь "${user.name}" разбанен`);
+                showTab('admin');
+            } catch (error) {
+                alert(`❌ ${error.message}`);
+            }
         }
 
         // ============================================================
@@ -1059,8 +1136,8 @@
             const members = getClanMembers(clan);
             const leader = getClanLeader(clan);
             const isLeader = clan.leaderId === currentUser.id;
-            const isAdmin = currentUser.id === ADMIN_ID;
-            const canManage = isLeader || isAdmin;
+            const isAdminUser = isAdmin(currentUser);
+            const canManage = isLeader || isAdminUser;
 
             document.getElementById('detailClanName').textContent = `🏰 ${clan.name} [${clan.tag}]`;
             document.getElementById('detailClanInfo').innerHTML = `
@@ -1079,7 +1156,6 @@
 
                 let actionsHtml = '';
 
-                // Кнопки для лидера/админа
                 if (canManage && !isLeaderUser && mid !== currentUser.id) {
                     actionsHtml += `
                         <button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}', '${mid}')">Кикнуть</button>
@@ -1091,14 +1167,12 @@
                     `;
                 }
 
-                // Кнопка "Покинуть" для обычного участника (если это он)
                 if (isCurrentUser && !isLeaderUser) {
                     actionsHtml += `
                         <button class="btn btn-danger btn-sm" onclick="confirmLeaveFromView('${clan.id}')">🚪 Покинуть</button>
                     `;
                 }
 
-                // Если есть действия — оборачиваем в div.actions
                 if (actionsHtml) {
                     actionsHtml = `<div class="actions">${actionsHtml}</div>`;
                 }
@@ -1116,7 +1190,7 @@
         }
 
         // ============================================================
-        // ПОДТВЕРЖДЕНИЕ ВЫХОДА ИЗ ПРОСМОТРА
+        // ПОДТВЕРЖДЕНИЕ ВЫХОДА
         // ============================================================
         function confirmLeaveFromView(clanId) {
             const clan = allClans.find(c => c.id === clanId);
@@ -1128,7 +1202,7 @@
         }
 
         // ============================================================
-        // ДЕЙСТВИЯ С КЛАНАМИ
+        // ДЕЙСТВИЯ С КЛАНАМИ (БЕЗ ИЗМЕНЕНИЙ)
         // ============================================================
         function openCreateClan() {
             if (currentUser.clanId) {
@@ -1273,7 +1347,7 @@
             const clan = allClans.find(c => c.id === clanId);
             if (!clan) return alert('Клан не найден');
 
-            if (clan.leaderId !== currentUser.id && currentUser.id !== ADMIN_ID) {
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
                 return alert('❌ Только лидер или админ может удалить клан');
             }
 
@@ -1342,7 +1416,7 @@
                 const clan = data.clans.find(c => c.id === clanId);
                 if (!clan) return alert('Клан не найден');
 
-                if (clan.leaderId !== currentUser.id && currentUser.id !== ADMIN_ID) {
+                if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
                     return alert('❌ Нет прав');
                 }
 
@@ -1375,7 +1449,7 @@
                 const clan = data.clans.find(c => c.id === clanId);
                 if (!clan) return alert('Клан не найден');
 
-                if (clan.leaderId !== currentUser.id && currentUser.id !== ADMIN_ID) {
+                if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
                     return alert('❌ Нет прав');
                 }
 
@@ -1410,10 +1484,10 @@
         }
 
         // ============================================================
-        // АДМИН
+        // АДМИН: ОЧИСТКА ВСЕХ ДАННЫХ
         // ============================================================
         async function clearAllData() {
-            if (currentUser.id !== ADMIN_ID) return;
+            if (!isAdmin(currentUser)) return;
             if (!confirm('⚠️ Очистить все данные?')) return;
 
             try {
@@ -1436,7 +1510,7 @@
         function openEditClan(clanId) {
             const clan = allClans.find(c => c.id === clanId);
             if (!clan) return alert('Клан не найден');
-            if (clan.leaderId !== currentUser.id && currentUser.id !== ADMIN_ID) {
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
                 return alert('❌ Нет прав');
             }
             editingClanId = clanId;
@@ -1528,6 +1602,9 @@
             allUsers = data.users || [];
             allClans = data.clans || [];
             allRequests = data.requests || [];
+            if (data.settings && data.settings.adminGameId) {
+                adminGameId = data.settings.adminGameId;
+            }
             if (currentUser) {
                 const updated = allUsers.find(u => u.id === currentUser.id);
                 if (updated) {
