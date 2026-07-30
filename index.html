@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           ОБЩИЙ СБРОС И ПЕРЕМЕННЫЕ
+           ОСНОВНЫЕ ПЕРЕМЕННЫЕ И СБРОС
            ============================================================ */
         * {
             margin: 0;
@@ -18,28 +18,26 @@
         :root {
             --sky-start: #74b9ff;
             --sky-end: #dfe6e9;
-            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-bg: rgba(255, 255, 255, 0.82);
             --card-border: rgba(255, 255, 255, 0.4);
             --text-primary: #1e2a3a;
             --text-secondary: #3d4f63;
             --accent-blue: #0984e3;
-            --accent-light: #74b9ff;
-            --shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-            --radius: 20px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --radius: 16px;
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         body {
             font-family: var(--font);
             min-height: 100vh;
             background: linear-gradient(160deg, var(--sky-start) 0%, var(--sky-end) 100%);
-            padding: 20px;
+            padding: 16px;
             position: relative;
             overflow-x: hidden;
-            backdrop-filter: blur(2px);
         }
 
         /* ============================================================
-           ОБЛАКА (анимированные)
+           ОБЛАКА (ОПТИМИЗИРОВАННЫЕ)
            ============================================================ */
         .clouds {
             position: fixed;
@@ -53,78 +51,65 @@
         }
         .cloud {
             position: absolute;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 1000px;
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+            will-change: transform;
             animation: floatCloud linear infinite;
-            backdrop-filter: blur(2px);
         }
         .cloud::after {
             content: '';
             position: absolute;
             background: inherit;
             border-radius: 50%;
-            box-shadow: inherit;
         }
         .cloud1 {
-            width: 180px;
-            height: 50px;
-            top: 10%;
+            width: 160px;
+            height: 44px;
+            top: 12%;
             left: -200px;
-            animation-duration: 25s;
-            animation-delay: 0s;
+            animation-duration: 28s;
         }
         .cloud1::after {
-            width: 80px;
-            height: 80px;
-            top: -40px;
-            left: 20px;
-        }
-        .cloud2 {
-            width: 220px;
-            height: 60px;
-            top: 25%;
-            left: -250px;
-            animation-duration: 30s;
-            animation-delay: -5s;
-        }
-        .cloud2::after {
-            width: 100px;
-            height: 100px;
-            top: -50px;
-            left: 30px;
-        }
-        .cloud3 {
-            width: 160px;
-            height: 45px;
-            top: 55%;
-            left: -180px;
-            animation-duration: 28s;
-            animation-delay: -10s;
-        }
-        .cloud3::after {
             width: 70px;
             height: 70px;
             top: -35px;
-            left: 15px;
+            left: 20px;
         }
-        .cloud4 {
+        .cloud2 {
             width: 200px;
-            height: 55px;
-            top: 80%;
-            left: -220px;
-            animation-duration: 32s;
-            animation-delay: -3s;
+            height: 54px;
+            top: 30%;
+            left: -250px;
+            animation-duration: 34s;
+            animation-delay: -4s;
         }
-        .cloud4::after {
+        .cloud2::after {
             width: 90px;
             height: 90px;
             top: -45px;
-            left: 25px;
+            left: 30px;
+        }
+        .cloud3 {
+            width: 140px;
+            height: 38px;
+            top: 65%;
+            left: -180px;
+            animation-duration: 30s;
+            animation-delay: -10s;
+        }
+        .cloud3::after {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 15px;
         }
         @keyframes floatCloud {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(100vw + 300px)); }
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(100vw + 300px));
+            }
         }
 
         /* ============================================================
@@ -144,17 +129,19 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 20px;
+            padding: 14px 18px;
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 10;
         }
         .header h1 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.5px;
@@ -162,17 +149,22 @@
         .header h1 span {
             color: var(--accent-blue);
         }
+
+        /* ============================================================
+           ПРОФИЛЬ (ВСЕГДА ПОВЕРХ)
+           ============================================================ */
         .profile-btn-wrap {
             position: relative;
+            z-index: 999;
         }
         .profile-btn {
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             background: white;
             border: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            font-size: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            font-size: 18px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -181,8 +173,7 @@
             position: relative;
         }
         .profile-btn:hover {
-            transform: scale(1.06);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transform: scale(1.05);
         }
         .profile-btn .badge {
             position: absolute;
@@ -190,11 +181,11 @@
             right: -4px;
             background: #ff3d71;
             color: #fff;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -202,25 +193,36 @@
         }
         .profile-dropdown {
             position: absolute;
-            top: 54px;
+            top: 52px;
             right: 0;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
             padding: 16px;
             min-width: 200px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
             display: none;
-            z-index: 200;
-            animation: fadeSlide 0.25s ease;
+            z-index: 1000;
+            animation: fadeSlide 0.2s ease;
         }
-        .profile-dropdown.show { display: block; }
+        .profile-dropdown.show {
+            display: block;
+        }
         @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .profile-dropdown .info { margin-bottom: 12px; }
+        .profile-dropdown .info {
+            margin-bottom: 12px;
+        }
         .profile-dropdown .info .name {
             font-weight: 600;
             font-size: 15px;
@@ -237,8 +239,8 @@
            ============================================================ */
         .menu {
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 6px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
         }
         .menu .btn {
@@ -246,52 +248,54 @@
             padding: 10px 4px;
             border-radius: 12px;
             font-weight: 600;
-            font-size: 13px;
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.4);
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             color: var(--text-secondary);
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
             text-align: center;
         }
         .menu .btn:hover {
-            background: rgba(255,255,255,0.6);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
         }
         .menu .btn-primary {
             background: white;
             color: var(--accent-blue);
             border-color: white;
-            box-shadow: 0 4px 16px rgba(9, 132, 227, 0.15);
+            box-shadow: 0 2px 12px rgba(9, 132, 227, 0.12);
         }
         .menu .btn-primary:hover {
-            box-shadow: 0 8px 28px rgba(9, 132, 227, 0.25);
-            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(9, 132, 227, 0.2);
         }
 
         /* ============================================================
-           КАРТОЧКИ
+           КАРТОЧКИ (ЛЁГКИЕ, БЕЗ BLUR)
            ============================================================ */
         .card {
             background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
-            padding: 18px;
-            margin-bottom: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
             box-shadow: var(--shadow);
-            transition: all 0.3s;
-            animation: fadeUp 0.4s ease;
+            transition: all 0.2s;
+            animation: fadeUp 0.3s ease;
         }
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 16px 48px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         }
         .card-header {
             display: flex;
@@ -308,10 +312,10 @@
             font-weight: 700;
             font-size: 13px;
             color: var(--accent-blue);
-            background: rgba(9,132,227,0.08);
+            background: rgba(9, 132, 227, 0.08);
             padding: 2px 14px;
             border-radius: 20px;
-            border: 1px solid rgba(9,132,227,0.15);
+            border: 1px solid rgba(9, 132, 227, 0.12);
         }
         .card-sub {
             color: var(--text-secondary);
@@ -335,28 +339,26 @@
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.6);
             color: var(--text-primary);
-            border: 1px solid rgba(255,255,255,0.8);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
         }
         .btn-primary {
             background: linear-gradient(135deg, #0984e3, #74b9ff);
             color: white;
             border: none;
-            box-shadow: 0 4px 16px rgba(9,132,227,0.25);
+            box-shadow: 0 4px 16px rgba(9, 132, 227, 0.2);
         }
         .btn-primary:hover {
-            box-shadow: 0 8px 32px rgba(9,132,227,0.35);
-            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(9, 132, 227, 0.3);
         }
         .btn-success {
             background: #00b894;
@@ -365,7 +367,6 @@
         }
         .btn-success:hover {
             background: #00a381;
-            transform: translateY(-2px);
         }
         .btn-danger {
             background: #ff3d71;
@@ -374,14 +375,13 @@
         }
         .btn-danger:hover {
             background: #e62e5c;
-            transform: translateY(-2px);
         }
         .btn-secondary {
-            background: rgba(255,255,255,0.5);
-            border: 1px solid rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
         .btn-secondary:hover {
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
         }
         .btn-gold {
             background: #fdcb6e;
@@ -390,7 +390,6 @@
         }
         .btn-gold:hover {
             background: #f6b93b;
-            transform: translateY(-2px);
         }
         .btn-sm {
             padding: 4px 14px;
@@ -409,23 +408,31 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.25);
             backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             display: none;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            z-index: 1000;
-            animation: fadeIn 0.25s ease;
+            z-index: 1001;
+            animation: fadeIn 0.2s ease;
         }
-        .modal-overlay.show { display: flex; }
+        .modal-overlay.show {
+            display: flex;
+        }
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
         .modal {
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
             padding: 24px;
@@ -433,12 +440,18 @@
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: var(--shadow);
-            animation: slideUp 0.3s ease;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+            animation: slideUp 0.25s ease;
         }
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         .modal h2 {
             font-size: 22px;
@@ -470,7 +483,7 @@
         .modal textarea:focus {
             outline: none;
             border-color: var(--accent-blue);
-            box-shadow: 0 0 0 4px rgba(9,132,227,0.08);
+            box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.06);
         }
         .modal textarea {
             resize: vertical;
@@ -481,7 +494,10 @@
             gap: 10px;
             margin-top: 18px;
         }
-        .modal-actions .btn { flex: 1; justify-content: center; }
+        .modal-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
 
         /* ============================================================
            УЧАСТНИКИ
@@ -519,9 +535,16 @@
             padding: 10px 0;
             border-bottom: 1px solid #ecf0f1;
         }
-        .request-item:last-child { border-bottom: none; }
-        .request-item .req-name { font-weight: 500; }
-        .request-item .req-date { color: var(--text-secondary); font-size: 12px; }
+        .request-item:last-child {
+            border-bottom: none;
+        }
+        .request-item .req-name {
+            font-weight: 500;
+        }
+        .request-item .req-date {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
 
         /* ============================================================
            ПУСТЫЕ СОСТОЯНИЯ
@@ -531,7 +554,11 @@
             padding: 40px 20px;
             color: var(--text-secondary);
         }
-        .empty .icon { font-size: 48px; display: block; margin-bottom: 12px; }
+        .empty .icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
 
         .loading {
             text-align: center;
@@ -539,15 +566,19 @@
             color: var(--text-secondary);
         }
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top: 4px solid var(--accent-blue);
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid var(--accent-blue);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         /* ============================================================
            TOAST
@@ -557,10 +588,11 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid var(--card-border);
-            padding: 14px 28px;
+            padding: 12px 24px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             z-index: 2000;
@@ -571,10 +603,18 @@
             color: var(--text-primary);
             animation: fadeUp 0.3s ease;
         }
-        .toast.show { display: block; }
-        .toast.success { border-color: #00b894; }
-        .toast.error { border-color: #ff3d71; }
-        .toast.info { border-color: var(--accent-blue); }
+        .toast.show {
+            display: block;
+        }
+        .toast.success {
+            border-color: #00b894;
+        }
+        .toast.error {
+            border-color: #ff3d71;
+        }
+        .toast.info {
+            border-color: var(--accent-blue);
+        }
 
         /* ============================================================
            ФУТЕР
@@ -583,19 +623,28 @@
             text-align: center;
             color: var(--text-secondary);
             font-size: 12px;
-            margin-top: 28px;
+            margin-top: 24px;
             padding-top: 16px;
-            border-top: 1px solid rgba(255,255,255,0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         /* ============================================================
            АДАПТИВ
            ============================================================ */
         @media (max-width: 480px) {
-            body { padding: 12px; }
-            .header h1 { font-size: 20px; }
-            .menu .btn { font-size: 11px; padding: 8px 2px; }
-            .modal { padding: 16px; }
+            body {
+                padding: 12px;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            .menu .btn {
+                font-size: 11px;
+                padding: 8px 2px;
+            }
+            .modal {
+                padding: 16px;
+            }
         }
     </style>
 </head>
@@ -605,7 +654,6 @@
         <div class="cloud cloud1"></div>
         <div class="cloud cloud2"></div>
         <div class="cloud cloud3"></div>
-        <div class="cloud cloud4"></div>
     </div>
 
     <div class="container">
@@ -650,7 +698,7 @@
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКИ (без изменений) -->
+    <!-- МОДАЛКИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -734,7 +782,7 @@
 
     <script>
         // ============================================================
-        // ВЕСЬ JS (точно такой же, как в последней рабочей версии)
+        // ВЕСЬ JS (БЕЗ ИЗМЕНЕНИЙ — РАБОЧИЙ)
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
