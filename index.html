@@ -7,13 +7,14 @@
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
         /* ============================================================
-           СТИЛИ (полные, без изменений)
+           ГЛОБАЛЬНЫЕ СТИЛИ
            ============================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         :root {
             --bg: #0a0e14;
             --card: #141b24;
@@ -28,6 +29,7 @@
             --radius: 14px;
             --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
@@ -37,10 +39,13 @@
             background-image: radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.03) 0%, transparent 60%),
                               radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.02) 0%, transparent 50%);
         }
+
         .container {
             max-width: 520px;
             margin: 0 auto;
         }
+
+        /* ХЕДЕР */
         .header {
             display: flex;
             align-items: center;
@@ -62,6 +67,7 @@
             -webkit-text-fill-color: transparent;
             letter-spacing: -0.5px;
         }
+
         .profile-btn-wrap {
             position: relative;
         }
@@ -129,6 +135,8 @@
             font-size: 13px;
             margin-top: 2px;
         }
+
+        /* КАРТОЧКИ */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -174,6 +182,8 @@
             flex-wrap: wrap;
             margin-top: 10px;
         }
+
+        /* КНОПКИ */
         .btn {
             padding: 8px 18px;
             border: none;
@@ -233,6 +243,8 @@
             width: 100%;
             justify-content: center;
         }
+
+        /* МОДАЛКИ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -314,6 +326,8 @@
             flex: 1;
             justify-content: center;
         }
+
+        /* УЧАСТНИКИ */
         .member-list {
             display: flex;
             flex-direction: column;
@@ -341,6 +355,8 @@
             display: flex;
             gap: 4px;
         }
+
+        /* ЗАЯВКИ */
         .request-item {
             display: flex;
             justify-content: space-between;
@@ -358,6 +374,7 @@
             color: var(--muted);
             font-size: 12px;
         }
+
         .empty {
             text-align: center;
             padding: 30px 20px;
@@ -368,6 +385,7 @@
             display: block;
             margin-bottom: 10px;
         }
+
         .loading {
             text-align: center;
             padding: 30px;
@@ -387,6 +405,7 @@
                 transform: rotate(360deg);
             }
         }
+
         .footer {
             text-align: center;
             color: var(--muted);
@@ -395,6 +414,7 @@
             padding-top: 16px;
             border-top: 1px solid var(--border);
         }
+
         @media (max-width: 480px) {
             .header-left h1 {
                 font-size: 18px;
@@ -441,24 +461,23 @@
             <div class="loading"><div class="spinner"></div>Загрузка...</div>
         </div>
 
-        <!-- ГЛАВНАЯ КНОПКА (СОЗДАТЬ ИЛИ ПОКИНУТЬ) -->
         <div id="mainActionButton" style="margin-top:12px;"></div>
 
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКИ (без изменений) -->
+    <!-- МОДАЛКА РЕГИСТРАЦИИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать!</h2>
             <p style="color:var(--muted); margin-bottom:12px;">Заполните данные для входа.</p>
-            <label>Ваш никнейм (отображается в игре)</label>
+            <label>Ваш никнейм</label>
             <input type="text" id="regName" placeholder="s1m1" maxlength="20">
-            <label>Ваш Telegram username (без @)</label>
+            <label>Telegram username (без @)</label>
             <input type="text" id="regTelegram" placeholder="NoisyBoy141" maxlength="32">
-            <label>Ваш игровой ID (число)</label>
+            <label>Игровой ID (число)</label>
             <input type="text" id="regGameId" placeholder="5749326657" maxlength="15">
-            <label>Ваша роль</label>
+            <label>Роль</label>
             <select id="regRole">
                 <option value="member">Игрок</option>
                 <option value="leader">Лидер</option>
@@ -469,6 +488,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ ПРОФИЛЯ -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
             <h2>✏️ Редактировать профиль</h2>
@@ -485,6 +505,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА СОЗДАНИЯ КЛАНА -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
             <h2>➕ Создать клан</h2>
@@ -501,6 +522,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА ПРОСМОТРА КЛАНА -->
     <div class="modal-overlay" id="clanDetailModal">
         <div class="modal">
             <h2 id="detailClanName">🏰 Название</h2>
@@ -512,6 +534,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ КЛАНА -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
             <h2>✏️ Редактировать клан</h2>
@@ -530,9 +553,9 @@
 
     <script>
         // ============================================================
-        // НАСТРОЙКИ JSONBin
+        // НАСТРОЙКИ JSONBin (НОВЫЙ BIN)
         // ============================================================
-        const JSONBIN_BIN_ID = '6a6a6ffcf5f4af5e29d2f123';
+        const JSONBIN_BIN_ID = '6a6b0657f5f4af5e29d4a2a1';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
         const ADMIN_ID = '5749326657';
 
@@ -756,7 +779,7 @@
         }
 
         // ============================================================
-        // ГЛАВНАЯ КНОПКА (СОЗДАТЬ ИЛИ ПОКИНУТЬ)
+        // ГЛАВНАЯ КНОПКА
         // ============================================================
         function renderMainActionButton() {
             const container = document.getElementById('mainActionButton');
@@ -775,7 +798,7 @@
                 `;
             } else {
                 container.innerHTML = `
-                    <button class="btn btn-primary btn-block" onclick="openCreateClanModal()">
+                    <button class="btn btn-primary btn-block" onclick="openCreateClan()">
                         ➕ СОЗДАТЬ КЛАН
                     </button>
                 `;
@@ -792,18 +815,6 @@
             if (confirm(`Вы действительно хотите выйти из клана "${clan.name}"?`)) {
                 leaveClan(clan.id);
             }
-        }
-
-        // ФУНКЦИЯ ДЛЯ ОТКРЫТИЯ МОДАЛКИ СОЗДАНИЯ КЛАНА
-        function openCreateClanModal() {
-            if (currentUser.clanId) {
-                alert('❌ Вы уже в клане');
-                return;
-            }
-            document.getElementById('newClanName').value = '';
-            document.getElementById('newClanTag').value = '';
-            document.getElementById('newClanDesc').value = '';
-            document.getElementById('createClanModal').classList.add('show');
         }
 
         // ============================================================
@@ -889,10 +900,11 @@
         }
 
         // ============================================================
-        // ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений)
+        // РЕНДЕР ЗАЯВОК
         // ============================================================
         async function renderRequests(container) {
             await refreshData();
+
             const myClan = allClans.find(c => c.leaderId === currentUser.id);
             if (!myClan) {
                 container.innerHTML = `
@@ -904,6 +916,7 @@
                 `;
                 return;
             }
+
             const pending = allRequests.filter(r => r.clanId === myClan.id && r.status === 'pending');
             if (pending.length === 0) {
                 container.innerHTML = `
@@ -914,6 +927,7 @@
                 `;
                 return;
             }
+
             let html = `<div style="color:var(--muted);margin-bottom:12px;">📨 Входящие заявки (${pending.length}):</div>`;
             pending.forEach(req => {
                 const user = allUsers.find(u => u.id === req.userId);
@@ -930,9 +944,13 @@
                     </div>
                 `;
             });
+
             container.innerHTML = html;
         }
 
+        // ============================================================
+        // РЕНДЕР МОЙ КЛАН
+        // ============================================================
         async function renderMyClan(container) {
             await refreshData();
             if (!currentUser.clanId) {
@@ -945,6 +963,7 @@
                 `;
                 return;
             }
+
             const clan = allClans.find(c => c.id === currentUser.clanId);
             if (!clan) {
                 container.innerHTML = `
@@ -956,9 +975,11 @@
                 `;
                 return;
             }
+
             const members = clan.members || [];
             const isLeader = clan.leaderId === currentUser.id;
             const leader = allUsers.find(u => u.id === clan.leaderId);
+
             let membersHtml = '';
             members.forEach(mid => {
                 const user = allUsers.find(u => u.id === mid);
@@ -970,6 +991,7 @@
                     </div>
                 `;
             });
+
             container.innerHTML = `
                 <div class="card" style="border-color:var(--accent);">
                     <div class="card-header">
@@ -993,11 +1015,15 @@
             `;
         }
 
+        // ============================================================
+        // РЕНДЕР АДМИНКИ
+        // ============================================================
         async function renderAdmin(container) {
             if (currentUser.id !== ADMIN_ID) {
                 container.innerHTML = '<div class="empty">⛔ Доступ запрещён</div>';
                 return;
             }
+
             await refreshData();
             let html = `
                 <div class="card" style="border-color:var(--gold);">
@@ -1015,6 +1041,7 @@
                     </div>
                 </div>
             `;
+
             if (allClans.length > 0) {
                 html += `<div style="margin-top:16px;"><h4>Все кланы:</h4>`;
                 allClans.forEach(clan => {
@@ -1037,16 +1064,18 @@
                 });
                 html += `</div>`;
             }
+
             container.innerHTML = html;
         }
 
         // ============================================================
-        // ПРОСМОТР КЛАНА (viewClan) и все остальные действия
+        // ПРОСМОТР КЛАНА
         // ============================================================
         async function viewClan(clanId) {
             await refreshData();
             const clan = allClans.find(c => c.id === clanId);
             if (!clan) return alert('Клан не найден');
+
             const members = clan.members || [];
             const leader = allUsers.find(u => u.id === clan.leaderId);
             const isLeader = clan.leaderId === currentUser.id;
@@ -1061,10 +1090,13 @@
                     ${clan.description ? `<br>📝 ${clan.description}` : ''}
                 </div>
             `;
+
             let membersHtml = '';
             members.forEach(mid => {
                 const user = allUsers.find(u => u.id === mid);
                 const isLeaderUser = mid === clan.leaderId;
+                const isCurrentUser = mid === currentUser.id;
+
                 let actionsHtml = '';
                 if (canManage && !isLeaderUser && mid !== currentUser.id) {
                     actionsHtml = `
@@ -1080,6 +1112,7 @@
                         </div>
                     `;
                 }
+
                 membersHtml += `
                     <div class="member-row">
                         <span>${user ? user.name : mid} ${isLeaderUser ? '👑' : ''}</span>
@@ -1087,22 +1120,40 @@
                     </div>
                 `;
             });
+
             document.getElementById('detailMembers').innerHTML = membersHtml || '<div style="color:var(--muted);">Нет участников</div>';
             document.getElementById('clanDetailModal').classList.add('show');
+        }
+
+        // ============================================================
+        // ДЕЙСТВИЯ С КЛАНАМИ
+        // ============================================================
+        function openCreateClan() {
+            if (currentUser.clanId) {
+                alert('❌ Вы уже в клане');
+                return;
+            }
+            document.getElementById('newClanName').value = '';
+            document.getElementById('newClanTag').value = '';
+            document.getElementById('newClanDesc').value = '';
+            document.getElementById('createClanModal').classList.add('show');
         }
 
         async function createClan() {
             const name = document.getElementById('newClanName').value.trim();
             const tag = document.getElementById('newClanTag').value.trim().toUpperCase();
             const desc = document.getElementById('newClanDesc').value.trim();
+
             if (!name) return alert('❌ Введите название');
             if (!tag || tag.length < 2 || tag.length > 6) return alert('❌ Тег 2-6 символов');
+
             try {
                 const data = await loadData();
                 if (data.clans.find(c => c.name.toLowerCase() === name.toLowerCase())) {
                     alert('❌ Клан с таким названием уже существует');
                     return;
                 }
+
                 const newClan = {
                     id: 'clan_' + Date.now(),
                     name: name,
@@ -1112,16 +1163,20 @@
                     description: desc,
                     created: new Date().toISOString()
                 };
+
                 data.clans.push(newClan);
                 await saveData(data);
+
                 currentUser.clanId = newClan.id;
                 localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+
                 await refreshData();
                 closeModal('createClanModal');
                 alert('✅ Клан создан!');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
@@ -1132,13 +1187,17 @@
                 alert('❌ Вы уже в клане');
                 return;
             }
+
             const clan = allClans.find(c => c.id === clanId);
             if (!clan) return alert('❌ Клан не найден');
+
             if (allRequests.find(r => r.clanId === clanId && r.userId === currentUser.id && r.status === 'pending')) {
                 alert('⏳ Вы уже подали заявку в этот клан');
                 return;
             }
+
             if (!confirm(`Подать заявку в клан "${clan.name}" [${clan.tag}]?`)) return;
+
             try {
                 const data = await loadData();
                 const newReq = {
@@ -1151,9 +1210,11 @@
                 };
                 data.requests.push(newReq);
                 await saveData(data);
+
                 await refreshData();
                 alert('✅ Заявка отправлена!');
                 showTab('clans');
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
@@ -1164,21 +1225,27 @@
                 const data = await loadData();
                 const req = data.requests.find(r => r.id === requestId);
                 if (!req) return alert('Заявка не найдена');
+
                 const clan = data.clans.find(c => c.id === req.clanId);
                 if (!clan) return alert('Клан не найден');
+
                 if (!clan.members) clan.members = [];
                 if (!clan.members.includes(req.userId)) {
                     clan.members.push(req.userId);
                 }
+
                 req.status = 'accepted';
+
                 const user = data.users.find(u => u.id === req.userId);
                 if (user) {
                     user.clanId = clan.id;
                 }
+
                 await saveData(data);
                 await refreshData();
                 alert('✅ Заявка принята!');
                 showTab('requests');
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
@@ -1194,6 +1261,7 @@
                 await refreshData();
                 alert('❌ Заявка отклонена');
                 showTab('requests');
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
@@ -1202,10 +1270,13 @@
         async function deleteClan(clanId) {
             const clan = allClans.find(c => c.id === clanId);
             if (!clan) return alert('Клан не найден');
+
             if (clan.leaderId !== currentUser.id && currentUser.id !== ADMIN_ID) {
                 return alert('❌ Только лидер или админ может удалить клан');
             }
+
             if (!confirm(`❌ Точно удалить клан "${clan.name}"?`)) return;
+
             try {
                 const data = await loadData();
                 data.clans = data.clans.filter(c => c.id !== clanId);
@@ -1223,6 +1294,7 @@
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
@@ -1233,47 +1305,61 @@
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
                 if (!clan) return alert('Клан не найден');
+
                 if (clan.leaderId === currentUser.id) {
                     alert('❌ Вы глава клана. Сначала передайте лидерство или распустите клан.');
                     return;
                 }
+
                 clan.members = clan.members.filter(m => m !== currentUser.id);
                 currentUser.clanId = null;
                 localStorage.setItem('bsc_user', JSON.stringify(currentUser));
                 const user = data.users.find(u => u.id === currentUser.id);
                 if (user) user.clanId = null;
+
                 await saveData(data);
                 await refreshData();
                 alert('✅ Вы вышли из клана');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
         }
 
+        // ============================================================
+        // УПРАВЛЕНИЕ УЧАСТНИКАМИ
+        // ============================================================
         async function kickMember(clanId, userId) {
             if (!confirm('Вы уверены, что хотите кикнуть этого игрока?')) return;
+
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
                 if (!clan) return alert('Клан не найден');
+
                 if (clan.leaderId !== currentUser.id && currentUser.id !== ADMIN_ID) {
                     return alert('❌ Нет прав');
                 }
+
                 if (userId === clan.leaderId) {
                     return alert('❌ Нельзя кикнуть лидера');
                 }
+
                 clan.members = clan.members.filter(id => id !== userId);
+
                 const user = data.users.find(u => u.id === userId);
                 if (user) {
                     user.clanId = null;
                 }
+
                 await saveData(data);
                 await refreshData();
                 alert('✅ Игрок кикнут');
                 viewClan(clanId);
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
@@ -1281,17 +1367,22 @@
 
         async function transferLeadership(clanId, newLeaderId) {
             if (!confirm('Передать лидерство этому игроку?')) return;
+
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
                 if (!clan) return alert('Клан не найден');
+
                 if (clan.leaderId !== currentUser.id && currentUser.id !== ADMIN_ID) {
                     return alert('❌ Нет прав');
                 }
+
                 const newLeader = data.users.find(u => u.id === newLeaderId);
                 if (!newLeader) return alert('Пользователь не найден');
+
                 const oldLeaderId = clan.leaderId;
                 clan.leaderId = newLeaderId;
+
                 const oldLeader = data.users.find(u => u.id === oldLeaderId);
                 if (oldLeader && oldLeader.role === 'leader') {
                     oldLeader.role = 'member';
@@ -1299,23 +1390,30 @@
                 if (newLeader.role !== 'leader') {
                     newLeader.role = 'leader';
                 }
+
                 if (currentUser.id === newLeaderId) {
                     currentUser.role = 'leader';
                     localStorage.setItem('bsc_user', JSON.stringify(currentUser));
                 }
+
                 await saveData(data);
                 await refreshData();
                 alert(`✅ Лидерство передано игроку ${newLeader.name}`);
                 viewClan(clanId);
                 renderMainActionButton();
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
         }
 
+        // ============================================================
+        // АДМИН
+        // ============================================================
         async function clearAllData() {
             if (currentUser.id !== ADMIN_ID) return;
             if (!confirm('⚠️ Очистить все данные?')) return;
+
             try {
                 const data = await loadData();
                 data.users = [];
@@ -1330,6 +1428,9 @@
             }
         }
 
+        // ============================================================
+        // РЕДАКТИРОВАНИЕ КЛАНА
+        // ============================================================
         function openEditClan(clanId) {
             const clan = allClans.find(c => c.id === clanId);
             if (!clan) return alert('Клан не найден');
@@ -1347,20 +1448,25 @@
             const name = document.getElementById('editClanName').value.trim();
             const tag = document.getElementById('editClanTag').value.trim().toUpperCase();
             const desc = document.getElementById('editClanDesc').value.trim();
+
             if (!name) return alert('❌ Введите название');
             if (!tag || tag.length < 2 || tag.length > 6) return alert('❌ Тег 2-6 символов');
+
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === editingClanId);
                 if (!clan) return alert('Клан не найден');
+
                 clan.name = name;
                 clan.tag = tag;
                 clan.description = desc;
+
                 await saveData(data);
                 await refreshData();
                 closeModal('editClanModal');
                 alert('✅ Клан обновлён');
                 showTab(currentTab);
+
             } catch (error) {
                 alert(`❌ ${error.message}`);
             }
