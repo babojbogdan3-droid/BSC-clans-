@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           ГЛОБАЛЬНЫЕ СТИЛИ (такие же, как в предыдущей версии)
+           СТИЛИ (с кнопкой языка в хедере)
            ============================================================ */
         * {
             margin: 0;
@@ -55,6 +55,30 @@
             background: linear-gradient(135deg, #fff 30%, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lang-btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.05);
         }
         .profile-btn-wrap {
             position: relative;
@@ -547,9 +571,7 @@
         }
         .footer-links a:hover { color: #fff; }
 
-        /* ============================================================
-           АДМИН-ПАНЕЛЬ (обновлена для пользователей)
-           ============================================================ */
+        /* АДМИН-ПАНЕЛЬ */
         .admin-panel {
             display: flex;
             flex-direction: column;
@@ -647,20 +669,24 @@
     <div class="container">
         <header class="header">
             <h1>BSC</h1>
-            <div class="profile-btn-wrap">
-                <button class="profile-btn" onclick="toggleProfile()" id="profileToggle">
-                    👤
-                    <span class="badge" id="notifBadge" style="display:none;">0</span>
-                </button>
-                <div class="profile-dropdown" id="profileDropdown">
-                    <div class="info">
-                        <div class="name" id="profName">Неизвестно</div>
-                        <div class="detail" id="profGameId">ID: —</div>
-                        <div class="detail" id="profClan">Клан: —</div>
-                        <div class="detail" id="profRole">Роль: —</div>
+            <div class="header-right">
+                <button class="lang-btn" id="headerLangBtn" onclick="toggleLanguage()" title="Сменить язык / Change language">🌐</button>
+                <div class="profile-btn-wrap">
+                    <button class="profile-btn" onclick="toggleProfile()" id="profileToggle">
+                        👤
+                        <span class="badge" id="notifBadge" style="display:none;">0</span>
+                    </button>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="info">
+                            <div class="name" id="profName">Неизвестно</div>
+                            <div class="detail" id="profGameId">ID: —</div>
+                            <div class="detail" id="profClan">Клан: —</div>
+                            <div class="detail" id="profRole">Роль: —</div>
+                        </div>
+                        <button class="btn btn-secondary btn-block btn-sm" id="profileEditBtn" onclick="openEditProfile()">✏️ Редактировать профиль</button>
+                        <button class="btn btn-secondary btn-block btn-sm" id="profileLangBtn" onclick="toggleLanguage()">🌐 Сменить язык</button>
+                        <button class="btn btn-danger btn-block btn-sm" onclick="logoutUser()" style="margin-top:8px;">🚪 Выйти</button>
                     </div>
-                    <button class="btn btn-secondary btn-block btn-sm" onclick="openEditProfile()">✏️ Редактировать профиль</button>
-                    <button class="btn btn-danger btn-block btn-sm" onclick="logoutUser()" style="margin-top:8px;">🚪 Выйти</button>
                 </div>
             </div>
         </header>
@@ -684,119 +710,135 @@
                 <div>
                     <div class="footer-brand">⚡ BSC Clans</div>
                     <div class="footer-stats">
-                        👥 Кланов: <span id="totalClans">0</span> •
-                        👤 Участников: <span id="totalMembers">0</span>
+                        👥 <span id="footerClansLabel">Кланов:</span> <span id="totalClans">0</span> •
+                        👤 <span id="footerMembersLabel">Участников:</span> <span id="totalMembers">0</span>
                     </div>
                 </div>
                 <div class="footer-status">
-                    <div><span class="online">●</span> Бот активен</div>
+                    <div><span class="online">●</span> <span id="footerBotStatus">Бот активен</span></div>
                     <div>v2.0 • 2026</div>
                 </div>
             </div>
             <div class="footer-links">
-                <span>Создатель: @NoisyBoy141</span>
-                <a href="https://t.me/TheChannelBSC" target="_blank">📢 Канал</a>
-                <a href="https://t.me/+5WdmSbxSUHsyYmMy" target="_blank">💬 Чат</a>
+                <span id="footerCreator">Создатель: @NoisyBoy141</span>
+                <a href="https://t.me/TheChannelBSC" target="_blank" id="footerChannelLink">📢 Канал</a>
+                <a href="https://t.me/+5WdmSbxSUHsyYmMy" target="_blank" id="footerChatLink">💬 Чат</a>
             </div>
         </footer>
     </div>
 
-    <!-- МОДАЛКИ -->
+    <!-- МОДАЛКА ВЫБОРА ЯЗЫКА (ПОЯВЛЯЕТСЯ ПРИ ПЕРВОМ ВХОДЕ) -->
+    <div class="modal-overlay" id="langModal">
+        <div class="modal">
+            <h2 id="langModalTitle">🌐 Выберите язык / Select language</h2>
+            <div style="display:flex; gap:10px; justify-content:center; margin:20px 0; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="setLanguage('ru')" style="font-size:18px; padding:12px 24px;">🇷🇺 Русский</button>
+                <button class="btn btn-primary" onclick="setLanguage('en')" style="font-size:18px; padding:12px 24px;">🇬🇧 English</button>
+            </div>
+            <p style="color:var(--text-secondary); text-align:center; font-size:13px;" id="langModalHint">Выберите язык, который будет использоваться в приложении. / Select the language to be used in the app.</p>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА РЕГИСТРАЦИИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
-            <h2>📝 Добро пожаловать</h2>
-            <label>Никнейм</label>
+            <h2 id="registerTitle">📝 Добро пожаловать</h2>
+            <label id="registerNameLabel">Никнейм</label>
             <input type="text" id="regName" placeholder="s1m1" maxlength="20">
-            <label>Telegram username (без @)</label>
+            <label id="registerTelegramLabel">Telegram username (без @)</label>
             <input type="text" id="regTelegram" placeholder="NoisyBoy141" maxlength="32">
-            <label>Игровой ID</label>
+            <label id="registerGameIdLabel">Игровой ID</label>
             <input type="text" id="regGameId" placeholder="22887924" maxlength="15">
-            <label>Роль</label>
+            <label id="registerRoleLabel">Роль</label>
             <select id="regRole">
-                <option value="member">Игрок</option>
-                <option value="leader">Лидер</option>
+                <option value="member" id="regRoleMember">Игрок</option>
+                <option value="leader" id="regRoleLeader">Лидер</option>
             </select>
             <div class="modal-actions">
-                <button class="btn btn-primary" onclick="registerUser()">✅ Войти</button>
+                <button class="btn btn-primary" id="registerBtn" onclick="registerUser()">✅ Войти</button>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ ПРОФИЛЯ -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
-            <h2>✏️ Редактировать профиль</h2>
-            <label>Никнейм</label>
+            <h2 id="editProfileTitle">✏️ Редактировать профиль</h2>
+            <label id="editProfileNameLabel">Никнейм</label>
             <input type="text" id="editProfName" maxlength="20">
-            <label>Telegram username (без @)</label>
+            <label id="editProfileTelegramLabel">Telegram username (без @)</label>
             <input type="text" id="editProfTelegram" maxlength="32">
-            <label>Игровой ID</label>
+            <label id="editProfileGameIdLabel">Игровой ID</label>
             <input type="text" id="editProfGameId" maxlength="15">
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('editProfileModal')">Отмена</button>
-                <button class="btn btn-primary" onclick="saveProfile()">Сохранить</button>
+                <button class="btn btn-secondary" id="editProfileCancel" onclick="closeModal('editProfileModal')">Отмена</button>
+                <button class="btn btn-primary" id="editProfileSave" onclick="saveProfile()">Сохранить</button>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛКА СОЗДАНИЯ КЛАНА -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
-            <h2>➕ Создать клан</h2>
-            <label>Название</label>
+            <h2 id="createClanTitle">➕ Создать клан</h2>
+            <label id="createClanNameLabel">Название</label>
             <input type="text" id="newClanName" maxlength="30">
-            <label>Тег (2-6 символов)</label>
+            <label id="createClanTagLabel">Тег (2-6 символов)</label>
             <input type="text" id="newClanTag" maxlength="6" style="text-transform:uppercase;">
-            <label>Описание</label>
+            <label id="createClanDescLabel">Описание</label>
             <textarea id="newClanDesc"></textarea>
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('createClanModal')">Отмена</button>
-                <button class="btn btn-primary" onclick="createClan()">Создать</button>
+                <button class="btn btn-secondary" id="createClanCancel" onclick="closeModal('createClanModal')">Отмена</button>
+                <button class="btn btn-primary" id="createClanBtn" onclick="createClan()">Создать</button>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ КЛАНА -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
-            <h2>✏️ Редактировать клан</h2>
-            <label>Название</label>
+            <h2 id="editClanTitle">✏️ Редактировать клан</h2>
+            <label id="editClanNameLabel">Название</label>
             <input type="text" id="editClanName">
-            <label>Тег</label>
+            <label id="editClanTagLabel">Тег</label>
             <input type="text" id="editClanTag" style="text-transform:uppercase;">
-            <label>Описание</label>
+            <label id="editClanDescLabel">Описание</label>
             <textarea id="editClanDesc"></textarea>
-            <label>Связь (Telegram владельца, без @)</label>
+            <label id="editClanContactLabel">Связь (Telegram владельца, без @)</label>
             <input type="text" id="editClanContact" placeholder="noisyboy141">
-            <label>Канал (ссылка или юзернейм)</label>
+            <label id="editClanChannelLabel">Канал (ссылка или юзернейм)</label>
             <input type="text" id="editClanChannel" placeholder="@bsc_channel или https://t.me/...">
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('editClanModal')">Отмена</button>
-                <button class="btn btn-primary" onclick="saveEditClan()">Сохранить</button>
+                <button class="btn btn-secondary" id="editClanCancel" onclick="closeModal('editClanModal')">Отмена</button>
+                <button class="btn btn-primary" id="editClanSave" onclick="saveEditClan()">Сохранить</button>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛКА ПРОСМОТРА КЛАНА -->
     <div class="modal-overlay" id="clanDetailModal">
         <div class="modal">
             <h2 id="detailClanName">🏰 Клан</h2>
             <div id="detailClanInfo"></div>
             <div id="detailMembers"></div>
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('clanDetailModal')">Закрыть</button>
+                <button class="btn btn-secondary" id="detailClanClose" onclick="closeModal('clanDetailModal')">Закрыть</button>
             </div>
         </div>
     </div>
 
-    <!-- НОВАЯ МОДАЛКА ДЛЯ БАНА -->
+    <!-- МОДАЛКА ДЛЯ БАНА -->
     <div class="modal-overlay" id="banModal">
         <div class="modal">
-            <h2>🔨 Забанить пользователя</h2>
+            <h2 id="banTitle">🔨 Забанить пользователя</h2>
             <p id="banUserName" style="color:var(--text-secondary); margin-bottom:12px;">Пользователь: </p>
-            <label>Срок бана (в днях, 0 = навсегда)</label>
+            <label id="banDaysLabel">Срок бана (в днях, 0 = навсегда)</label>
             <input type="number" id="banDays" value="7" min="0">
-            <label>Причина (необязательно)</label>
+            <label id="banReasonLabel">Причина (необязательно)</label>
             <input type="text" id="banReason" placeholder="Нарушение правил" maxlength="100">
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('banModal')">Отмена</button>
-                <button class="btn btn-danger" onclick="confirmBan()">🔨 Забанить</button>
+                <button class="btn btn-secondary" id="banCancel" onclick="closeModal('banModal')">Отмена</button>
+                <button class="btn btn-danger" id="banConfirm" onclick="confirmBan()">🔨 Забанить</button>
             </div>
         </div>
     </div>
@@ -804,6 +846,366 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        // ============================================================
+        // ПЕРЕВОДЫ
+        // ============================================================
+        const LANG = {
+            ru: {
+                // Общие
+                'loading': 'Загрузка...',
+                'error': 'Ошибка',
+                'close': 'Закрыть',
+                'save': 'Сохранить',
+                'cancel': 'Отмена',
+                'confirm': 'Подтвердить',
+                'delete': 'Удалить',
+                'edit': 'Редактировать',
+                'ban': 'Забанить',
+                'unban': 'Разбанить',
+                'kick': 'Кикнуть',
+                'leave': 'Покинуть',
+                'view': 'Просмотр',
+                'apply': 'Подать заявку',
+                'create': 'Создать',
+                'join': 'Вступить',
+                'leaveClan': 'Покинуть клан',
+                'disband': 'Распустить',
+                'clans': 'КЛАНЫ',
+                'requests': 'ЗАЯВКИ',
+                'myclan': 'МОЙ КЛАН',
+                'rating': 'РЕЙТИНГ',
+                'admin': 'АДМИН',
+                'profile': 'Профиль',
+                'editProfile': 'Редактировать профиль',
+                'logout': 'Выйти',
+                'changeLang': 'Сменить язык',
+                'botActive': 'Бот активен',
+                'creator': 'Создатель: @NoisyBoy141',
+                'channel': 'Канал',
+                'chat': 'Чат',
+                'noClans': 'Нет кланов',
+                'noRequests': 'Нет заявок',
+                'notInClan': 'Вы не состоите в клане',
+                'adminPanel': 'Админ-панель',
+                'userManagement': 'Управление пользователями',
+                'eloManagement': 'Управление рейтингом (ELO)',
+                'deleteUserConfirm': '❌ Точно удалить пользователя "{name}" ({id})? Все его данные будут удалены.',
+                'banUser': 'Забанить пользователя',
+                'banReasonPlaceholder': 'Нарушение правил',
+                'banDaysLabel': 'Срок бана (в днях, 0 = навсегда)',
+                'banReasonLabel': 'Причина (необязательно)',
+                'userBannedMessage': 'Ваш аккаунт забанен до {date}',
+                'userBannedReason': 'Причина: {reason}',
+                'accessDenied': '⛔ ДОСТУП ЗАПРЕЩЁН',
+                'accountBanned': 'Ваш аккаунт забанен.',
+                'clansCount': 'Кланов:',
+                'membersCount': 'Участников:',
+                'requestsCount': 'Заявок:',
+                'clansAndMembers': 'Кланов: {clans} • Участников: {members}',
+                'leaderLabel': 'Глава',
+                'membersLabel': 'Участников',
+                'eloLabel': 'ELO',
+                'noMembers': 'Нет участников',
+                'noData': 'Нет данных',
+                'welcome': 'Добро пожаловать',
+                'register': 'Зарегистрироваться',
+                'nickname': 'Никнейм',
+                'telegramUsername': 'Telegram username (без @)',
+                'gameId': 'Игровой ID',
+                'role': 'Роль',
+                'roleMember': 'Игрок',
+                'roleLeader': 'Лидер',
+                'enterNickname': 'Введите никнейм',
+                'enterTelegram': 'Введите Telegram',
+                'enterGameId': 'Введите игровой ID',
+                'nicknameTaken': 'Ник занят',
+                'idMustBeNumber': 'ID должен быть числом',
+                'welcomeUser': 'Добро пожаловать, {name}',
+                'profileUpdated': 'Профиль обновлён',
+                'clanCreated': 'Клан создан!',
+                'clanDeleted': 'Клан удалён',
+                'clanDisbanded': 'Клан распущен',
+                'youLeftClan': 'Вы вышли из клана',
+                'youJoinedClan': 'Вы вступили в клан',
+                'requestSent': 'Заявка отправлена',
+                'requestAccepted': 'Заявка принята',
+                'requestRejected': 'Заявка отклонена',
+                'notClanLeader': 'Вы не глава клана',
+                'noPendingRequests': 'Нет входящих заявок',
+                'pendingRequests': 'Входящие заявки ({count})',
+                'memberKicked': 'Игрок кикнут',
+                'leaderTransferred': 'Лидерство передано {name}',
+                'eloUpdated': 'ELO для "{name}" обновлён до {elo}',
+                'enterValidElo': 'Введите корректное число (≥0)',
+                'notFound': 'не найден',
+                'noRights': 'Нет прав',
+                'clearAllData': 'Очистить всё',
+                'clearAllConfirm': '⚠️ Очистить все данные?',
+                'allCleared': 'Все данные очищены',
+                'logoutConfirm': 'Выйти из аккаунта?',
+                'youLoggedOut': 'Вы вышли',
+                'serverError': 'Ошибка сервера',
+                'languageSelected': 'Язык изменён на русский',
+                'languageSelectedEn': 'Language changed to English',
+                'selectLanguage': '🌐 Выберите язык / Select language',
+                'selectLanguageHint': 'Выберите язык, который будет использоваться в приложении.',
+                'selectLanguageHintEn': 'Select the language to be used in the app.',
+                'clansLabel': 'Кланы',
+                'requestsLabel': 'Заявки',
+                'myClanLabel': 'Мой клан',
+                'ratingLabel': 'Рейтинг',
+                'adminLabel': 'Админ',
+                'changeLanguage': 'Сменить язык',
+                'closeApp': 'Закрыть',
+                'refresh': 'Обновить',
+                // Добавленные для админки
+                'usersList': 'Пользователи',
+                'userId': 'ID',
+                'userGameId': 'Игровой ID',
+                'userRole': 'Роль',
+                'userStatus': 'Статус',
+                'statusActive': 'Активен',
+                'statusBanned': 'Забанен',
+                'banForever': 'Навсегда',
+                'banUntil': 'до {date}',
+                'unbanConfirm': 'Разбанить пользователя "{name}"?',
+                'userUnbanned': 'Пользователь "{name}" разбанен',
+                'userBanned': 'Пользователь "{name}" забанен',
+                'userDeleted': 'Пользователь "{name}" удалён',
+                'eloManagementTitle': 'Управление рейтингом (ELO)',
+                'saveElo': 'Сохранить',
+                'currentElo': 'Текущий ELO',
+                'setElo': 'Установить ELO',
+                'eloSaved': 'ELO сохранён',
+                'confirmDeleteUser': 'Точно удалить пользователя?',
+                'confirmBanUser': 'Точно забанить пользователя?',
+                'confirmUnbanUser': 'Точно разбанить пользователя?',
+                'confirmClearAll': 'Точно очистить все данные?',
+                'noUsers': 'Нет пользователей',
+                'noClansForRating': 'Нет кланов для рейтинга',
+                'ratingTop': 'Рейтинг кланов (по ELO)',
+                'leaderContact': 'Связь',
+                'clanChannel': 'Канал клана',
+                'noMembersInClan': 'Нет участников',
+                'membersList': 'Участники',
+                'clanInfo': 'Информация о клане',
+                'clanName': 'Название клана',
+                'clanTag': 'Тег клана',
+                'clanDescription': 'Описание клана',
+                'clanLeader': 'Глава клана',
+                'clanMembers': 'Участники клана',
+                'clanContact': 'Связь с главой',
+                'clanChannelLabel': 'Канал клана',
+                'editClan': 'Редактировать клан',
+                'createClan': 'Создать клан',
+                'deleteClan': 'Удалить клан',
+                'disbandClan': 'Распустить клан',
+                'leaveClanConfirm': 'Выйти из клана "{name}"?',
+                'applyToClan': 'Подать заявку в "{name}"?',
+                'acceptRequest': 'Принять заявку',
+                'rejectRequest': 'Отклонить заявку',
+                'memberKickConfirm': 'Кикнуть игрока?',
+                'transferLeadershipConfirm': 'Передать лидерство?',
+                'leadershipTransferred': 'Лидерство передано {name}',
+                'youAreNotLeader': 'Вы не глава клана',
+                'youAreNotAdmin': 'Вы не администратор',
+                'youAreInClan': 'Вы уже в клане',
+                'youAreNotInClan': 'Вы не в клане',
+                'clanNotFound': 'Клан не найден',
+                'userNotFound': 'Пользователь не найден',
+                'requestNotFound': 'Заявка не найдена',
+                'invalidInput': 'Некорректный ввод',
+                'saveSuccess': 'Сохранено',
+                'saveError': 'Ошибка сохранения',
+                'loadError': 'Ошибка загрузки',
+                'updateSuccess': 'Обновлено',
+                'updateError': 'Ошибка обновления',
+                'deleteSuccess': 'Удалено',
+                'deleteError': 'Ошибка удаления',
+                'banSuccess': 'Пользователь забанен',
+                'banError': 'Ошибка бана',
+                'unbanSuccess': 'Пользователь разбанен',
+                'unbanError': 'Ошибка разбана'
+            },
+            en: {
+                // General
+                'loading': 'Loading...',
+                'error': 'Error',
+                'close': 'Close',
+                'save': 'Save',
+                'cancel': 'Cancel',
+                'confirm': 'Confirm',
+                'delete': 'Delete',
+                'edit': 'Edit',
+                'ban': 'Ban',
+                'unban': 'Unban',
+                'kick': 'Kick',
+                'leave': 'Leave',
+                'view': 'View',
+                'apply': 'Apply',
+                'create': 'Create',
+                'join': 'Join',
+                'leaveClan': 'Leave clan',
+                'disband': 'Disband',
+                'clans': 'CLANS',
+                'requests': 'REQUESTS',
+                'myclan': 'MY CLAN',
+                'rating': 'RATING',
+                'admin': 'ADMIN',
+                'profile': 'Profile',
+                'editProfile': 'Edit profile',
+                'logout': 'Logout',
+                'changeLang': 'Change language',
+                'botActive': 'Bot is active',
+                'creator': 'Creator: @NoisyBoy141',
+                'channel': 'Channel',
+                'chat': 'Chat',
+                'noClans': 'No clans',
+                'noRequests': 'No requests',
+                'notInClan': 'You are not in a clan',
+                'adminPanel': 'Admin panel',
+                'userManagement': 'User management',
+                'eloManagement': 'ELO management',
+                'deleteUserConfirm': '❌ Delete user "{name}" ({id})? All their data will be removed.',
+                'banUser': 'Ban user',
+                'banReasonPlaceholder': 'Rules violation',
+                'banDaysLabel': 'Ban duration (days, 0 = forever)',
+                'banReasonLabel': 'Reason (optional)',
+                'userBannedMessage': 'Your account is banned until {date}',
+                'userBannedReason': 'Reason: {reason}',
+                'accessDenied': '⛔ ACCESS DENIED',
+                'accountBanned': 'Your account is banned.',
+                'clansCount': 'Clans:',
+                'membersCount': 'Members:',
+                'requestsCount': 'Requests:',
+                'clansAndMembers': 'Clans: {clans} • Members: {members}',
+                'leaderLabel': 'Leader',
+                'membersLabel': 'Members',
+                'eloLabel': 'ELO',
+                'noMembers': 'No members',
+                'noData': 'No data',
+                'welcome': 'Welcome',
+                'register': 'Register',
+                'nickname': 'Nickname',
+                'telegramUsername': 'Telegram username (without @)',
+                'gameId': 'Game ID',
+                'role': 'Role',
+                'roleMember': 'Member',
+                'roleLeader': 'Leader',
+                'enterNickname': 'Enter nickname',
+                'enterTelegram': 'Enter Telegram',
+                'enterGameId': 'Enter game ID',
+                'nicknameTaken': 'Nickname is taken',
+                'idMustBeNumber': 'ID must be a number',
+                'welcomeUser': 'Welcome, {name}',
+                'profileUpdated': 'Profile updated',
+                'clanCreated': 'Clan created!',
+                'clanDeleted': 'Clan deleted',
+                'clanDisbanded': 'Clan disbanded',
+                'youLeftClan': 'You left the clan',
+                'youJoinedClan': 'You joined the clan',
+                'requestSent': 'Request sent',
+                'requestAccepted': 'Request accepted',
+                'requestRejected': 'Request rejected',
+                'notClanLeader': 'You are not the clan leader',
+                'noPendingRequests': 'No incoming requests',
+                'pendingRequests': 'Incoming requests ({count})',
+                'memberKicked': 'Member kicked',
+                'leaderTransferred': 'Leadership transferred to {name}',
+                'eloUpdated': 'ELO for "{name}" updated to {elo}',
+                'enterValidElo': 'Enter a valid number (≥0)',
+                'notFound': 'not found',
+                'noRights': 'No rights',
+                'clearAllData': 'Clear all data',
+                'clearAllConfirm': '⚠️ Clear all data?',
+                'allCleared': 'All data cleared',
+                'logoutConfirm': 'Logout?',
+                'youLoggedOut': 'You logged out',
+                'serverError': 'Server error',
+                'languageSelected': 'Language changed to English',
+                'languageSelectedRu': 'Язык изменён на русский',
+                'selectLanguage': '🌐 Select language',
+                'selectLanguageHint': 'Select the language to be used in the app.',
+                'selectLanguageHintRu': 'Выберите язык, который будет использоваться в приложении.',
+                'clansLabel': 'Clans',
+                'requestsLabel': 'Requests',
+                'myClanLabel': 'My Clan',
+                'ratingLabel': 'Rating',
+                'adminLabel': 'Admin',
+                'changeLanguage': 'Change language',
+                'closeApp': 'Close',
+                'refresh': 'Refresh',
+                // Admin
+                'usersList': 'Users',
+                'userId': 'ID',
+                'userGameId': 'Game ID',
+                'userRole': 'Role',
+                'userStatus': 'Status',
+                'statusActive': 'Active',
+                'statusBanned': 'Banned',
+                'banForever': 'Forever',
+                'banUntil': 'until {date}',
+                'unbanConfirm': 'Unban user "{name}"?',
+                'userUnbanned': 'User "{name}" unbanned',
+                'userBanned': 'User "{name}" banned',
+                'userDeleted': 'User "{name}" deleted',
+                'eloManagementTitle': 'ELO management',
+                'saveElo': 'Save',
+                'currentElo': 'Current ELO',
+                'setElo': 'Set ELO',
+                'eloSaved': 'ELO saved',
+                'confirmDeleteUser': 'Delete user?',
+                'confirmBanUser': 'Ban user?',
+                'confirmUnbanUser': 'Unban user?',
+                'confirmClearAll': 'Clear all data?',
+                'noUsers': 'No users',
+                'noClansForRating': 'No clans for rating',
+                'ratingTop': 'Clan rating (by ELO)',
+                'leaderContact': 'Contact',
+                'clanChannel': 'Clan channel',
+                'noMembersInClan': 'No members',
+                'membersList': 'Members',
+                'clanInfo': 'Clan info',
+                'clanName': 'Clan name',
+                'clanTag': 'Clan tag',
+                'clanDescription': 'Clan description',
+                'clanLeader': 'Clan leader',
+                'clanMembers': 'Clan members',
+                'clanContact': 'Leader contact',
+                'clanChannelLabel': 'Clan channel',
+                'editClan': 'Edit clan',
+                'createClan': 'Create clan',
+                'deleteClan': 'Delete clan',
+                'disbandClan': 'Disband clan',
+                'leaveClanConfirm': 'Leave clan "{name}"?',
+                'applyToClan': 'Apply to "{name}"?',
+                'acceptRequest': 'Accept request',
+                'rejectRequest': 'Reject request',
+                'memberKickConfirm': 'Kick member?',
+                'transferLeadershipConfirm': 'Transfer leadership?',
+                'leadershipTransferred': 'Leadership transferred to {name}',
+                'youAreNotLeader': 'You are not the clan leader',
+                'youAreNotAdmin': 'You are not an admin',
+                'youAreInClan': 'You are already in a clan',
+                'youAreNotInClan': 'You are not in a clan',
+                'clanNotFound': 'Clan not found',
+                'userNotFound': 'User not found',
+                'requestNotFound': 'Request not found',
+                'invalidInput': 'Invalid input',
+                'saveSuccess': 'Saved',
+                'saveError': 'Save error',
+                'loadError': 'Load error',
+                'updateSuccess': 'Updated',
+                'updateError': 'Update error',
+                'deleteSuccess': 'Deleted',
+                'deleteError': 'Delete error',
+                'banSuccess': 'User banned',
+                'banError': 'Ban error',
+                'unbanSuccess': 'User unbanned',
+                'unbanError': 'Unban error'
+            }
+        };
+
         // ============================================================
         // НАСТРОЙКИ
         // ============================================================
@@ -818,6 +1220,131 @@
         let currentTab = 'clans';
         let editingClanId = null;
         let banTargetUserId = null;
+        let currentLang = 'ru'; // 'ru' или 'en'
+
+        // ============================================================
+        // ПЕРЕВОДЫ И ЛОКАЛИЗАЦИЯ
+        // ============================================================
+        function t(key) {
+            return LANG[currentLang] && LANG[currentLang][key] !== undefined
+                ? LANG[currentLang][key]
+                : key;
+        }
+
+        function applyLanguage() {
+            // Меню
+            document.getElementById('tabClans').textContent = t('clans');
+            document.getElementById('tabRequests').textContent = t('requests');
+            document.getElementById('tabMyClan').textContent = t('myclan');
+            document.getElementById('tabRating').textContent = t('rating');
+            const adminTab = document.getElementById('tabAdmin');
+            if (adminTab) adminTab.textContent = t('admin');
+            
+            // Профиль
+            document.getElementById('profileEditBtn').textContent = t('editProfile');
+            document.getElementById('profileLangBtn').textContent = t('changeLang');
+            document.querySelector('#profileDropdown .btn-danger').textContent = t('logout');
+            
+            // Модалка языка
+            document.getElementById('langModalTitle').textContent = t('selectLanguage');
+            document.getElementById('langModalHint').textContent = t('selectLanguageHint');
+            
+            // Футер
+            document.getElementById('footerBotStatus').textContent = t('botActive');
+            document.getElementById('footerCreator').textContent = t('creator');
+            document.getElementById('footerChannelLink').textContent = '📢 ' + t('channel');
+            document.getElementById('footerChatLink').textContent = '💬 ' + t('chat');
+            
+            // Кнопка языка в хедере
+            document.getElementById('headerLangBtn').title = t('changeLanguage');
+            
+            // Обновляем остальные элементы, если они видны
+            updateAllTexts();
+        }
+
+        function updateAllTexts() {
+            // Модалка регистрации
+            const regModal = document.getElementById('registerModal');
+            if (regModal.classList.contains('show')) {
+                document.getElementById('registerTitle').textContent = t('welcome');
+                document.getElementById('registerNameLabel').textContent = t('nickname');
+                document.getElementById('registerTelegramLabel').textContent = t('telegramUsername');
+                document.getElementById('registerGameIdLabel').textContent = t('gameId');
+                document.getElementById('registerRoleLabel').textContent = t('role');
+                document.getElementById('regRoleMember').textContent = t('roleMember');
+                document.getElementById('regRoleLeader').textContent = t('roleLeader');
+                document.getElementById('registerBtn').textContent = t('register');
+            }
+            
+            // Модалка редактирования профиля
+            const editProfileModal = document.getElementById('editProfileModal');
+            if (editProfileModal.classList.contains('show')) {
+                document.getElementById('editProfileTitle').textContent = t('editProfile');
+                document.getElementById('editProfileNameLabel').textContent = t('nickname');
+                document.getElementById('editProfileTelegramLabel').textContent = t('telegramUsername');
+                document.getElementById('editProfileGameIdLabel').textContent = t('gameId');
+                document.getElementById('editProfileCancel').textContent = t('cancel');
+                document.getElementById('editProfileSave').textContent = t('save');
+            }
+            
+            // Модалка создания клана
+            const createClanModal = document.getElementById('createClanModal');
+            if (createClanModal.classList.contains('show')) {
+                document.getElementById('createClanTitle').textContent = t('createClan');
+                document.getElementById('createClanNameLabel').textContent = t('clanName');
+                document.getElementById('createClanTagLabel').textContent = t('clanTag');
+                document.getElementById('createClanDescLabel').textContent = t('clanDescription');
+                document.getElementById('createClanCancel').textContent = t('cancel');
+                document.getElementById('createClanBtn').textContent = t('create');
+            }
+            
+            // Модалка редактирования клана
+            const editClanModal = document.getElementById('editClanModal');
+            if (editClanModal.classList.contains('show')) {
+                document.getElementById('editClanTitle').textContent = t('editClan');
+                document.getElementById('editClanNameLabel').textContent = t('clanName');
+                document.getElementById('editClanTagLabel').textContent = t('clanTag');
+                document.getElementById('editClanDescLabel').textContent = t('clanDescription');
+                document.getElementById('editClanContactLabel').textContent = t('leaderContact');
+                document.getElementById('editClanChannelLabel').textContent = t('clanChannel');
+                document.getElementById('editClanCancel').textContent = t('cancel');
+                document.getElementById('editClanSave').textContent = t('save');
+            }
+            
+            // Модалка бана
+            const banModal = document.getElementById('banModal');
+            if (banModal.classList.contains('show')) {
+                document.getElementById('banTitle').textContent = t('banUser');
+                document.getElementById('banDaysLabel').textContent = t('banDaysLabel');
+                document.getElementById('banReasonLabel').textContent = t('banReasonLabel');
+                document.getElementById('banCancel').textContent = t('cancel');
+                document.getElementById('banConfirm').textContent = t('ban');
+            }
+            
+            // Модалка просмотра клана
+            const detailModal = document.getElementById('clanDetailModal');
+            if (detailModal.classList.contains('show')) {
+                document.getElementById('detailClanClose').textContent = t('close');
+            }
+        }
+
+        // ============================================================
+        // РАБОТА С ЯЗЫКОМ
+        // ============================================================
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('bsc_lang', lang);
+            applyLanguage();
+            closeModal('langModal');
+            showToast(lang === 'ru' ? t('languageSelected') : t('languageSelectedEn'), 'success');
+        }
+
+        function toggleLanguage() {
+            const newLang = currentLang === 'ru' ? 'en' : 'ru';
+            setLanguage(newLang);
+            // Закрываем профиль, если открыт
+            document.getElementById('profileDropdown').classList.remove('show');
+        }
 
         // ============================================================
         // РАБОТА С JSONBin
@@ -872,20 +1399,22 @@
 
         function isUserBanned(user) {
             if (!user.bannedUntil) return false;
+            if (user.bannedUntil === 'forever') return true;
             const now = Date.now();
             const banDate = new Date(user.bannedUntil).getTime();
             return banDate > now;
         }
 
         function getBanStatusText(user) {
-            if (!user.bannedUntil) return { text: 'Активен', class: 'active' };
+            if (!user.bannedUntil) return { text: t('statusActive'), class: 'active' };
+            if (user.bannedUntil === 'forever') return { text: t('statusBanned'), class: 'banned' };
             const now = Date.now();
             const banDate = new Date(user.bannedUntil).getTime();
             if (banDate > now) {
                 const remaining = Math.ceil((banDate - now) / (1000 * 60 * 60 * 24));
-                return { text: `Забанен (осталось ${remaining} д.)`, class: 'banned' };
+                return { text: t('statusBanned') + ' (' + t('banUntil').replace('{date}', remaining + ' д.') + ')', class: 'banned' };
             } else {
-                return { text: 'Активен', class: 'active' };
+                return { text: t('statusActive'), class: 'active' };
             }
         }
 
@@ -902,6 +1431,8 @@
             const totalMembers = allClans.reduce((sum, c) => sum + (c.members || []).length, 0);
             document.getElementById('totalClans').textContent = totalClans;
             document.getElementById('totalMembers').textContent = totalMembers;
+            document.getElementById('footerClansLabel').textContent = t('clansCount');
+            document.getElementById('footerMembersLabel').textContent = t('membersCount');
         }
 
         // ============================================================
@@ -909,6 +1440,17 @@
         // ============================================================
         async function initApp() {
             try {
+                // Восстанавливаем язык
+                const savedLang = localStorage.getItem('bsc_lang');
+                if (savedLang === 'en' || savedLang === 'ru') {
+                    currentLang = savedLang;
+                } else {
+                    // Показываем модалку выбора языка
+                    document.getElementById('langModal').classList.add('show');
+                    return; // Ждём выбора языка
+                }
+                applyLanguage();
+
                 const data = await loadData();
                 allUsers = data.users || [];
                 allClans = data.clans || [];
@@ -918,7 +1460,7 @@
                 // Проверка истекших банов
                 let changed = false;
                 allUsers.forEach(user => {
-                    if (user.bannedUntil) {
+                    if (user.bannedUntil && user.bannedUntil !== 'forever') {
                         const banDate = new Date(user.bannedUntil).getTime();
                         if (banDate <= Date.now()) {
                             delete user.bannedUntil;
@@ -949,11 +1491,14 @@
 
                 if (user) {
                     if (isUserBanned(user)) {
+                        const banText = user.bannedUntil === 'forever' ? 
+                            t('banForever') : 
+                            t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
                         document.getElementById('content').innerHTML = `
                             <div class="card" style="border-color:#ff3d71;">
-                                <div style="color:#ff3d71;font-size:18px;">⛔ ДОСТУП ЗАПРЕЩЁН</div>
-                                <div style="color:var(--text-secondary);">Ваш аккаунт забанен до ${new Date(user.bannedUntil).toLocaleDateString()}</div>
-                                ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">Причина: ${user.bannedReason}</div>` : ''}
+                                <div style="color:#ff3d71;font-size:18px;">${t('accessDenied')}</div>
+                                <div style="color:var(--text-secondary);">${t('accountBanned')} ${banText}</div>
+                                ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">${t('userBannedReason').replace('{reason}', user.bannedReason)}</div>` : ''}
                             </div>
                         `;
                         return;
@@ -997,16 +1542,16 @@
                 console.error(e);
                 document.getElementById('content').innerHTML = `
                     <div class="card" style="border-color:#ff3d71;">
-                        <div style="color:#ff3d71;">❌ Ошибка</div>
+                        <div style="color:#ff3d71;">❌ ${t('error')}</div>
                         <div style="color:var(--text-secondary);">${e.message}</div>
-                        <button class="btn btn-primary" style="margin-top:10px;" onclick="initApp()">🔄 Обновить</button>
+                        <button class="btn btn-primary" style="margin-top:10px;" onclick="initApp()">🔄 ${t('refresh')}</button>
                     </div>
                 `;
             }
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ
+        // РЕГИСТРАЦИЯ (с переводом)
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -1014,10 +1559,10 @@
             const gameId = document.getElementById('regGameId').value.trim();
             const role = document.getElementById('regRole').value;
 
-            if (!name) return showToast('❌ Введите никнейм', 'error');
-            if (!tgName) return showToast('❌ Введите Telegram', 'error');
-            if (!gameId) return showToast('❌ Введите игровой ID', 'error');
-            if (isNaN(gameId)) return showToast('❌ ID должен быть числом', 'error');
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
+            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
+            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
             const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
             let tgId = tg ? tg.id.toString() : localStorage.getItem('bsc_test_id');
@@ -1027,7 +1572,7 @@
             }
 
             if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                return showToast('❌ Ник занят', 'error');
+                return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
             const newUser = {
@@ -1047,7 +1592,7 @@
             currentUser = newUser;
             localStorage.setItem('bsc_user', JSON.stringify(currentUser));
             document.getElementById('registerModal').classList.remove('show');
-            showToast('✅ Добро пожаловать, ' + name, 'success');
+            showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
             updateUI();
             showTab('clans');
             renderMainActionButton();
@@ -1055,7 +1600,7 @@
         }
 
         // ============================================================
-        // ПРОФИЛЬ
+        // ПРОФИЛЬ (с переводом)
         // ============================================================
         function openEditProfile() {
             if (!currentUser) return;
@@ -1064,6 +1609,7 @@
             document.getElementById('editProfGameId').value = currentUser.gameId || '';
             document.getElementById('editProfileModal').classList.add('show');
             document.getElementById('profileDropdown').classList.remove('show');
+            applyLanguage(); // Обновляем переводы внутри модалки
         }
 
         async function saveProfile() {
@@ -1071,18 +1617,18 @@
             const tgName = document.getElementById('editProfTelegram').value.trim();
             const gameId = document.getElementById('editProfGameId').value.trim();
 
-            if (!name) return showToast('❌ Введите никнейм', 'error');
-            if (!tgName) return showToast('❌ Введите Telegram', 'error');
-            if (!gameId) return showToast('❌ Введите игровой ID', 'error');
-            if (isNaN(gameId)) return showToast('❌ ID должен быть числом', 'error');
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
+            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
+            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
             try {
                 const data = await loadData();
                 const user = data.users.find(u => u.id === currentUser.id);
-                if (!user) return showToast('❌ Пользователь не найден', 'error');
+                if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
 
                 if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                    return showToast('❌ Ник занят', 'error');
+                    return showToast('❌ ' + t('nicknameTaken'), 'error');
                 }
 
                 user.name = name;
@@ -1092,7 +1638,7 @@
                 await saveData(data);
                 await refreshData();
                 closeModal('editProfileModal');
-                showToast('✅ Профиль обновлён', 'success');
+                showToast('✅ ' + t('profileUpdated'), 'success');
                 updateUI();
                 showTab(currentTab);
                 updateFooterStats();
@@ -1109,11 +1655,15 @@
             document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
             document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
             const clan = allClans.find(c => c.id === currentUser.clanId);
-            document.getElementById('profClan').textContent = 'Клан: ' + (clan ? clan.name : '—');
-            document.getElementById('profRole').textContent = 'Роль: ' + (currentUser.role === 'admin' ? 'Админ' : currentUser.role === 'leader' ? 'Лидер' : 'Игрок');
+            document.getElementById('profClan').textContent = t('clanLabel') + ': ' + (clan ? clan.name : '—');
+            document.getElementById('profRole').textContent = t('role') + ': ' + (currentUser.role === 'admin' ? t('adminLabel') : currentUser.role === 'leader' ? t('roleLeader') : t('roleMember'));
 
             const adminTab = document.getElementById('tabAdmin');
-            adminTab.style.display = isAdmin(currentUser) ? 'inline-block' : 'none';
+            if (isAdmin(currentUser)) {
+                adminTab.style.display = 'inline-block';
+            } else {
+                adminTab.style.display = 'none';
+            }
 
             const pending = allRequests.filter(r => {
                 const c = allClans.find(cl => cl.id === r.clanId);
@@ -1134,7 +1684,7 @@
             const el = document.getElementById('mainActionButton');
             if (!currentUser) { el.innerHTML = ''; return; }
             if (!currentUser.clanId) {
-                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ СОЗДАТЬ КЛАН</button>`;
+                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
             } else {
                 el.innerHTML = '';
             }
@@ -1168,16 +1718,16 @@
                 admin: renderAdmin
             };
             if (funcs[tab]) funcs[tab](container);
-            else container.innerHTML = '<div class="empty">Неизвестная вкладка</div>';
+            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
         }
 
         // ============================================================
-        // РЕНДЕР КЛАНОВ
+        // РЕНДЕР КЛАНОВ (с переводом)
         // ============================================================
         async function renderClans(container) {
             await refreshData();
             if (!allClans.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">📭</span><p>Нет кланов</p></div>`;
+                container.innerHTML = `<div class="empty"><span class="icon">📭</span><p>${t('noClans')}</p></div>`;
                 return;
             }
             let html = '';
@@ -1194,8 +1744,8 @@
                 const elo = getClanElo(clan.id);
 
                 let extra = '';
-                if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 Связь: @${clan.contact}</div>`;
-                if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 Канал: ${clan.channel}</div>`;
+                if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+                if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
 
                 html += `
                     <div class="card">
@@ -1207,15 +1757,15 @@
                             <span class="card-tag">[${clan.tag}]</span>
                         </div>
                         <div class="card-sub">
-                            <span class="badge-online"></span> Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} elo
+                            <span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}
                         </div>
                         ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;margin-bottom:4px;">${clan.description}</div>` : ''}
                         ${extra}
                         <div class="card-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="viewClan('${clan.id}')">👁️ Просмотр</button>
-                            ${showApply ? `<button class="btn btn-success btn-sm" onclick="applyToClan('${clan.id}')">📩 Вступить</button>` : ''}
-                            ${showDelete ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 Распустить</button>` : ''}
-                            ${showEdit ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ Редактировать</button>` : ''}
+                            <button class="btn btn-secondary btn-sm" onclick="viewClan('${clan.id}')">👁️ ${t('view')}</button>
+                            ${showApply ? `<button class="btn btn-success btn-sm" onclick="applyToClan('${clan.id}')">📩 ${t('apply')}</button>` : ''}
+                            ${showDelete ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
+                            ${showEdit ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -1225,26 +1775,26 @@
         }
 
         // ============================================================
-        // РЕНДЕР ЗАЯВОК
+        // РЕНДЕР ЗАЯВОК (с переводом)
         // ============================================================
         async function renderRequests(container) {
             await refreshData();
             const myClan = allClans.find(c => c.leaderId === currentUser.id);
             if (!myClan) {
-                container.innerHTML = `<div class="empty"><span class="icon">📩</span><p>Вы не глава клана</p></div>`;
+                container.innerHTML = `<div class="empty"><span class="icon">📩</span><p>${t('notClanLeader')}</p></div>`;
                 return;
             }
             const pending = allRequests.filter(r => r.clanId === myClan.id && r.status === 'pending');
             if (!pending.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">✅</span><p>Нет заявок</p></div>`;
+                container.innerHTML = `<div class="empty"><span class="icon">✅</span><p>${t('noPendingRequests')}</p></div>`;
                 return;
             }
-            let html = `<div style="color:var(--text-secondary);margin-bottom:8px;">📨 Заявки (${pending.length})</div>`;
+            let html = `<div style="color:var(--text-secondary);margin-bottom:8px;">${t('pendingRequests').replace('{count}', pending.length)}</div>`;
             pending.forEach(req => {
                 const user = allUsers.find(u => u.id === req.userId);
                 html += `
                     <div class="request-item">
-                        <div><div class="req-name">${user ? user.name : 'Игрок'}</div><div class="req-date">ID: ${req.userId}</div></div>
+                        <div><div class="req-name">${user ? user.name : 'Игрок'}</div><div class="req-date">${t('userId')}: ${req.userId}</div></div>
                         <div>
                             <button class="btn btn-success btn-sm" onclick="acceptRequest('${req.id}')">✅</button>
                             <button class="btn btn-danger btn-sm" onclick="rejectRequest('${req.id}')">❌</button>
@@ -1256,7 +1806,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР МОЙ КЛАН
+        // РЕНДЕР МОЙ КЛАН (с переводом)
         // ============================================================
         async function renderMyClan(container) {
             await refreshData();
@@ -1275,7 +1825,7 @@
                 }
             }
             if (!clan) {
-                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>Вы не состоите в клане</p></div>`;
+                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>${t('notInClan')}</p></div>`;
                 return;
             }
             const members = clan.members || [];
@@ -1286,12 +1836,12 @@
             let memHtml = '';
             members.forEach(mid => {
                 const user = allUsers.find(u => u.id === mid);
-                memHtml += `<div class="member-row"><span>${user ? user.name : mid}</span><span class="role-tag">${mid === clan.leaderId ? '👑 Глава' : 'Участник'}</span></div>`;
+                memHtml += `<div class="member-row"><span>${user ? user.name : mid}</span><span class="role-tag">${mid === clan.leaderId ? '👑 ' + t('leaderLabel') : t('roleMember')}</span></div>`;
             });
 
             let extra = '';
-            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 Связь: @${clan.contact}</div>`;
-            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 Канал: ${clan.channel}</div>`;
+            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
 
             container.innerHTML = `
                 <div class="card" style="border-color:var(--accent);">
@@ -1302,13 +1852,13 @@
                         </div>
                         <span class="card-tag">[${clan.tag}]</span>
                     </div>
-                    <div class="card-sub"><span class="badge-online"></span> Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} elo</div>
+                    <div class="card-sub"><span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}</div>
                     ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
                     ${extra}
                     <div style="margin-top:8px;">${memHtml}</div>
                     <div class="card-actions">
-                        ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 Распустить</button>` : ''}
-                        ${(isLeader || isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ Редактировать</button>` : ''}
+                        ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
+                        ${(isLeader || isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
                     </div>
                 </div>
             `;
@@ -1316,26 +1866,26 @@
         }
 
         // ============================================================
-        // РЕНДЕР РЕЙТИНГА
+        // РЕНДЕР РЕЙТИНГА (с переводом)
         // ============================================================
         async function renderRating(container) {
             await refreshData();
 
             if (!allClans.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>Нет кланов для рейтинга</p></div>`;
+                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
                 return;
             }
 
             const sorted = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
 
             if (!sorted.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>Нет кланов с рейтингом</p></div>`;
+                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
                 return;
             }
 
             let html = `
                 <div style="margin-bottom:12px;color:var(--text-secondary);font-size:14px;">
-                    🏆 Рейтинг кланов (по ELO)
+                    🏆 ${t('ratingTop')}
                 </div>
                 <div class="rating-table">
             `;
@@ -1363,7 +1913,7 @@
                                 <span class="tag">[${clan.tag}]</span>
                             </div>
                         </div>
-                        <span class="elo">${elo} ELO</span>
+                        <span class="elo">${elo} ${t('eloLabel')}</span>
                     </div>
                 `;
             });
@@ -1373,11 +1923,11 @@
         }
 
         // ============================================================
-        // НОВАЯ АДМИН-ПАНЕЛЬ (с пользователями, баном, удалением)
+        // АДМИН-ПАНЕЛЬ (с переводом)
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
-                container.innerHTML = `<div class="empty">⛔ Доступ запрещён</div>`;
+                container.innerHTML = `<div class="empty">⛔ ${t('youAreNotAdmin')}</div>`;
                 return;
             }
             await refreshData();
@@ -1385,21 +1935,21 @@
             let html = `
                 <div class="admin-panel">
                     <div class="admin-section">
-                        <div class="section-title">🛡️ Админ-панель</div>
+                        <div class="section-title">🛡️ ${t('adminPanel')}</div>
                         <div class="stats-row">
-                            <span>Кланов: ${allClans.length}</span>
-                            <span>Пользователей: ${allUsers.length}</span>
-                            <span>Заявок: ${allRequests.filter(r => r.status === 'pending').length}</span>
+                            <span>${t('clansCount')} ${allClans.length}</span>
+                            <span>${t('usersList')}: ${allUsers.length}</span>
+                            <span>${t('requestsCount')} ${allRequests.filter(r => r.status === 'pending').length}</span>
                         </div>
-                        <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ Очистить всё</button>
+                        <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ ${t('clearAllData')}</button>
                     </div>
 
                     <div class="admin-section">
-                        <div class="section-title">👥 Управление пользователями</div>
+                        <div class="section-title">👥 ${t('userManagement')}</div>
             `;
 
             if (!allUsers.length) {
-                html += `<div class="empty" style="padding:20px;">Нет зарегистрированных пользователей</div>`;
+                html += `<div class="empty" style="padding:20px;">${t('noUsers')}</div>`;
             } else {
                 allUsers.forEach(user => {
                     const status = getBanStatusText(user);
@@ -1422,13 +1972,13 @@
                             </div>
                             <div class="user-actions">
                                 ${!isUserAdmin ? `
-                                    <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌ Удалить</button>
+                                    <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌ ${t('delete')}</button>
                                     ${isBanned ? 
-                                        `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅ Разбанить</button>` :
-                                        `<button class="btn btn-danger btn-sm" onclick="openBanModal('${user.id}')">🔨 Забанить</button>`
+                                        `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅ ${t('unban')}</button>` :
+                                        `<button class="btn btn-danger btn-sm" onclick="openBanModal('${user.id}')">🔨 ${t('ban')}</button>`
                                     }
                                 ` : `
-                                    <span style="color:var(--accent);font-size:12px;">👑 Администратор</span>
+                                    <span style="color:var(--accent);font-size:12px;">👑 ${t('adminLabel')}</span>
                                 `}
                             </div>
                         </div>
@@ -1436,15 +1986,15 @@
                 });
             }
 
-            html += `</div>`; // закрываем admin-section
+            html += `</div>`; // userManagement
 
             // Управление рейтингом
             html += `
                 <div class="admin-section">
-                    <div class="section-title">⚡ Управление рейтингом (ELO)</div>
+                    <div class="section-title">⚡ ${t('eloManagement')}</div>
             `;
             if (!allClans.length) {
-                html += `<div class="empty" style="padding:20px;">Нет кланов для управления</div>`;
+                html += `<div class="empty" style="padding:20px;">${t('noClans')}</div>`;
             } else {
                 const sortedClans = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
                 sortedClans.forEach(clan => {
@@ -1459,19 +2009,19 @@
                                     ${leaderContact ? `<span style="font-size:12px;color:var(--text-secondary);">${leaderContact}</span>` : ''}
                                     <span style="font-size:13px;color:var(--accent);margin-left:6px;">[${clan.tag}]</span>
                                 </div>
-                                <span style="color:var(--accent);font-weight:600;">⭐ ${elo} ELO</span>
+                                <span style="color:var(--accent);font-weight:600;">⭐ ${elo} ${t('eloLabel')}</span>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
                                 <input type="number" id="elo_input_${clan.id}" value="${elo}" min="0" style="width:70px;padding:4px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--text-primary);font-size:14px;font-weight:600;text-align:center;">
-                                <button class="btn btn-primary btn-sm" onclick="adminSetElo('${clan.id}')">💾 Сохранить</button>
+                                <button class="btn btn-primary btn-sm" onclick="adminSetElo('${clan.id}')">💾 ${t('saveElo')}</button>
                             </div>
                         </div>
                     `;
                 });
             }
-            html += `</div>`; // закрываем admin-section
+            html += `</div>`; // eloManagement
 
-            html += `</div>`; // закрываем admin-panel
+            html += `</div>`; // admin-panel
             container.innerHTML = html;
         }
 
@@ -1479,11 +2029,11 @@
         // АДМИН: УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ
         // ============================================================
         async function adminDeleteUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
             const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ Пользователь не найден', 'error');
-            if (isAdmin(user)) return showToast('❌ Нельзя удалить администратора!', 'error');
-            if (!confirm(`❌ Точно удалить пользователя "${user.name}" (${user.id})?\nВсе его данные будут удалены.`)) return;
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
+            if (!confirm(t('confirmDeleteUser'))) return;
 
             try {
                 const data = await loadData();
@@ -1504,7 +2054,7 @@
                 data.requests = data.requests.filter(r => r.userId !== userId);
                 await saveData(data);
                 await refreshData();
-                showToast(`✅ Пользователь "${user.name}" удалён`, 'success');
+                showToast('✅ ' + t('userDeleted').replace('{name}', user.name), 'success');
                 showTab('admin');
                 updateFooterStats();
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
@@ -1514,33 +2064,34 @@
         // БАН
         // ============================================================
         function openBanModal(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
             const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ Пользователь не найден', 'error');
-            if (isAdmin(user)) return showToast('❌ Нельзя забанить администратора!', 'error');
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
             banTargetUserId = userId;
-            document.getElementById('banUserName').textContent = `Пользователь: ${user.name} (${user.id})`;
+            document.getElementById('banUserName').textContent = t('banUser') + ': ' + user.name + ' (' + user.id + ')';
             document.getElementById('banDays').value = 7;
             document.getElementById('banReason').value = '';
             document.getElementById('banModal').classList.add('show');
+            applyLanguage(); // Обновляем переводы внутри модалки
         }
 
         async function confirmBan() {
             const days = parseInt(document.getElementById('banDays').value);
             const reason = document.getElementById('banReason').value.trim();
             if (isNaN(days) || days < 0) {
-                showToast('❌ Введите корректное число дней (0 = навсегда)', 'error');
+                showToast('❌ ' + t('enterValidElo'), 'error');
                 return;
             }
             if (!banTargetUserId) return;
 
             const user = allUsers.find(u => u.id === banTargetUserId);
-            if (!user) return showToast('❌ Пользователь не найден', 'error');
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
 
             try {
                 const data = await loadData();
                 const target = data.users.find(u => u.id === banTargetUserId);
-                if (!target) return showToast('❌ Пользователь не найден', 'error');
+                if (!target) return showToast('❌ ' + t('userNotFound'), 'error');
 
                 if (days === 0) {
                     target.bannedUntil = 'forever';
@@ -1549,12 +2100,12 @@
                     until.setDate(until.getDate() + days);
                     target.bannedUntil = until.toISOString();
                 }
-                target.bannedReason = reason || 'Без причины';
+                target.bannedReason = reason || t('banReasonPlaceholder');
 
                 await saveData(data);
                 await refreshData();
                 closeModal('banModal');
-                showToast(`✅ Пользователь "${user.name}" забанен`, 'success');
+                showToast('✅ ' + t('userBanned').replace('{name}', user.name), 'success');
                 showTab('admin');
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
@@ -1562,10 +2113,10 @@
         }
 
         async function adminUnbanUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
             const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ Пользователь не найден', 'error');
-            if (!confirm(`✅ Разбанить пользователя "${user.name}"?`)) return;
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (!confirm(t('unbanConfirm').replace('{name}', user.name))) return;
 
             try {
                 const data = await loadData();
@@ -1576,7 +2127,7 @@
                 }
                 await saveData(data);
                 await refreshData();
-                showToast(`✅ Пользователь "${user.name}" разбанен`, 'success');
+                showToast('✅ ' + t('userUnbanned').replace('{name}', user.name), 'success');
                 showTab('admin');
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
@@ -1589,7 +2140,7 @@
             if (!input) return;
             const newElo = parseInt(input.value);
             if (isNaN(newElo) || newElo < 0) {
-                showToast('❌ Введите корректное число (≥0)', 'error');
+                showToast('❌ ' + t('enterValidElo'), 'error');
                 return;
             }
 
@@ -1597,13 +2148,13 @@
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
                 if (!clan) {
-                    showToast('❌ Клан не найден', 'error');
+                    showToast('❌ ' + t('clanNotFound'), 'error');
                     return;
                 }
                 clan.elo = newElo;
                 await saveData(data);
                 await refreshData();
-                showToast(`✅ ELO для "${clan.name}" обновлён до ${newElo}`, 'success');
+                showToast('✅ ' + t('eloUpdated').replace('{name}', clan.name).replace('{elo}', newElo), 'success');
                 renderAdmin(document.getElementById('content'));
                 showTab('clans');
             } catch (e) {
@@ -1615,23 +2166,24 @@
         // ДЕЙСТВИЯ С КЛАНАМИ
         // ============================================================
         function openCreateClan() {
-            if (currentUser.clanId) return showToast('❌ Вы уже в клане', 'error');
+            if (currentUser.clanId) return showToast('❌ ' + t('youAreInClan'), 'error');
             document.getElementById('newClanName').value = '';
             document.getElementById('newClanTag').value = '';
             document.getElementById('newClanDesc').value = '';
             document.getElementById('createClanModal').classList.add('show');
+            applyLanguage();
         }
 
         async function createClan() {
             const name = document.getElementById('newClanName').value.trim();
             const tag = document.getElementById('newClanTag').value.trim().toUpperCase();
             const desc = document.getElementById('newClanDesc').value.trim();
-            if (!name) return showToast('❌ Введите название', 'error');
-            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ Тег 2-6 символов', 'error');
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ ' + t('invalidInput'), 'error');
 
             try {
                 const data = await loadData();
-                if (data.clans.find(c => c.name.toLowerCase() === name.toLowerCase())) return showToast('❌ Клан существует', 'error');
+                if (data.clans.find(c => c.name.toLowerCase() === name.toLowerCase())) return showToast('❌ ' + t('clanNotFound'), 'error');
 
                 const newClan = {
                     id: 'clan_' + Date.now(),
@@ -1660,7 +2212,7 @@
 
                 await refreshData();
                 closeModal('createClanModal');
-                showToast('✅ Клан создан!', 'success');
+                showToast('✅ ' + t('clanCreated'), 'success');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
@@ -1672,8 +2224,8 @@
 
         function openEditClan(clanId) {
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return showToast('❌ Клан не найден', 'error');
-            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ Нет прав', 'error');
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
             editingClanId = clanId;
             document.getElementById('editClanName').value = clan.name;
             document.getElementById('editClanTag').value = clan.tag;
@@ -1681,6 +2233,7 @@
             document.getElementById('editClanContact').value = clan.contact || '';
             document.getElementById('editClanChannel').value = clan.channel || '';
             document.getElementById('editClanModal').classList.add('show');
+            applyLanguage();
         }
 
         async function saveEditClan() {
@@ -1690,13 +2243,13 @@
             const contact = document.getElementById('editClanContact').value.trim();
             const channel = document.getElementById('editClanChannel').value.trim();
 
-            if (!name) return showToast('❌ Введите название', 'error');
-            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ Тег 2-6 символов', 'error');
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ ' + t('invalidInput'), 'error');
 
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === editingClanId);
-                if (!clan) return showToast('❌ Клан не найден', 'error');
+                if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
                 clan.name = name;
                 clan.tag = tag;
                 clan.description = desc;
@@ -1706,7 +2259,7 @@
                 await saveData(data);
                 await refreshData();
                 closeModal('editClanModal');
-                showToast('✅ Клан обновлён', 'success');
+                showToast('✅ ' + t('profileUpdated'), 'success');
                 showTab(currentTab);
                 updateFooterStats();
             } catch (e) {
@@ -1720,7 +2273,7 @@
         async function viewClan(clanId) {
             await refreshData();
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return showToast('❌ Клан не найден', 'error');
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
 
             const members = clan.members || [];
             const leader = getClanLeader(clan);
@@ -1731,15 +2284,15 @@
             const elo = getClanElo(clan.id);
 
             let extra = '';
-            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 Связь: @${clan.contact}</div>`;
-            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 Канал: ${clan.channel}</div>`;
+            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
 
             document.getElementById('detailClanName').textContent = `🏰 ${clan.name} [${clan.tag}]`;
             document.getElementById('detailClanInfo').innerHTML = `
                 <div style="color:var(--text-secondary);font-size:14px;">
-                    Глава: ${leader ? leader.name : 'Неизвестен'} 
+                    ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} 
                     ${leaderContact ? `(${leaderContact})` : ''} 
-                    • 👥 ${members.length} • ⭐ ${elo} elo
+                    • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}
                 </div>
                 ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
                 ${extra}
@@ -1752,35 +2305,36 @@
                 const isCurrentUser = mid === currentUser.id;
                 let actions = '';
                 if (canManage && !isLeaderUser && mid !== currentUser.id) {
-                    actions = `<button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}','${mid}')">Кикнуть</button>
-                               <button class="btn btn-gold btn-sm" onclick="transferLeadership('${clan.id}','${mid}')">👑 Назначить</button>`;
+                    actions = `<button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}','${mid}')">${t('kick')}</button>
+                               <button class="btn btn-gold btn-sm" onclick="transferLeadership('${clan.id}','${mid}')">👑 ${t('leaderLabel')}</button>`;
                 }
                 if (isCurrentUser && !isLeaderUser) {
-                    actions += `<button class="btn btn-danger btn-sm" onclick="confirmLeaveFromView('${clan.id}')">🚪 Покинуть</button>`;
+                    actions += `<button class="btn btn-danger btn-sm" onclick="confirmLeaveFromView('${clan.id}')">🚪 ${t('leave')}</button>`;
                 }
                 memHtml += `<div class="member-row"><span>${user ? user.name : mid} ${isLeaderUser ? '👑' : ''}</span><div class="actions">${actions}</div></div>`;
             });
-            document.getElementById('detailMembers').innerHTML = memHtml || '<div style="color:var(--text-secondary);">Нет участников</div>';
+            document.getElementById('detailMembers').innerHTML = memHtml || '<div style="color:var(--text-secondary);">' + t('noMembers') + '</div>';
             document.getElementById('clanDetailModal').classList.add('show');
+            applyLanguage();
         }
 
         function confirmLeaveFromView(clanId) {
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return showToast('❌ Клан не найден', 'error');
-            if (confirm(`Выйти из клана "${clan.name}"?`)) {
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (confirm(t('leaveClanConfirm').replace('{name}', clan.name))) {
                 leaveClan(clanId);
                 closeModal('clanDetailModal');
             }
         }
 
         async function applyToClan(clanId) {
-            if (currentUser.clanId) return showToast('❌ Вы уже в клане', 'error');
+            if (currentUser.clanId) return showToast('❌ ' + t('youAreInClan'), 'error');
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return showToast('❌ Клан не найден', 'error');
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
             if (allRequests.find(r => r.clanId === clanId && r.userId === currentUser.id && r.status === 'pending')) {
-                return showToast('⏳ Заявка уже отправлена', 'info');
+                return showToast('⏳ ' + t('requestSent'), 'info');
             }
-            if (!confirm(`Подать заявку в "${clan.name}"?`)) return;
+            if (!confirm(t('applyToClan').replace('{name}', clan.name))) return;
             try {
                 const data = await loadData();
                 data.requests.push({
@@ -1793,7 +2347,7 @@
                 });
                 await saveData(data);
                 await refreshData();
-                showToast('✅ Заявка отправлена', 'success');
+                showToast('✅ ' + t('requestSent'), 'success');
                 showTab('clans');
                 updateFooterStats();
             } catch (e) {
@@ -1805,9 +2359,9 @@
             try {
                 const data = await loadData();
                 const req = data.requests.find(r => r.id === reqId);
-                if (!req) return showToast('❌ Заявка не найдена', 'error');
+                if (!req) return showToast('❌ ' + t('requestNotFound'), 'error');
                 const clan = data.clans.find(c => c.id === req.clanId);
-                if (!clan) return showToast('❌ Клан не найден', 'error');
+                if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
                 if (!clan.members) clan.members = [];
                 if (!clan.members.includes(req.userId)) clan.members.push(req.userId);
                 req.status = 'accepted';
@@ -1817,7 +2371,7 @@
                 }
                 await saveData(data);
                 await refreshData();
-                showToast('✅ Заявка принята', 'success');
+                showToast('✅ ' + t('requestAccepted'), 'success');
                 showTab('requests');
                 updateFooterStats();
             } catch (e) {
@@ -1829,11 +2383,11 @@
             try {
                 const data = await loadData();
                 const req = data.requests.find(r => r.id === reqId);
-                if (!req) return showToast('❌ Заявка не найдена', 'error');
+                if (!req) return showToast('❌ ' + t('requestNotFound'), 'error');
                 req.status = 'rejected';
                 await saveData(data);
                 await refreshData();
-                showToast('❌ Заявка отклонена', 'error');
+                showToast('❌ ' + t('requestRejected'), 'error');
                 showTab('requests');
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
@@ -1842,9 +2396,9 @@
 
         async function deleteClan(clanId) {
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return showToast('❌ Клан не найден', 'error');
-            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ Нет прав', 'error');
-            if (!confirm(`Удалить клан "${clan.name}"?`)) return;
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
+            if (!confirm(t('disbandClan'))) return;
 
             try {
                 const data = await loadData();
@@ -1857,7 +2411,7 @@
                 }
                 await saveData(data);
                 await refreshData();
-                showToast('✅ Клан удалён', 'success');
+                showToast('✅ ' + t('clanDeleted'), 'success');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
@@ -1871,8 +2425,8 @@
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) return showToast('❌ Клан не найден', 'error');
-                if (clan.leaderId === currentUser.id) return showToast('❌ Вы глава, сначала передайте лидерство', 'error');
+                if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+                if (clan.leaderId === currentUser.id) return showToast('❌ ' + t('youAreNotLeader'), 'error');
                 clan.members = clan.members.filter(m => m !== currentUser.id);
                 currentUser.clanId = null;
                 localStorage.setItem('bsc_user', JSON.stringify(currentUser));
@@ -1880,7 +2434,7 @@
                 if (user) user.clanId = null;
                 await saveData(data);
                 await refreshData();
-                showToast('✅ Вы вышли из клана', 'success');
+                showToast('✅ ' + t('youLeftClan'), 'success');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
@@ -1891,19 +2445,19 @@
         }
 
         async function kickMember(clanId, userId) {
-            if (!confirm('Кикнуть игрока?')) return;
+            if (!confirm(t('memberKickConfirm'))) return;
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) return showToast('❌ Клан не найден', 'error');
-                if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ Нет прав', 'error');
-                if (userId === clan.leaderId) return showToast('❌ Нельзя кикнуть лидера', 'error');
+                if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+                if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
+                if (userId === clan.leaderId) return showToast('❌ ' + t('noRights'), 'error');
                 clan.members = clan.members.filter(id => id !== userId);
                 const user = data.users.find(u => u.id === userId);
                 if (user) user.clanId = null;
                 await saveData(data);
                 await refreshData();
-                showToast('✅ Игрок кикнут', 'success');
+                showToast('✅ ' + t('memberKicked'), 'success');
                 viewClan(clanId);
                 updateFooterStats();
             } catch (e) {
@@ -1912,15 +2466,15 @@
         }
 
         async function transferLeadership(clanId, newLeaderId) {
-            if (!confirm('Передать лидерство?')) return;
+            if (!confirm(t('transferLeadershipConfirm'))) return;
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) return showToast('❌ Клан не найден', 'error');
-                if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ Нет прав', 'error');
+                if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+                if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
 
                 const newLeader = data.users.find(u => u.id === newLeaderId);
-                if (!newLeader) return showToast('❌ Пользователь не найден', 'error');
+                if (!newLeader) return showToast('❌ ' + t('userNotFound'), 'error');
 
                 const oldLeaderId = clan.leaderId;
                 clan.leaderId = newLeaderId;
@@ -1941,7 +2495,7 @@
                     localStorage.setItem('bsc_user', JSON.stringify(currentUser));
                 }
 
-                showToast(`✅ Лидерство передано ${newLeader.name}`, 'success');
+                showToast('✅ ' + t('leadershipTransferred').replace('{name}', newLeader.name), 'success');
                 viewClan(clanId);
                 renderMainActionButton();
                 updateFooterStats();
@@ -1955,7 +2509,7 @@
         // ============================================================
         async function clearAllData() {
             if (!isAdmin(currentUser)) return;
-            if (!confirm('⚠️ Очистить все данные?')) return;
+            if (!confirm(t('clearAllConfirm'))) return;
             try {
                 const data = await loadData();
                 data.users = [];
@@ -1963,7 +2517,7 @@
                 data.requests = [];
                 await saveData(data);
                 await refreshData();
-                showToast('✅ Очищено', 'success');
+                showToast('✅ ' + t('allCleared'), 'success');
                 location.reload();
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
@@ -1997,7 +2551,7 @@
         }
 
         async function logoutUser() {
-            if (!confirm('Выйти из аккаунта?')) return;
+            if (!confirm(t('logoutConfirm'))) return;
             try {
                 const data = await loadData();
                 data.users = data.users.filter(u => u.id !== currentUser.id);
@@ -2015,11 +2569,14 @@
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
-                showToast('✅ Вы вышли', 'success');
+                showToast('✅ ' + t('youLoggedOut'), 'success');
                 updateFooterStats();
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
+        // ============================================================
+        // ЗАПУСК
+        // ============================================================
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
