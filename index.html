@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
         /* ============================================================
-           ГЛОБАЛЬНЫЕ СТИЛИ
+           СТИЛИ (БЕЗ ИЗМЕНЕНИЙ, ОНИ ТЕ ЖЕ)
            ============================================================ */
         * {
             margin: 0;
@@ -45,7 +45,6 @@
             margin: 0 auto;
         }
 
-        /* ХЕДЕР */
         .header {
             display: flex;
             align-items: center;
@@ -136,7 +135,6 @@
             margin-top: 2px;
         }
 
-        /* КАРТОЧКИ */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -183,7 +181,6 @@
             margin-top: 10px;
         }
 
-        /* КНОПКИ */
         .btn {
             padding: 8px 18px;
             border: none;
@@ -244,7 +241,6 @@
             justify-content: center;
         }
 
-        /* МОДАЛКИ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -327,7 +323,6 @@
             justify-content: center;
         }
 
-        /* УЧАСТНИКИ */
         .member-list {
             display: flex;
             flex-direction: column;
@@ -356,7 +351,6 @@
             gap: 4px;
         }
 
-        /* ЗАЯВКИ */
         .request-item {
             display: flex;
             justify-content: space-between;
@@ -445,7 +439,7 @@
                         <div class="detail" id="profRole">Роль: —</div>
                     </div>
                     <button class="btn btn-secondary btn-block btn-sm" onclick="openEditProfile()">✏️ Редактировать профиль</button>
-                    <button class="btn btn-secondary btn-block btn-sm" onclick="logoutUser()" style="margin-top:6px;">🚪 Выйти</button>
+                    <button class="btn btn-danger btn-block btn-sm" onclick="logoutUser()" style="margin-top:6px;">🚪 Выйти и удалить данные</button>
                 </div>
             </div>
         </header>
@@ -553,7 +547,7 @@
 
     <script>
         // ============================================================
-        // НАСТРОЙКИ JSONBin (НОВЫЙ БИН!)
+        // НАСТРОЙКИ JSONBin (НОВЫЙ БИН)
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
@@ -1473,6 +1467,59 @@
         }
 
         // ============================================================
+        // ВЫХОД ИЗ АККАУНТА С ПОЛНОЙ ОЧИСТКОЙ
+        // ============================================================
+        async function logoutUser() {
+            if (!confirm('🚪 Выйти из аккаунта? Ваши данные будут удалены из системы.')) return;
+
+            try {
+                // 1. Удаляем пользователя из JSONBin
+                const data = await loadData();
+                data.users = data.users.filter(u => u.id !== currentUser.id);
+                // Если пользователь был в клане — удаляем его из members
+                data.clans.forEach(clan => {
+                    if (clan.members) {
+                        clan.members = clan.members.filter(m => m !== currentUser.id);
+                    }
+                    if (clan.leaderId === currentUser.id) {
+                        // Если удаляется лидер — назначаем нового (если есть) или оставляем клан без лидера
+                        const newLeader = clan.members && clan.members.length > 0 ? clan.members[0] : null;
+                        if (newLeader) {
+                            const leaderUser = data.users.find(u => u.id === newLeader);
+                            clan.leaderId = newLeader;
+                            clan.leaderName = leaderUser ? leaderUser.name : 'Неизвестен';
+                        } else {
+                            // Если участников нет — удаляем клан
+                            data.clans = data.clans.filter(c => c.id !== clan.id);
+                        }
+                    }
+                });
+                await saveData(data);
+
+                // 2. Очищаем localStorage
+                localStorage.removeItem('bsc_user');
+                localStorage.removeItem('bsc_test_id');
+
+                // 3. Обновляем состояние
+                currentUser = null;
+                allUsers = data.users;
+                allClans = data.clans;
+                allRequests = data.requests;
+
+                // 4. Показываем модалку регистрации
+                showRegisterModal();
+                updateUI();
+                showTab('clans');
+                renderMainActionButton();
+
+                alert('✅ Вы вышли из аккаунта. Все данные удалены.');
+
+            } catch (error) {
+                alert(`❌ Ошибка при выходе: ${error.message}`);
+            }
+        }
+
+        // ============================================================
         // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
         async function refreshData() {
@@ -1496,14 +1543,6 @@
 
         function toggleProfile() {
             document.getElementById('profileDropdown').classList.toggle('show');
-        }
-
-        function logoutUser() {
-            if (confirm('Выйти из аккаунта?')) {
-                localStorage.removeItem('bsc_user');
-                localStorage.removeItem('bsc_test_id');
-                location.reload();
-            }
         }
 
         function clearMyClan() {
