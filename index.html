@@ -1,133 +1,425 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Block Strike Clans</title>
+    <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
+        /* ТЕМА: Тёмный фон с градиентом, как в Block Strike */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         body {
-            font-family: system-ui;
-            background: #0d1117;
-            color: #f0f6fc;
-            padding: 20px;
+            font-family: 'Orbitron', sans-serif;
+            background: radial-gradient(circle at 20% 20%, #0b0f1a, #030508);
+            color: #e0e6f0;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .container {
             max-width: 500px;
             margin: 0 auto;
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #2a3a5c;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
         }
-        .card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
+        /* Шапка с профилем */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 18px;
+            background: linear-gradient(90deg, #00d4ff, #7b2ffc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+        .profile-icon {
+            background: #1e2a3a;
+            padding: 8px 14px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #00d4ff;
+            cursor: pointer;
+            border: 1px solid #2a3a5c;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .profile-icon:hover {
+            border-color: #00d4ff;
+            box-shadow: 0 0 16px #00d4ff33;
+        }
+        /* Меню */
+        .menu {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .menu-btn {
+            background: #141e2b;
+            border: 1px solid #2a3a5c;
+            color: #a0b4cc;
+            padding: 12px 0;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+        .menu-btn.active {
+            background: #1e2a3a;
+            border-color: #00d4ff;
+            color: #00d4ff;
+            box-shadow: 0 0 20px #00d4ff22;
+        }
+        .menu-btn .icon {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+        /* Карточки кланов */
+        .clan-card {
+            background: #101824;
+            border: 1px solid #1e2a3a;
+            border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
-        }
-        button {
-            background: #00f0ff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
+            transition: 0.3s;
             cursor: pointer;
-            margin: 4px;
+        }
+        .clan-card:hover {
+            border-color: #00d4ff;
+            background: #151f2e;
+        }
+        .clan-card .top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .clan-card .name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f0f6fc;
+        }
+        .clan-card .tag {
+            color: #00d4ff;
+            font-weight: 700;
+            background: #1a2a3e;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 14px;
+        }
+        .clan-card .leader {
+            font-size: 13px;
+            color: #8a9bb8;
+            margin-top: 4px;
+        }
+        .clan-card .members-preview {
+            font-size: 12px;
+            color: #5a6f8a;
+            margin-top: 6px;
+        }
+        /* Модалки */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            padding: 20px;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal {
+            background: #121b28;
+            border: 1px solid #2a3a5c;
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 16px 64px rgba(0, 0, 0, 0.9);
+        }
+        .modal h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #00d4ff;
+        }
+        .modal input, .modal select {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 14px;
+            background: #0a111e;
+            border: 1px solid #1e2a3a;
+            border-radius: 12px;
+            color: #e0e6f0;
+            font-size: 14px;
+        }
+        .modal input:focus, .modal select:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary {
+            background: #00d4ff;
+            color: #030508;
+        }
+        .btn-secondary {
+            background: #1e2a3a;
+            color: #a0b4cc;
         }
         .btn-danger {
-            background: #f85149;
+            background: #ff4d6d;
             color: white;
         }
         .btn-success {
-            background: #2ea043;
-            color: white;
+            background: #00c9a7;
+            color: #030508;
         }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: white;
-            border-radius: 8px;
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 12px;
+            border-radius: 40px;
         }
-        .hidden {
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .profile-detail {
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .profile-detail span {
+            color: #8a9bb8;
+        }
+        .member-list {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .member-item {
+            background: #0a111e;
+            padding: 8px 12px;
+            border-radius: 40px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .request-item {
+            background: #0a111e;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-hidden {
             display: none;
         }
-        .status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
+        .admin-hidden.show {
+            display: block;
         }
-        .status.online {
-            background: #2ea043;
-            color: white;
+        .badge {
+            background: #1a2a3e;
+            padding: 2px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            color: #8a9bb8;
         }
-        .status.offline {
-            background: #f85149;
-            color: white;
+        .mt-12 { margin-top: 12px; }
+        .mb-12 { margin-bottom: 12px; }
+        .text-center { text-align: center; }
+        .text-muted { color: #5a6f8a; font-size: 13px; }
+        /* Адаптив */
+        @media (max-width: 480px) {
+            .menu {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="container" id="app">
+        <!-- Шапка -->
+        <div class="header">
+            <h1>⚡ BSC CLANS</h1>
+            <div class="profile-icon" onclick="openProfile()">
+                <span>👤</span> <span id="profileNameShort">Профиль</span>
+            </div>
+        </div>
 
-    <h1>⚔️ Block Strike Clans</h1>
+        <!-- Меню -->
+        <div class="menu" id="mainMenu">
+            <button class="menu-btn active" onclick="switchView('clans')">
+                <span class="icon">🔴</span> КЛАНЫ
+            </button>
+            <button class="menu-btn" onclick="switchView('requests')">
+                <span class="icon">📩</span> ЗАЯВКИ
+            </button>
+            <button class="menu-btn" onclick="switchView('myclan')">
+                <span class="icon">⭐</span> МОЙ КЛАН
+            </button>
+        </div>
 
-    <div id="userInfo" class="card">
-        <div id="userName">Загрузка...</div>
-        <div id="statusText">Подключение...</div>
+        <!-- Контент -->
+        <div id="content">
+            <div class="text-center text-muted" style="padding:40px 0;">Загрузка...</div>
+        </div>
+
+        <!-- Кнопка создания клана (только для лидеров) -->
+        <button id="createClanBtn" class="btn-primary" style="width:100%;padding:14px;border-radius:16px;border:none;font-weight:700;margin-top:16px;display:none;" onclick="showCreateClan()">
+            ➕ СОЗДАТЬ КЛАН
+        </button>
+
+        <!-- Футер -->
+        <div style="text-align:center;margin-top:24px;font-size:11px;color:#2a3a5c;">
+            @NoisyBoy141 • BSC v2.0
+        </div>
     </div>
 
-    <div id="menu">
-        <button onclick="loadClans()">🔴 КЛАНЫ</button>
-        <button onclick="showMyClan()">⭐ МОЙ КЛАН</button>
+    <!-- МОДАЛКА РЕГИСТРАЦИИ -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal">
+            <h2>🔐 Регистрация</h2>
+            <input type="text" id="regNick" placeholder="Ваш игровой ник (например, NoisyBoy)" maxlength="20">
+            <select id="regRole">
+                <option value="member">Участник (member)</option>
+                <option value="leader">Лидер (leader)</option>
+            </select>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="registerUser()">Продолжить</button>
+            </div>
+            <div style="margin-top:12px;font-size:12px;color:#5a6f8a;text-align:center;">
+                Ник будет использоваться в кланах. Изменить можно в профиле.
+            </div>
+        </div>
     </div>
 
-    <div id="content" class="card">Загрузка...</div>
+    <!-- МОДАЛКА ПРОФИЛЯ -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal">
+            <h2>👤 Профиль</h2>
+            <div class="profile-detail"><span>Ник:</span> <strong id="profNick">—</strong></div>
+            <div class="profile-detail"><span>ID:</span> <strong id="profId">—</strong></div>
+            <div class="profile-detail"><span>Клан:</span> <strong id="profClan">Нет</strong></div>
+            <div class="profile-detail"><span>Роль:</span> <strong id="profRole">—</strong></div>
+            <div class="modal-actions" style="margin-top:16px;">
+                <button class="btn-secondary" onclick="closeModal('profileModal')">Закрыть</button>
+                <button class="btn-primary" onclick="editNickname()">Сменить ник</button>
+            </div>
+        </div>
+    </div>
 
-    <button onclick="showCreateForm()" style="width:100%;">➕ СОЗДАТЬ КЛАН</button>
+    <!-- МОДАЛКА СОЗДАНИЯ КЛАНА -->
+    <div class="modal-overlay" id="createClanModal">
+        <div class="modal">
+            <h2>➕ Создать клан</h2>
+            <input type="text" id="clanNameInput" placeholder="Название клана (например, PHOENIX)" maxlength="30">
+            <input type="text" id="clanTagInput" placeholder="Тег (например, PX)" maxlength="6">
+            <textarea id="clanDescInput" placeholder="Описание (необязательно)" rows="3"></textarea>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('createClanModal')">Отмена</button>
+                <button class="btn-primary" onclick="createClan()">Создать</button>
+            </div>
+        </div>
+    </div>
 
-    <div id="createForm" class="hidden" class="card" style="margin-top:12px;">
-        <input id="clanName" placeholder="Название клана">
-        <input id="clanTag" placeholder="Тег (3-6 символов)">
-        <button onclick="createClan()" style="width:100%;">Создать</button>
+    <!-- МОДАЛКА ПРОСМОТРА КЛАНА -->
+    <div class="modal-overlay" id="clanDetailModal">
+        <div class="modal">
+            <h2 id="detailClanName">Клан</h2>
+            <div id="detailClanInfo"></div>
+            <div id="detailMembers" class="member-list"></div>
+            <div class="modal-actions" style="margin-top:16px;">
+                <button class="btn-secondary" onclick="closeModal('clanDetailModal')">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА АДМИН-ПАНЕЛИ (скрыта) -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal">
+            <h2>⚙️ Админ-панель</h2>
+            <div id="adminContent"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('adminModal')">Закрыть</button>
+            </div>
+        </div>
     </div>
 
     <script>
         // ============================================================
-        // JSONBin НАСТРОЙКИ (ВСТАВЛЕНЫ ТВОИ ДАННЫЕ)
+        // JSONBin НАСТРОЙКИ (ТВОИ)
         // ============================================================
         const JSONBIN_BIN_ID = '6a6a6ffcf5f4af5e29d2f123';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
+        const ADMIN_ID = '5749326657'; // ТВОЙ TELEGRAM ID
 
         // ============================================================
-        // ПЕРЕМЕННЫЕ
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
         // ============================================================
-        let currentUser = {};
-        let allClans = [];
-        let allRequests = [];
+        let currentUser = null;
+        let allData = { users: [], clans: [] };
+        let currentView = 'clans';
 
         // ============================================================
         // РАБОТА С JSONBin
         // ============================================================
         async function loadData() {
             try {
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-                    headers: {
-                        'X-Master-Key': JSONBIN_API_KEY
-                    }
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
                 });
-                const result = await response.json();
-                return result.record || { clans: [], users: [], requests: [] };
-            } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                throw error;
+                const result = await res.json();
+                return result.record || { users: [], clans: [] };
+            } catch (e) {
+                console.error('Load error:', e);
+                throw e;
             }
         }
 
         async function saveData(data) {
             try {
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+                await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -135,262 +427,379 @@
                     },
                     body: JSON.stringify(data)
                 });
-                const result = await response.json();
-                return result;
-            } catch (error) {
-                console.error('Ошибка сохранения:', error);
-                throw error;
+            } catch (e) {
+                console.error('Save error:', e);
+                throw e;
             }
         }
 
         // ============================================================
-        // ОСНОВНЫЕ ФУНКЦИИ
+        // ПОЛЬЗОВАТЕЛИ
         // ============================================================
+        async function getCurrentUser() {
+            const tg = window.Telegram?.WebApp;
+            let userId = '';
+            if (tg && tg.initDataUnsafe?.user) {
+                userId = tg.initDataUnsafe.user.id.toString();
+            } else {
+                // Тестовый режим
+                let saved = localStorage.getItem('bsc_test_user');
+                if (saved) {
+                    userId = saved;
+                } else {
+                    userId = 'test_' + Date.now();
+                    localStorage.setItem('bsc_test_user', userId);
+                }
+            }
+            return userId;
+        }
 
         async function init() {
             try {
-                // Получаем пользователя
-                const tg = window.Telegram?.WebApp;
-                if (tg && tg.initDataUnsafe?.user) {
-                    const u = tg.initDataUnsafe.user;
-                    currentUser = {
-                        id: u.id.toString(),
-                        name: `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'Игрок'
-                    };
-                } else {
-                    const saved = localStorage.getItem('bsc_user');
-                    if (saved) {
-                        currentUser = JSON.parse(saved);
-                    } else {
-                        currentUser = {
-                            id: 'test_' + Date.now(),
-                            name: 'TestUser'
-                        };
-                        localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-                    }
-                }
-
-                document.getElementById('userName').textContent = `Игрок: ${currentUser.name}`;
-                document.getElementById('statusText').innerHTML = '<span class="status online">✅ Подключено к JSONBin</span>';
-
-                await loadClans();
-
-            } catch (error) {
-                console.error('Init error:', error);
-                document.getElementById('statusText').innerHTML = `<span class="status offline">❌ ${error.message}</span>`;
-                document.getElementById('content').innerHTML = `
-                    <div style="color:#f85149;">
-                        ❌ Ошибка подключения<br>
-                        <small style="color:#8b949e;">${error.message}</small>
-                        <br><br>
-                        <button onclick="init()">🔄 Обновить</button>
-                    </div>
-                `;
-            }
-        }
-
-        async function loadClans() {
-            try {
-                document.getElementById('content').innerHTML = 'Загрузка...';
-                const data = await loadData();
-                allClans = data.clans || [];
-                allRequests = data.requests || [];
-
-                if (allClans.length === 0) {
-                    document.getElementById('content').innerHTML = `
-                        <div style="text-align:center;padding:20px;color:#8b949e;">
-                            📭 Нет созданных кланов<br>
-                            <small>Нажми "Создать клан" чтобы начать</small>
-                        </div>
-                    `;
+                const userId = await getCurrentUser();
+                allData = await loadData();
+                // Ищем пользователя
+                let user = allData.users.find(u => u.userId === userId);
+                if (!user) {
+                    // Показываем регистрацию
+                    document.getElementById('registerModal').classList.add('show');
                     return;
                 }
-
-                let html = '';
-                allClans.forEach(clan => {
-                    const members = clan.members || [];
-                    const isLeader = clan.leaderId === currentUser.id;
-                    const isMember = members.includes(currentUser.id);
-
-                    html += `
-                        <div class="card">
-                            <div style="display:flex;justify-content:space-between;">
-                                <div>
-                                    <strong>${clan.name}</strong>
-                                    <span style="color:#00f0ff;">[${clan.tag}]</span>
-                                </div>
-                                ${isLeader ? '<span style="color:#2ea043;">👑 Лидер</span>' : ''}
-                                ${isMember && !isLeader ? '<span style="color:#00f0ff;">✓ Участник</span>' : ''}
-                            </div>
-                            <div style="color:#8b949e;font-size:14px;margin:4px 0;">
-                                👥 ${members.length} участников
-                            </div>
-                            ${clan.description ? `<div style="color:#8b949e;font-size:13px;">${clan.description}</div>` : ''}
-                            <div style="margin-top:8px;">
-                                ${!isMember && !isLeader ? `<button class="btn-success" onclick="joinClan('${clan.id}')">📩 Вступить</button>` : ''}
-                                ${isLeader ? `<button class="btn-danger" onclick="deleteClan('${clan.id}')">🗑 Распустить</button>` : ''}
-                                ${isMember && !isLeader ? `<button class="btn-danger" onclick="leaveClan('${clan.id}')">🚪 Выйти</button>` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                document.getElementById('content').innerHTML = html;
-
-            } catch (error) {
-                document.getElementById('content').innerHTML = `
-                    <div style="color:#f85149;">
-                        ❌ ${error.message}
-                        <br><br>
-                        <button onclick="loadClans()">🔄 Попробовать снова</button>
-                    </div>
-                `;
-                console.error(error);
+                currentUser = user;
+                // Обновляем интерфейс
+                document.getElementById('profileNameShort').textContent = user.nickname || 'Профиль';
+                renderView();
+            } catch (e) {
+                alert('Ошибка загрузки: ' + e.message);
             }
         }
 
-        function showCreateForm() {
-            const form = document.getElementById('createForm');
-            form.classList.toggle('hidden');
-        }
-
-        async function createClan() {
-            const name = document.getElementById('clanName').value.trim();
-            const tag = document.getElementById('clanTag').value.trim().toUpperCase();
-
-            if (!name) {
-                alert('❌ Введите название клана');
+        // ============================================================
+        // РЕГИСТРАЦИЯ
+        // ============================================================
+        async function registerUser() {
+            const nick = document.getElementById('regNick').value.trim();
+            const role = document.getElementById('regRole').value;
+            if (!nick) {
+                alert('Введите ник!');
                 return;
             }
-            if (!tag || tag.length < 2 || tag.length > 6) {
-                alert('❌ Тег должен быть 2-6 символов');
+            const userId = await getCurrentUser();
+            const newUser = {
+                userId: userId,
+                nickname: nick,
+                role: role,
+                clanId: null
+            };
+            allData.users.push(newUser);
+            await saveData(allData);
+            currentUser = newUser;
+            document.getElementById('registerModal').classList.remove('show');
+            document.getElementById('profileNameShort').textContent = nick;
+            renderView();
+        }
+
+        // ============================================================
+        // ОТОБРАЖЕНИЕ ВИДОВ
+        // ============================================================
+        function renderView() {
+            if (currentView === 'clans') renderClans();
+            else if (currentView === 'requests') renderRequests();
+            else if (currentView === 'myclan') renderMyClan();
+        }
+
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.menu-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i === (view === 'clans' ? 0 : view === 'requests' ? 1 : 2));
+            });
+            renderView();
+        }
+
+        // ============================================================
+        // СПИСОК КЛАНОВ
+        // ============================================================
+        async function renderClans() {
+            const container = document.getElementById('content');
+            allData = await loadData();
+            const clans = allData.clans || [];
+
+            if (clans.length === 0) {
+                container.innerHTML = `<div class="text-center text-muted" style="padding:40px 0;">📭 Нет кланов. Создай первый!</div>`;
+                document.getElementById('createClanBtn').style.display = 'block';
                 return;
             }
 
-            try {
-                const data = await loadData();
-                const clans = data.clans || [];
+            let html = '';
+            clans.forEach(clan => {
+                const isLeader = clan.leaderId === currentUser.userId;
+                const isMember = clan.members && clan.members.includes(currentUser.userId);
+                html += `
+                    <div class="clan-card" onclick="showClanDetail('${clan.id}')">
+                        <div class="top">
+                            <span class="name">${clan.name}</span>
+                            <span class="tag">[${clan.tag}]</span>
+                        </div>
+                        <div class="leader">👑 Глава: ${clan.leaderNick || 'Неизвестен'}</div>
+                        <div class="members-preview">👥 ${(clan.members || []).length} участников</div>
+                        ${isLeader ? '<div style="margin-top:6px;"><span class="badge">👑 Вы лидер</span></div>' : ''}
+                        ${isMember && !isLeader ? '<div style="margin-top:6px;"><span class="badge">✓ Участник</span></div>' : ''}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            document.getElementById('createClanBtn').style.display = 'block';
+        }
 
-                // Проверка на существование
-                if (clans.find(c => c.name.toLowerCase() === name.toLowerCase())) {
-                    alert('❌ Клан с таким названием уже существует');
-                    return;
-                }
-
-                const newClan = {
-                    id: 'clan_' + Date.now(),
-                    name: name,
-                    tag: tag,
-                    leaderId: currentUser.id,
-                    leaderName: currentUser.name,
-                    members: [currentUser.id],
-                    rating: 0,
-                    level: 1,
-                    description: '',
-                    created: new Date().toISOString()
-                };
-
-                clans.push(newClan);
-                data.clans = clans;
-                await saveData(data);
-
-                alert('✅ Клан создан!');
-                document.getElementById('clanName').value = '';
-                document.getElementById('clanTag').value = '';
-                document.getElementById('createForm').classList.add('hidden');
-                await loadClans();
-
-            } catch (error) {
-                alert(`❌ ${error.message}`);
+        // ============================================================
+        // ЗАЯВКИ (только для лидеров)
+        // ============================================================
+        async function renderRequests() {
+            const container = document.getElementById('content');
+            allData = await loadData();
+            const user = allData.users.find(u => u.userId === currentUser.userId);
+            if (!user || user.role !== 'leader') {
+                container.innerHTML = `<div class="text-center text-muted" style="padding:40px 0;">🔒 Только лидеры могут управлять заявками.</div>`;
+                return;
             }
-        }
-
-        async function joinClan(clanId) {
-            try {
-                const data = await loadData();
-                const clans = data.clans || [];
-                const requests = data.requests || [];
-
-                const clan = clans.find(c => c.id === clanId);
-                if (!clan) {
-                    alert('❌ Клан не найден');
-                    return;
-                }
-
-                if (clan.members.includes(currentUser.id)) {
-                    alert('❌ Вы уже в клане');
-                    return;
-                }
-
-                if (requests.find(r => r.clanId === clanId && r.userId === currentUser.id && r.status === 'pending')) {
-                    alert('⏳ Вы уже подали заявку');
-                    return;
-                }
-
-                requests.push({
-                    id: 'req_' + Date.now(),
-                    clanId: clanId,
-                    userId: currentUser.id,
-                    userName: currentUser.name,
-                    status: 'pending',
-                    createdAt: new Date().toISOString()
-                });
-
-                data.requests = requests;
-                await saveData(data);
-
-                alert('✅ Заявка отправлена!');
-                await loadClans();
-
-            } catch (error) {
-                alert(`❌ ${error.message}`);
-            }
-        }
-
-        async function deleteClan(clanId) {
-            if (!confirm('❌ Точно распустить клан?')) return;
-            try {
-                const data = await loadData();
-                data.clans = data.clans.filter(c => c.id !== clanId);
-                await saveData(data);
-                alert('✅ Клан распущен');
-                await loadClans();
-            } catch (error) {
-                alert(`❌ ${error.message}`);
-            }
-        }
-
-        async function leaveClan(clanId) {
-            if (!confirm('🚪 Выйти из клана?')) return;
-            alert('⚠️ Функция выхода из клана пока в разработке');
-        }
-
-        function showMyClan() {
-            const clan = allClans.find(c => c.members?.includes(currentUser.id));
+            const clan = allData.clans.find(c => c.id === user.clanId);
             if (!clan) {
-                document.getElementById('content').innerHTML = `
-                    <div style="text-align:center;padding:20px;color:#8b949e;">
-                        ⭐ Вы не состоите в клане
+                container.innerHTML = `<div class="text-center text-muted" style="padding:40px 0;">📭 Вы не состоите в клане.</div>`;
+                return;
+            }
+            const requests = clan.pendingRequests || [];
+            if (requests.length === 0) {
+                container.innerHTML = `<div class="text-center text-muted" style="padding:40px 0;">✅ Нет входящих заявок.</div>`;
+                return;
+            }
+            let html = `<div style="margin-bottom:12px;">📨 Входящие заявки (${requests.length}):</div>`;
+            requests.forEach((req, index) => {
+                html += `
+                    <div class="request-item">
+                        <div>
+                            <strong>${req.nickname || 'Игрок'}</strong>
+                            <div style="font-size:12px;color:#5a6f8a;">ID: ${req.userId}</div>
+                        </div>
+                        <div style="display:flex;gap:8px;">
+                            <button class="btn-success btn-sm" onclick="acceptRequest('${clan.id}', '${req.userId}')">✅</button>
+                            <button class="btn-danger btn-sm" onclick="rejectRequest('${clan.id}', '${req.userId}')">❌</button>
+                        </div>
                     </div>
                 `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // МОЙ КЛАН
+        // ============================================================
+        async function renderMyClan() {
+            const container = document.getElementById('content');
+            allData = await loadData();
+            const user = allData.users.find(u => u.userId === currentUser.userId);
+            if (!user || !user.clanId) {
+                container.innerHTML = `<div class="text-center text-muted" style="padding:40px 0;">⭐ Вы не состоите в клане.</div>`;
+                return;
+            }
+            const clan = allData.clans.find(c => c.id === user.clanId);
+            if (!clan) {
+                container.innerHTML = `<div class="text-center text-muted" style="padding:40px 0;">⚠️ Ваш клан был удалён.</div>`;
                 return;
             }
             const members = clan.members || [];
-            document.getElementById('content').innerHTML = `
-                <div class="card">
-                    <h3>${clan.name} [${clan.tag}]</h3>
-                    <div style="color:#8b949e;margin:8px 0;">
-                        👥 ${members.length} участников
+            const leaderNick = clan.leaderNick || 'Неизвестен';
+            let html = `
+                <div class="clan-card" style="border-color:#00d4ff;">
+                    <div class="top">
+                        <span class="name">${clan.name}</span>
+                        <span class="tag">[${clan.tag}]</span>
                     </div>
-                    <div style="color:#8b949e;">
-                        👑 Лидер: ${clan.leaderName || 'Неизвестен'}
-                    </div>
-                    <div style="margin-top:8px;">
-                        ${clan.leaderId === currentUser.id ? `<button class="btn-danger" onclick="deleteClan('${clan.id}')">🗑 Распустить клан</button>` : ''}
-                        ${clan.leaderId !== currentUser.id ? `<button class="btn-danger" onclick="leaveClan('${clan.id}')">🚪 Выйти из клана</button>` : ''}
+                    <div class="leader">👑 Глава: ${leaderNick}</div>
+                    <div class="members-preview">👥 ${members.length} участников</div>
+                    ${clan.description ? `<div style="margin-top:8px;color:#8a9bb8;font-size:13px;">📝 ${clan.description}</div>` : ''}
+                    <div class="member-list">
+                        ${members.map(id => {
+                            const m = allData.users.find(u => u.userId === id);
+                            return `<div class="member-item">${m ? m.nickname : 'Неизвестный'} ${id === clan.leaderId ? '👑' : ''}</div>`;
+                        }).join('')}
                     </div>
                 </div>
             `;
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // СОЗДАНИЕ КЛАНА
+        // ============================================================
+        function showCreateClan() {
+            if (currentUser.role !== 'leader') {
+                alert('Только лидеры могут создавать кланы!');
+                return;
+            }
+            if (currentUser.clanId) {
+                alert('Вы уже состоите в клане!');
+                return;
+            }
+            document.getElementById('createClanModal').classList.add('show');
+        }
+
+        async function createClan() {
+            const name = document.getElementById('clanNameInput').value.trim();
+            const tag = document.getElementById('clanTagInput').value.trim().toUpperCase();
+            const desc = document.getElementById('clanDescInput').value.trim();
+
+            if (!name) { alert('Введите название'); return; }
+            if (!tag || tag.length < 2 || tag.length > 6) { alert('Тег 2-6 символов'); return; }
+
+            allData = await loadData();
+            if (allData.clans.find(c => c.name.toLowerCase() === name.toLowerCase())) {
+                alert('Клан с таким названием уже есть');
+                return;
+            }
+
+            const newClan = {
+                id: 'clan_' + Date.now(),
+                name: name,
+                tag: tag,
+                leaderId: currentUser.userId,
+                leaderNick: currentUser.nickname,
+                members: [currentUser.userId],
+                pendingRequests: [],
+                description: desc,
+                created: new Date().toISOString()
+            };
+
+            allData.clans.push(newClan);
+            // Обновляем пользователя
+            const user = allData.users.find(u => u.userId === currentUser.userId);
+            if (user) user.clanId = newClan.id;
+            currentUser.clanId = newClan.id;
+
+            await saveData(allData);
+            document.getElementById('createClanModal').classList.remove('show');
+            alert('✅ Клан создан!');
+            renderView();
+        }
+
+        // ============================================================
+        // ЗАЯВКИ (логика)
+        // ============================================================
+        async function acceptRequest(clanId, userId) {
+            allData = await loadData();
+            const clan = allData.clans.find(c => c.id === clanId);
+            if (!clan) return;
+            clan.pendingRequests = clan.pendingRequests.filter(r => r.userId !== userId);
+            if (!clan.members) clan.members = [];
+            if (!clan.members.includes(userId)) clan.members.push(userId);
+            // Обновляем пользователя
+            const user = allData.users.find(u => u.userId === userId);
+            if (user) user.clanId = clanId;
+            await saveData(allData);
+            alert('✅ Заявка принята!');
+            renderView();
+        }
+
+        async function rejectRequest(clanId, userId) {
+            allData = await loadData();
+            const clan = allData.clans.find(c => c.id === clanId);
+            if (!clan) return;
+            clan.pendingRequests = clan.pendingRequests.filter(r => r.userId !== userId);
+            await saveData(allData);
+            alert('❌ Заявка отклонена');
+            renderView();
+        }
+
+        // ============================================================
+        // ЗАЯВКА НА ВСТУПЛЕНИЕ (из списка кланов)
+        // ============================================================
+        async function applyToClan(clanId) {
+            allData = await loadData();
+            const clan = allData.clans.find(c => c.id === clanId);
+            if (!clan) { alert('Клан не найден'); return; }
+            if (clan.members && clan.members.includes(currentUser.userId)) {
+                alert('Вы уже в этом клане');
+                return;
+            }
+            if (clan.pendingRequests && clan.pendingRequests.find(r => r.userId === currentUser.userId)) {
+                alert('Вы уже подали заявку');
+                return;
+            }
+            if (!clan.pendingRequests) clan.pendingRequests = [];
+            clan.pendingRequests.push({
+                userId: currentUser.userId,
+                nickname: currentUser.nickname,
+                status: 'pending'
+            });
+            await saveData(allData);
+            alert('✅ Заявка отправлена!');
+            renderView();
+        }
+
+        // ============================================================
+        // ПРОФИЛЬ
+        // ============================================================
+        function openProfile() {
+            if (!currentUser) return;
+            document.getElementById('profNick').textContent = currentUser.nickname || '—';
+            document.getElementById('profId').textContent = currentUser.userId || '—';
+            const clan = allData.clans.find(c => c.id === currentUser.clanId);
+            document.getElementById('profClan').textContent = clan ? clan.name : 'Нет';
+            document.getElementById('profRole').textContent = currentUser.role === 'leader' ? '👑 Лидер' : 'Участник';
+            document.getElementById('profileModal').classList.add('show');
+        }
+
+        async function editNickname() {
+            const newNick = prompt('Введите новый ник:', currentUser.nickname);
+            if (!newNick || newNick === currentUser.nickname) return;
+            allData = await loadData();
+            const user = allData.users.find(u => u.userId === currentUser.userId);
+            if (user) {
+                user.nickname = newNick;
+                currentUser.nickname = newNick;
+                await saveData(allData);
+                document.getElementById('profileNameShort').textContent = newNick;
+                document.getElementById('profNick').textContent = newNick;
+                renderView();
+            }
+        }
+
+        // ============================================================
+        // ПРОСМОТР КЛАНА (детально)
+        // ============================================================
+        async function showClanDetail(clanId) {
+            allData = await loadData();
+            const clan = allData.clans.find(c => c.id === clanId);
+            if (!clan) return;
+            document.getElementById('detailClanName').textContent = `${clan.name} [${clan.tag}]`;
+            const members = clan.members || [];
+            const leader = allData.users.find(u => u.userId === clan.leaderId);
+            let info = `
+                <div style="margin:12px 0;color:#8a9bb8;">
+                    👑 Глава: ${leader ? leader.nickname : 'Неизвестен'}
+                    <br>👥 ${members.length} участников
+                    ${clan.description ? `<br>📝 ${clan.description}` : ''}
+                </div>
+            `;
+            let membersHtml = members.map(id => {
+                const m = allData.users.find(u => u.userId === id);
+                return `<div class="member-item">${m ? m.nickname : 'Неизвестный'} ${id === clan.leaderId ? '👑' : ''}</div>`;
+            }).join('');
+
+            // Если пользователь не в клане, показываем кнопку "Вступить"
+            if (!members.includes(currentUser.userId)) {
+                info += `<div style="margin-top:12px;"><button class="btn-success btn-sm" onclick="applyToClan('${clan.id}')">📩 Подать заявку</button></div>`;
+            }
+
+            document.getElementById('detailClanInfo').innerHTML = info;
+            document.getElementById('detailMembers').innerHTML = membersHtml || '<div class="text-muted">Нет участников</div>';
+            document.getElementById('clanDetailModal').classList.add('show');
+        }
+
+        // ============================================================
+        // ОБЩИЕ
+        // ============================================================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
         }
 
         // ============================================================
