@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BSC</title>
     <script src="https://telegram.org/js/telegram.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           СТИЛИ (с чатом)
+           СТИЛИ (БЕЗ ИЗМЕНЕНИЙ, ТЕ ЖЕ)
            ============================================================ */
         * {
             margin: 0;
@@ -400,9 +402,6 @@
         }
         .modal-actions .btn { flex: 1; justify-content: center; }
 
-        /* ============================================================
-           СТИЛИ ДЛЯ ЧАТА
-           ============================================================ */
         .chat-container {
             display: flex;
             flex-direction: column;
@@ -564,7 +563,6 @@
         }
         .footer-links a:hover { color: #fff; }
 
-        /* АДМИН-ПАНЕЛЬ */
         .admin-panel {
             display: flex;
             flex-direction: column;
@@ -724,7 +722,7 @@
         </footer>
     </div>
 
-    <!-- МОДАЛКА ВЫБОРА ЯЗЫКА -->
+    <!-- МОДАЛКИ -->
     <div class="modal-overlay" id="langModal">
         <div class="modal">
             <h2 id="langModalTitle">🌐 Выберите язык / Select language</h2>
@@ -736,7 +734,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА РЕГИСТРАЦИИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2 id="registerTitle">📝 Добро пожаловать</h2>
@@ -757,7 +754,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ ПРОФИЛЯ -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
             <h2 id="editProfileTitle">✏️ Редактировать профиль</h2>
@@ -774,7 +770,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА СОЗДАНИЯ КЛАНА -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
             <h2 id="createClanTitle">➕ Создать клан</h2>
@@ -791,7 +786,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ КЛАНА -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
             <h2 id="editClanTitle">✏️ Редактировать клан</h2>
@@ -812,7 +806,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ПРОСМОТРА КЛАНА -->
     <div class="modal-overlay" id="clanDetailModal">
         <div class="modal">
             <h2 id="detailClanName">🏰 Клан</h2>
@@ -824,7 +817,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ДЛЯ БАНА -->
     <div class="modal-overlay" id="banModal">
         <div class="modal">
             <h2 id="banTitle">🔨 Забанить пользователя</h2>
@@ -844,13 +836,172 @@
 
     <script>
         // ============================================================
-        // НАСТРОЙКИ
+        // ПЕРЕВОДЫ
+        // ============================================================
+        const LANG = {
+            ru: {
+                'loading': 'Загрузка...', 'error': 'Ошибка', 'close': 'Закрыть', 'save': 'Сохранить',
+                'cancel': 'Отмена', 'confirm': 'Подтвердить', 'delete': 'Удалить', 'edit': 'Редактировать',
+                'ban': 'Забанить', 'unban': 'Разбанить', 'kick': 'Кикнуть', 'leave': 'Покинуть',
+                'view': 'Просмотр', 'apply': 'Подать заявку', 'create': 'Создать', 'join': 'Вступить',
+                'leaveClan': 'Покинуть клан', 'disband': 'Распустить', 'clans': 'КЛАНЫ',
+                'requests': 'ЗАЯВКИ', 'myclan': 'МОЙ КЛАН', 'rating': 'РЕЙТИНГ', 'chat': 'ЧАТ',
+                'admin': 'АДМИН', 'profile': 'Профиль', 'editProfile': 'Редактировать профиль',
+                'logout': 'Выйти', 'changeLang': 'Сменить язык', 'botActive': 'Бот активен',
+                'creator': 'Создатель: @NoisyBoy141', 'channel': 'Канал', 'chatPlaceholder': 'Напишите сообщение...',
+                'chatSend': 'Отправить', 'chatEmpty': 'Сообщений пока нет. Будьте первым!',
+                'loginRequired': 'Войдите, чтобы участвовать в чате',
+                'adminPanel': 'Админ-панель', 'userManagement': 'Управление пользователями',
+                'eloManagement': 'Управление рейтингом (ELO)',
+                'noClans': 'Нет кланов', 'noRequests': 'Нет заявок', 'notInClan': 'Вы не состоите в клане',
+                'clansCount': 'Кланов:', 'membersCount': 'Участников:', 'requestsCount': 'Заявок:',
+                'leaderLabel': 'Глава', 'eloLabel': 'ELO', 'noMembers': 'Нет участников', 'noData': 'Нет данных',
+                'welcome': 'Добро пожаловать', 'register': 'Зарегистрироваться', 'nickname': 'Никнейм',
+                'telegramUsername': 'Telegram username (без @)', 'gameId': 'Игровой ID', 'role': 'Роль',
+                'roleMember': 'Игрок', 'roleLeader': 'Лидер', 'enterNickname': 'Введите никнейм',
+                'enterTelegram': 'Введите Telegram', 'enterGameId': 'Введите игровой ID',
+                'nicknameTaken': 'Ник занят', 'idMustBeNumber': 'ID должен быть числом',
+                'welcomeUser': 'Добро пожаловать, {name}', 'profileUpdated': 'Профиль обновлён',
+                'clanCreated': 'Клан создан!', 'clanDeleted': 'Клан удалён', 'clanDisbanded': 'Клан распущен',
+                'youLeftClan': 'Вы вышли из клана', 'youJoinedClan': 'Вы вступили в клан',
+                'requestSent': 'Заявка отправлена', 'requestAccepted': 'Заявка принята',
+                'requestRejected': 'Заявка отклонена', 'notClanLeader': 'Вы не глава клана',
+                'noPendingRequests': 'Нет входящих заявок', 'pendingRequests': 'Входящие заявки ({count})',
+                'memberKicked': 'Игрок кикнут', 'leaderTransferred': 'Лидерство передано {name}',
+                'eloUpdated': 'ELO для "{name}" обновлён до {elo}', 'enterValidElo': 'Введите корректное число (≥0)',
+                'notFound': 'не найден', 'noRights': 'Нет прав', 'clearAllData': 'Очистить всё',
+                'clearAllConfirm': '⚠️ Очистить все данные?', 'allCleared': 'Все данные очищены',
+                'logoutConfirm': 'Выйти из аккаунта?', 'youLoggedOut': 'Вы вышли',
+                'serverError': 'Ошибка сервера', 'languageSelected': 'Язык изменён на русский',
+                'languageSelectedEn': 'Language changed to English', 'selectLanguage': '🌐 Выберите язык / Select language',
+                'selectLanguageHint': 'Выберите язык, который будет использоваться в приложении.',
+                'clansLabel': 'Кланы', 'requestsLabel': 'Заявки', 'myClanLabel': 'Мой клан',
+                'ratingLabel': 'Рейтинг', 'adminLabel': 'Админ', 'changeLanguage': 'Сменить язык',
+                'closeApp': 'Закрыть', 'refresh': 'Обновить', 'usersList': 'Пользователи',
+                'userId': 'ID', 'userGameId': 'Игровой ID', 'userRole': 'Роль', 'userStatus': 'Статус',
+                'statusActive': 'Активен', 'statusBanned': 'Забанен', 'banForever': 'Навсегда',
+                'banUntil': 'до {date}', 'unbanConfirm': 'Разбанить пользователя "{name}"?',
+                'userUnbanned': 'Пользователь "{name}" разбанен', 'userBanned': 'Пользователь "{name}" забанен',
+                'userDeleted': 'Пользователь "{name}" удалён', 'saveElo': 'Сохранить',
+                'currentElo': 'Текущий ELO', 'setElo': 'Установить ELO', 'eloSaved': 'ELO сохранён',
+                'confirmDeleteUser': 'Точно удалить пользователя?', 'confirmBanUser': 'Точно забанить пользователя?',
+                'confirmUnbanUser': 'Точно разбанить пользователя?', 'confirmClearAll': 'Точно очистить все данные?',
+                'noUsers': 'Нет пользователей', 'noClansForRating': 'Нет кланов для рейтинга',
+                'ratingTop': 'Рейтинг кланов (по ELO)', 'leaderContact': 'Связь', 'clanChannel': 'Канал клана',
+                'noMembersInClan': 'Нет участников', 'membersList': 'Участники',
+                'clanInfo': 'Информация о клане', 'clanName': 'Название клана', 'clanTag': 'Тег клана',
+                'clanDescription': 'Описание клана', 'clanLeader': 'Глава клана', 'clanMembers': 'Участники клана',
+                'clanContact': 'Связь с главой', 'clanChannelLabel': 'Канал клана',
+                'editClan': 'Редактировать клан', 'createClan': 'Создать клан', 'deleteClan': 'Удалить клан',
+                'disbandClan': 'Распустить клан', 'leaveClanConfirm': 'Выйти из клана "{name}"?',
+                'applyToClan': 'Подать заявку в "{name}"?', 'acceptRequest': 'Принять заявку',
+                'rejectRequest': 'Отклонить заявку', 'memberKickConfirm': 'Кикнуть игрока?',
+                'transferLeadershipConfirm': 'Передать лидерство?', 'leadershipTransferred': 'Лидерство передано {name}',
+                'youAreNotLeader': 'Вы не глава клана', 'youAreNotAdmin': 'Вы не администратор',
+                'youAreInClan': 'Вы уже в клане', 'youAreNotInClan': 'Вы не в клане',
+                'clanNotFound': 'Клан не найден', 'userNotFound': 'Пользователь не найден',
+                'requestNotFound': 'Заявка не найдена', 'invalidInput': 'Некорректный ввод',
+                'saveSuccess': 'Сохранено', 'saveError': 'Ошибка сохранения', 'loadError': 'Ошибка загрузки',
+                'updateSuccess': 'Обновлено', 'updateError': 'Ошибка обновления', 'deleteSuccess': 'Удалено',
+                'deleteError': 'Ошибка удаления', 'banSuccess': 'Пользователь забанен', 'banError': 'Ошибка бана',
+                'unbanSuccess': 'Пользователь разбанен', 'unbanError': 'Ошибка разбана'
+            },
+            en: {
+                'loading': 'Loading...', 'error': 'Error', 'close': 'Close', 'save': 'Save',
+                'cancel': 'Cancel', 'confirm': 'Confirm', 'delete': 'Delete', 'edit': 'Edit',
+                'ban': 'Ban', 'unban': 'Unban', 'kick': 'Kick', 'leave': 'Leave',
+                'view': 'View', 'apply': 'Apply', 'create': 'Create', 'join': 'Join',
+                'leaveClan': 'Leave clan', 'disband': 'Disband', 'clans': 'CLANS',
+                'requests': 'REQUESTS', 'myclan': 'MY CLAN', 'rating': 'RATING', 'chat': 'CHAT',
+                'admin': 'ADMIN', 'profile': 'Profile', 'editProfile': 'Edit profile',
+                'logout': 'Logout', 'changeLang': 'Change language', 'botActive': 'Bot is active',
+                'creator': 'Creator: @NoisyBoy141', 'channel': 'Channel', 'chatPlaceholder': 'Type a message...',
+                'chatSend': 'Send', 'chatEmpty': 'No messages yet. Be the first!',
+                'loginRequired': 'Login to participate in the chat',
+                'adminPanel': 'Admin panel', 'userManagement': 'User management',
+                'eloManagement': 'ELO management',
+                'noClans': 'No clans', 'noRequests': 'No requests', 'notInClan': 'You are not in a clan',
+                'clansCount': 'Clans:', 'membersCount': 'Members:', 'requestsCount': 'Requests:',
+                'leaderLabel': 'Leader', 'eloLabel': 'ELO', 'noMembers': 'No members', 'noData': 'No data',
+                'welcome': 'Welcome', 'register': 'Register', 'nickname': 'Nickname',
+                'telegramUsername': 'Telegram username (without @)', 'gameId': 'Game ID', 'role': 'Role',
+                'roleMember': 'Member', 'roleLeader': 'Leader', 'enterNickname': 'Enter nickname',
+                'enterTelegram': 'Enter Telegram', 'enterGameId': 'Enter game ID',
+                'nicknameTaken': 'Nickname is taken', 'idMustBeNumber': 'ID must be a number',
+                'welcomeUser': 'Welcome, {name}', 'profileUpdated': 'Profile updated',
+                'clanCreated': 'Clan created!', 'clanDeleted': 'Clan deleted', 'clanDisbanded': 'Clan disbanded',
+                'youLeftClan': 'You left the clan', 'youJoinedClan': 'You joined the clan',
+                'requestSent': 'Request sent', 'requestAccepted': 'Request accepted',
+                'requestRejected': 'Request rejected', 'notClanLeader': 'You are not the clan leader',
+                'noPendingRequests': 'No incoming requests', 'pendingRequests': 'Incoming requests ({count})',
+                'memberKicked': 'Member kicked', 'leaderTransferred': 'Leadership transferred to {name}',
+                'eloUpdated': 'ELO for "{name}" updated to {elo}', 'enterValidElo': 'Enter a valid number (≥0)',
+                'notFound': 'not found', 'noRights': 'No rights', 'clearAllData': 'Clear all data',
+                'clearAllConfirm': '⚠️ Clear all data?', 'allCleared': 'All data cleared',
+                'logoutConfirm': 'Logout?', 'youLoggedOut': 'You logged out',
+                'serverError': 'Server error', 'languageSelected': 'Language changed to English',
+                'languageSelectedRu': 'Язык изменён на русский', 'selectLanguage': '🌐 Select language',
+                'selectLanguageHint': 'Select the language to be used in the app.',
+                'clansLabel': 'Clans', 'requestsLabel': 'Requests', 'myClanLabel': 'My Clan',
+                'ratingLabel': 'Rating', 'adminLabel': 'Admin', 'changeLanguage': 'Change language',
+                'closeApp': 'Close', 'refresh': 'Refresh', 'usersList': 'Users',
+                'userId': 'ID', 'userGameId': 'Game ID', 'userRole': 'Role', 'userStatus': 'Status',
+                'statusActive': 'Active', 'statusBanned': 'Banned', 'banForever': 'Forever',
+                'banUntil': 'until {date}', 'unbanConfirm': 'Unban user "{name}"?',
+                'userUnbanned': 'User "{name}" unbanned', 'userBanned': 'User "{name}" banned',
+                'userDeleted': 'User "{name}" deleted', 'saveElo': 'Save',
+                'currentElo': 'Current ELO', 'setElo': 'Set ELO', 'eloSaved': 'ELO saved',
+                'confirmDeleteUser': 'Delete user?', 'confirmBanUser': 'Ban user?',
+                'confirmUnbanUser': 'Unban user?', 'confirmClearAll': 'Clear all data?',
+                'noUsers': 'No users', 'noClansForRating': 'No clans for rating',
+                'ratingTop': 'Clan rating (by ELO)', 'leaderContact': 'Contact', 'clanChannel': 'Clan channel',
+                'noMembersInClan': 'No members', 'membersList': 'Members',
+                'clanInfo': 'Clan info', 'clanName': 'Clan name', 'clanTag': 'Clan tag',
+                'clanDescription': 'Clan description', 'clanLeader': 'Clan leader',
+                'clanMembers': 'Clan members', 'clanContact': 'Leader contact',
+                'clanChannelLabel': 'Clan channel', 'editClan': 'Edit clan',
+                'createClan': 'Create clan', 'deleteClan': 'Delete clan', 'disbandClan': 'Disband clan',
+                'leaveClanConfirm': 'Leave clan "{name}"?', 'applyToClan': 'Apply to "{name}"?',
+                'acceptRequest': 'Accept request', 'rejectRequest': 'Reject request',
+                'memberKickConfirm': 'Kick member?', 'transferLeadershipConfirm': 'Transfer leadership?',
+                'leadershipTransferred': 'Leadership transferred to {name}',
+                'youAreNotLeader': 'You are not the clan leader', 'youAreNotAdmin': 'You are not an admin',
+                'youAreInClan': 'You are already in a clan', 'youAreNotInClan': 'You are not in a clan',
+                'clanNotFound': 'Clan not found', 'userNotFound': 'User not found',
+                'requestNotFound': 'Request not found', 'invalidInput': 'Invalid input',
+                'saveSuccess': 'Saved', 'saveError': 'Save error', 'loadError': 'Load error',
+                'updateSuccess': 'Updated', 'updateError': 'Update error', 'deleteSuccess': 'Deleted',
+                'deleteError': 'Delete error', 'banSuccess': 'User banned', 'banError': 'Ban error',
+                'unbanSuccess': 'User unbanned', 'unbanError': 'Unban error'
+            }
+        };
+
+        // ============================================================
+        // НАСТРОЙКИ JSONBin (ОСНОВНЫЕ)
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
-        const CHAT_BIN_ID = '6a6b8b13f5f4af5e29d6c66a'; // 👈 НОВЫЙ БИН ДЛЯ ЧАТА
         const ADMIN_GAME_ID = '22887924';
 
+        // ============================================================
+        // НАСТРОЙКИ FIREBASE (ТВОИ)
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
+            authDomain: "bsc-chat-7288d.firebaseapp.com",
+            databaseURL: "https://bsc-chat-7288d-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bsc-chat-7288d",
+            storageBucket: "bsc-chat-7288d.firebasestorage.app",
+            messagingSenderId: "272501279718",
+            appId: "1:272501279718:web:4e9fa2ff3d57dcf1ca2427"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // ============================================================
+        // ПЕРЕМЕННЫЕ
+        // ============================================================
         let currentUser = null;
         let allUsers = [];
         let allClans = [];
@@ -860,381 +1011,10 @@
         let editingClanId = null;
         let banTargetUserId = null;
         let currentLang = 'ru';
+        let chatListener = null;
 
         // ============================================================
         // ПЕРЕВОДЫ
-        // ============================================================
-        const LANG = {
-            ru: {
-                'loading': 'Загрузка...',
-                'error': 'Ошибка',
-                'close': 'Закрыть',
-                'save': 'Сохранить',
-                'cancel': 'Отмена',
-                'confirm': 'Подтвердить',
-                'delete': 'Удалить',
-                'edit': 'Редактировать',
-                'ban': 'Забанить',
-                'unban': 'Разбанить',
-                'kick': 'Кикнуть',
-                'leave': 'Покинуть',
-                'view': 'Просмотр',
-                'apply': 'Подать заявку',
-                'create': 'Создать',
-                'join': 'Вступить',
-                'leaveClan': 'Покинуть клан',
-                'disband': 'Распустить',
-                'clans': 'КЛАНЫ',
-                'requests': 'ЗАЯВКИ',
-                'myclan': 'МОЙ КЛАН',
-                'rating': 'РЕЙТИНГ',
-                'chat': 'ЧАТ',
-                'admin': 'АДМИН',
-                'profile': 'Профиль',
-                'editProfile': 'Редактировать профиль',
-                'logout': 'Выйти',
-                'changeLang': 'Сменить язык',
-                'botActive': 'Бот активен',
-                'creator': 'Создатель: @NoisyBoy141',
-                'channel': 'Канал',
-                'chat': 'Чат',
-                'noClans': 'Нет кланов',
-                'noRequests': 'Нет заявок',
-                'notInClan': 'Вы не состоите в клане',
-                'adminPanel': 'Админ-панель',
-                'userManagement': 'Управление пользователями',
-                'eloManagement': 'Управление рейтингом (ELO)',
-                'deleteUserConfirm': 'Точно удалить пользователя?',
-                'banUser': 'Забанить пользователя',
-                'banReasonPlaceholder': 'Нарушение правил',
-                'banDaysLabel': 'Срок бана (в днях, 0 = навсегда)',
-                'banReasonLabel': 'Причина (необязательно)',
-                'userBannedMessage': 'Ваш аккаунт забанен до {date}',
-                'userBannedReason': 'Причина: {reason}',
-                'accessDenied': '⛔ ДОСТУП ЗАПРЕЩЁН',
-                'accountBanned': 'Ваш аккаунт забанен.',
-                'clansCount': 'Кланов:',
-                'membersCount': 'Участников:',
-                'requestsCount': 'Заявок:',
-                'clansAndMembers': 'Кланов: {clans} • Участников: {members}',
-                'leaderLabel': 'Глава',
-                'membersLabel': 'Участников',
-                'eloLabel': 'ELO',
-                'noMembers': 'Нет участников',
-                'noData': 'Нет данных',
-                'welcome': 'Добро пожаловать',
-                'register': 'Зарегистрироваться',
-                'nickname': 'Никнейм',
-                'telegramUsername': 'Telegram username (без @)',
-                'gameId': 'Игровой ID',
-                'role': 'Роль',
-                'roleMember': 'Игрок',
-                'roleLeader': 'Лидер',
-                'enterNickname': 'Введите никнейм',
-                'enterTelegram': 'Введите Telegram',
-                'enterGameId': 'Введите игровой ID',
-                'nicknameTaken': 'Ник занят',
-                'idMustBeNumber': 'ID должен быть числом',
-                'welcomeUser': 'Добро пожаловать, {name}',
-                'profileUpdated': 'Профиль обновлён',
-                'clanCreated': 'Клан создан!',
-                'clanDeleted': 'Клан удалён',
-                'clanDisbanded': 'Клан распущен',
-                'youLeftClan': 'Вы вышли из клана',
-                'youJoinedClan': 'Вы вступили в клан',
-                'requestSent': 'Заявка отправлена',
-                'requestAccepted': 'Заявка принята',
-                'requestRejected': 'Заявка отклонена',
-                'notClanLeader': 'Вы не глава клана',
-                'noPendingRequests': 'Нет входящих заявок',
-                'pendingRequests': 'Входящие заявки ({count})',
-                'memberKicked': 'Игрок кикнут',
-                'leaderTransferred': 'Лидерство передано {name}',
-                'eloUpdated': 'ELO для "{name}" обновлён до {elo}',
-                'enterValidElo': 'Введите корректное число (≥0)',
-                'notFound': 'не найден',
-                'noRights': 'Нет прав',
-                'clearAllData': 'Очистить всё',
-                'clearAllConfirm': '⚠️ Очистить все данные?',
-                'allCleared': 'Все данные очищены',
-                'logoutConfirm': 'Выйти из аккаунта?',
-                'youLoggedOut': 'Вы вышли',
-                'serverError': 'Ошибка сервера',
-                'languageSelected': 'Язык изменён на русский',
-                'languageSelectedEn': 'Language changed to English',
-                'selectLanguage': '🌐 Выберите язык / Select language',
-                'selectLanguageHint': 'Выберите язык, который будет использоваться в приложении.',
-                'selectLanguageHintEn': 'Select the language to be used in the app.',
-                'clansLabel': 'Кланы',
-                'requestsLabel': 'Заявки',
-                'myClanLabel': 'Мой клан',
-                'ratingLabel': 'Рейтинг',
-                'adminLabel': 'Админ',
-                'changeLanguage': 'Сменить язык',
-                'closeApp': 'Закрыть',
-                'refresh': 'Обновить',
-                'usersList': 'Пользователи',
-                'userId': 'ID',
-                'userGameId': 'Игровой ID',
-                'userRole': 'Роль',
-                'userStatus': 'Статус',
-                'statusActive': 'Активен',
-                'statusBanned': 'Забанен',
-                'banForever': 'Навсегда',
-                'banUntil': 'до {date}',
-                'unbanConfirm': 'Разбанить пользователя "{name}"?',
-                'userUnbanned': 'Пользователь "{name}" разбанен',
-                'userBanned': 'Пользователь "{name}" забанен',
-                'userDeleted': 'Пользователь "{name}" удалён',
-                'eloManagementTitle': 'Управление рейтингом (ELO)',
-                'saveElo': 'Сохранить',
-                'currentElo': 'Текущий ELO',
-                'setElo': 'Установить ELO',
-                'eloSaved': 'ELO сохранён',
-                'confirmDeleteUser': 'Точно удалить пользователя?',
-                'confirmBanUser': 'Точно забанить пользователя?',
-                'confirmUnbanUser': 'Точно разбанить пользователя?',
-                'confirmClearAll': 'Точно очистить все данные?',
-                'noUsers': 'Нет пользователей',
-                'noClansForRating': 'Нет кланов для рейтинга',
-                'ratingTop': 'Рейтинг кланов (по ELO)',
-                'leaderContact': 'Связь',
-                'clanChannel': 'Канал клана',
-                'noMembersInClan': 'Нет участников',
-                'membersList': 'Участники',
-                'clanInfo': 'Информация о клане',
-                'clanName': 'Название клана',
-                'clanTag': 'Тег клана',
-                'clanDescription': 'Описание клана',
-                'clanLeader': 'Глава клана',
-                'clanMembers': 'Участники клана',
-                'clanContact': 'Связь с главой',
-                'clanChannelLabel': 'Канал клана',
-                'editClan': 'Редактировать клан',
-                'createClan': 'Создать клан',
-                'deleteClan': 'Удалить клан',
-                'disbandClan': 'Распустить клан',
-                'leaveClanConfirm': 'Выйти из клана "{name}"?',
-                'applyToClan': 'Подать заявку в "{name}"?',
-                'acceptRequest': 'Принять заявку',
-                'rejectRequest': 'Отклонить заявку',
-                'memberKickConfirm': 'Кикнуть игрока?',
-                'transferLeadershipConfirm': 'Передать лидерство?',
-                'leadershipTransferred': 'Лидерство передано {name}',
-                'youAreNotLeader': 'Вы не глава клана',
-                'youAreNotAdmin': 'Вы не администратор',
-                'youAreInClan': 'Вы уже в клане',
-                'youAreNotInClan': 'Вы не в клане',
-                'clanNotFound': 'Клан не найден',
-                'userNotFound': 'Пользователь не найден',
-                'requestNotFound': 'Заявка не найдена',
-                'invalidInput': 'Некорректный ввод',
-                'saveSuccess': 'Сохранено',
-                'saveError': 'Ошибка сохранения',
-                'loadError': 'Ошибка загрузки',
-                'updateSuccess': 'Обновлено',
-                'updateError': 'Ошибка обновления',
-                'deleteSuccess': 'Удалено',
-                'deleteError': 'Ошибка удаления',
-                'banSuccess': 'Пользователь забанен',
-                'banError': 'Ошибка бана',
-                'unbanSuccess': 'Пользователь разбанен',
-                'unbanError': 'Ошибка разбана',
-                'chatPlaceholder': 'Напишите сообщение...',
-                'chatSend': 'Отправить',
-                'chatEmpty': 'Сообщений пока нет. Будьте первым!',
-                'chatJoined': 'присоединился к чату',
-                'chatLeft': 'покинул чат',
-                'chatClanLabel': 'Клан:',
-                'loginRequired': 'Войдите, чтобы участвовать в чате'
-            },
-            en: {
-                'loading': 'Loading...',
-                'error': 'Error',
-                'close': 'Close',
-                'save': 'Save',
-                'cancel': 'Cancel',
-                'confirm': 'Confirm',
-                'delete': 'Delete',
-                'edit': 'Edit',
-                'ban': 'Ban',
-                'unban': 'Unban',
-                'kick': 'Kick',
-                'leave': 'Leave',
-                'view': 'View',
-                'apply': 'Apply',
-                'create': 'Create',
-                'join': 'Join',
-                'leaveClan': 'Leave clan',
-                'disband': 'Disband',
-                'clans': 'CLANS',
-                'requests': 'REQUESTS',
-                'myclan': 'MY CLAN',
-                'rating': 'RATING',
-                'chat': 'CHAT',
-                'admin': 'ADMIN',
-                'profile': 'Profile',
-                'editProfile': 'Edit profile',
-                'logout': 'Logout',
-                'changeLang': 'Change language',
-                'botActive': 'Bot is active',
-                'creator': 'Creator: @NoisyBoy141',
-                'channel': 'Channel',
-                'chat': 'Chat',
-                'noClans': 'No clans',
-                'noRequests': 'No requests',
-                'notInClan': 'You are not in a clan',
-                'adminPanel': 'Admin panel',
-                'userManagement': 'User management',
-                'eloManagement': 'ELO management',
-                'deleteUserConfirm': 'Delete user?',
-                'banUser': 'Ban user',
-                'banReasonPlaceholder': 'Rules violation',
-                'banDaysLabel': 'Ban duration (days, 0 = forever)',
-                'banReasonLabel': 'Reason (optional)',
-                'userBannedMessage': 'Your account is banned until {date}',
-                'userBannedReason': 'Reason: {reason}',
-                'accessDenied': '⛔ ACCESS DENIED',
-                'accountBanned': 'Your account is banned.',
-                'clansCount': 'Clans:',
-                'membersCount': 'Members:',
-                'requestsCount': 'Requests:',
-                'clansAndMembers': 'Clans: {clans} • Members: {members}',
-                'leaderLabel': 'Leader',
-                'membersLabel': 'Members',
-                'eloLabel': 'ELO',
-                'noMembers': 'No members',
-                'noData': 'No data',
-                'welcome': 'Welcome',
-                'register': 'Register',
-                'nickname': 'Nickname',
-                'telegramUsername': 'Telegram username (without @)',
-                'gameId': 'Game ID',
-                'role': 'Role',
-                'roleMember': 'Member',
-                'roleLeader': 'Leader',
-                'enterNickname': 'Enter nickname',
-                'enterTelegram': 'Enter Telegram',
-                'enterGameId': 'Enter game ID',
-                'nicknameTaken': 'Nickname is taken',
-                'idMustBeNumber': 'ID must be a number',
-                'welcomeUser': 'Welcome, {name}',
-                'profileUpdated': 'Profile updated',
-                'clanCreated': 'Clan created!',
-                'clanDeleted': 'Clan deleted',
-                'clanDisbanded': 'Clan disbanded',
-                'youLeftClan': 'You left the clan',
-                'youJoinedClan': 'You joined the clan',
-                'requestSent': 'Request sent',
-                'requestAccepted': 'Request accepted',
-                'requestRejected': 'Request rejected',
-                'notClanLeader': 'You are not the clan leader',
-                'noPendingRequests': 'No incoming requests',
-                'pendingRequests': 'Incoming requests ({count})',
-                'memberKicked': 'Member kicked',
-                'leaderTransferred': 'Leadership transferred to {name}',
-                'eloUpdated': 'ELO for "{name}" updated to {elo}',
-                'enterValidElo': 'Enter a valid number (≥0)',
-                'notFound': 'not found',
-                'noRights': 'No rights',
-                'clearAllData': 'Clear all data',
-                'clearAllConfirm': '⚠️ Clear all data?',
-                'allCleared': 'All data cleared',
-                'logoutConfirm': 'Logout?',
-                'youLoggedOut': 'You logged out',
-                'serverError': 'Server error',
-                'languageSelected': 'Language changed to English',
-                'languageSelectedRu': 'Язык изменён на русский',
-                'selectLanguage': '🌐 Select language',
-                'selectLanguageHint': 'Select the language to be used in the app.',
-                'selectLanguageHintRu': 'Выберите язык, который будет использоваться в приложении.',
-                'clansLabel': 'Clans',
-                'requestsLabel': 'Requests',
-                'myClanLabel': 'My Clan',
-                'ratingLabel': 'Rating',
-                'adminLabel': 'Admin',
-                'changeLanguage': 'Change language',
-                'closeApp': 'Close',
-                'refresh': 'Refresh',
-                'usersList': 'Users',
-                'userId': 'ID',
-                'userGameId': 'Game ID',
-                'userRole': 'Role',
-                'userStatus': 'Status',
-                'statusActive': 'Active',
-                'statusBanned': 'Banned',
-                'banForever': 'Forever',
-                'banUntil': 'until {date}',
-                'unbanConfirm': 'Unban user "{name}"?',
-                'userUnbanned': 'User "{name}" unbanned',
-                'userBanned': 'User "{name}" banned',
-                'userDeleted': 'User "{name}" deleted',
-                'eloManagementTitle': 'ELO management',
-                'saveElo': 'Save',
-                'currentElo': 'Current ELO',
-                'setElo': 'Set ELO',
-                'eloSaved': 'ELO saved',
-                'confirmDeleteUser': 'Delete user?',
-                'confirmBanUser': 'Ban user?',
-                'confirmUnbanUser': 'Unban user?',
-                'confirmClearAll': 'Clear all data?',
-                'noUsers': 'No users',
-                'noClansForRating': 'No clans for rating',
-                'ratingTop': 'Clan rating (by ELO)',
-                'leaderContact': 'Contact',
-                'clanChannel': 'Clan channel',
-                'noMembersInClan': 'No members',
-                'membersList': 'Members',
-                'clanInfo': 'Clan info',
-                'clanName': 'Clan name',
-                'clanTag': 'Clan tag',
-                'clanDescription': 'Clan description',
-                'clanLeader': 'Clan leader',
-                'clanMembers': 'Clan members',
-                'clanContact': 'Leader contact',
-                'clanChannelLabel': 'Clan channel',
-                'editClan': 'Edit clan',
-                'createClan': 'Create clan',
-                'deleteClan': 'Delete clan',
-                'disbandClan': 'Disband clan',
-                'leaveClanConfirm': 'Leave clan "{name}"?',
-                'applyToClan': 'Apply to "{name}"?',
-                'acceptRequest': 'Accept request',
-                'rejectRequest': 'Reject request',
-                'memberKickConfirm': 'Kick member?',
-                'transferLeadershipConfirm': 'Transfer leadership?',
-                'leadershipTransferred': 'Leadership transferred to {name}',
-                'youAreNotLeader': 'You are not the clan leader',
-                'youAreNotAdmin': 'You are not an admin',
-                'youAreInClan': 'You are already in a clan',
-                'youAreNotInClan': 'You are not in a clan',
-                'clanNotFound': 'Clan not found',
-                'userNotFound': 'User not found',
-                'requestNotFound': 'Request not found',
-                'invalidInput': 'Invalid input',
-                'saveSuccess': 'Saved',
-                'saveError': 'Save error',
-                'loadError': 'Load error',
-                'updateSuccess': 'Updated',
-                'updateError': 'Update error',
-                'deleteSuccess': 'Deleted',
-                'deleteError': 'Delete error',
-                'banSuccess': 'User banned',
-                'banError': 'Ban error',
-                'unbanSuccess': 'User unbanned',
-                'unbanError': 'Unban error',
-                'chatPlaceholder': 'Type a message...',
-                'chatSend': 'Send',
-                'chatEmpty': 'No messages yet. Be the first!',
-                'chatJoined': 'joined the chat',
-                'chatLeft': 'left the chat',
-                'chatClanLabel': 'Clan:',
-                'loginRequired': 'Login to participate in the chat'
-            }
-        };
-
-        // ============================================================
-        // ОСНОВНЫЕ ФУНКЦИИ (без изменений, они уже были)
         // ============================================================
         function t(key) {
             return LANG[currentLang] && LANG[currentLang][key] !== undefined ? LANG[currentLang][key] : key;
@@ -1314,13 +1094,10 @@
             if (detailModal.classList.contains('show')) {
                 document.getElementById('detailClanClose').textContent = t('close');
             }
-            const chatContainer = document.getElementById('chatMessages');
-            if (chatContainer) {
-                const sendBtn = document.querySelector('.chat-input-row .btn');
-                if (sendBtn) sendBtn.textContent = t('chatSend');
-                const input = document.getElementById('chatInput');
-                if (input) input.placeholder = t('chatPlaceholder');
-            }
+            const sendBtn = document.querySelector('.chat-input-row .btn');
+            if (sendBtn) sendBtn.textContent = t('chatSend');
+            const input = document.getElementById('chatInput');
+            if (input) input.placeholder = t('chatPlaceholder');
         }
 
         function setLanguage(lang) {
@@ -1337,6 +1114,9 @@
             document.getElementById('profileDropdown').classList.remove('show');
         }
 
+        // ============================================================
+        // РАБОТА С JSONBin (ОСНОВНОЙ)
+        // ============================================================
         async function loadData() {
             const resp = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                 headers: { 'X-Master-Key': JSONBIN_API_KEY }
@@ -1360,40 +1140,54 @@
         }
 
         // ============================================================
-        // РАБОТА С ЧАТ-БИНОМ
+        // РАБОТА С FIREBASE (ЧАТ)
         // ============================================================
-        async function loadChatMessages() {
-            try {
-                const resp = await fetch(`https://api.jsonbin.io/v3/b/${CHAT_BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
-                });
-                if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                const json = await resp.json();
-                chatMessages = json.record?.messages || [];
-                return chatMessages;
-            } catch (e) {
-                console.warn('Chat load error:', e);
-                chatMessages = [];
-                return [];
+        function loadChatMessages(callback) {
+            if (chatListener) {
+                db.ref('chat').off('value', chatListener);
+                chatListener = null;
             }
+
+            const now = Date.now();
+
+            chatListener = db.ref('chat').orderByChild('timestamp').limitToLast(100).on('value', (snapshot) => {
+                const data = snapshot.val();
+                let messages = [];
+                if (data) {
+                    const keys = Object.keys(data);
+                    // Фильтруем сообщения старше 24 часов
+                    const filteredKeys = keys.filter(key => {
+                        const msg = data[key];
+                        return (now - msg.timestamp) < 86400000;
+                    });
+                    // Если есть старые — удаляем
+                    if (filteredKeys.length < keys.length) {
+                        const updates = {};
+                        keys.forEach(key => {
+                            if ((now - data[key].timestamp) >= 86400000) {
+                                updates[key] = null;
+                            }
+                        });
+                        db.ref('chat').update(updates);
+                    }
+                    messages = filteredKeys.map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                }
+                chatMessages = messages;
+                if (callback) callback(messages);
+            });
         }
 
-        async function saveChatMessages(messages) {
-            try {
-                const resp = await fetch(`https://api.jsonbin.io/v3/b/${CHAT_BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
-                    },
-                    body: JSON.stringify({ messages: messages })
-                });
-                if (!resp.ok) throw new Error('HTTP ' + resp.status);
-                return await resp.json();
-            } catch (e) {
-                console.error('Chat save error:', e);
-                throw e;
-            }
+        async function sendChatMessage(userId, userName, text) {
+            const msg = {
+                userId: userId,
+                userName: userName,
+                text: text,
+                timestamp: Date.now()
+            };
+            await db.ref('chat').push(msg);
         }
 
         // ============================================================
@@ -1945,21 +1739,9 @@
         }
 
         // ============================================================
-        // РЕНДЕР ЧАТА
+        // РЕНДЕР ЧАТА (FIREBASE)
         // ============================================================
-        async function renderChat(container) {
-            await refreshData();
-            await loadChatMessages();
-            const now = Date.now();
-            const filtered = chatMessages.filter(m => {
-                const ts = new Date(m.timestamp).getTime();
-                return (now - ts) < 24 * 60 * 60 * 1000;
-            });
-            if (filtered.length !== chatMessages.length) {
-                chatMessages = filtered;
-                await saveChatMessages(chatMessages);
-            }
-
+        function renderChat(container) {
             if (!currentUser) {
                 container.innerHTML = `<div class="empty"><span class="icon">💬</span><p>${t('loginRequired')}</p></div>`;
                 return;
@@ -1969,10 +1751,11 @@
                 <div class="chat-container">
                     <div class="chat-messages" id="chatMessages">
             `;
+
             if (chatMessages.length === 0) {
                 html += `<div class="empty" style="padding:20px;"><span class="icon">💬</span><p>${t('chatEmpty')}</p></div>`;
             } else {
-                const sorted = [...chatMessages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                const sorted = [...chatMessages].sort((a, b) => a.timestamp - b.timestamp);
                 sorted.forEach(msg => {
                     const user = allUsers.find(u => u.id === msg.userId);
                     const userName = user ? user.name : msg.userName || 'Unknown';
@@ -1991,24 +1774,29 @@
                     `;
                 });
             }
+
             html += `
                     </div>
                     <div class="chat-input-row">
                         <input type="text" id="chatInput" placeholder="${t('chatPlaceholder')}" maxlength="200">
-                        <button class="btn btn-primary" onclick="sendChatMessage()">${t('chatSend')}</button>
+                        <button class="btn btn-primary" onclick="sendChatMessageHandler()">${t('chatSend')}</button>
                     </div>
                 </div>
             `;
+
             container.innerHTML = html;
+
+            // Прокрутка вниз
             const messagesDiv = document.getElementById('chatMessages');
             if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Обработка Enter
             document.getElementById('chatInput')?.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') sendChatMessage();
+                if (e.key === 'Enter') sendChatMessageHandler();
             });
-            applyLanguage();
         }
 
-        async function sendChatMessage() {
+        function sendChatMessageHandler() {
             const input = document.getElementById('chatInput');
             if (!input) return;
             const text = input.value.trim();
@@ -2017,25 +1805,8 @@
                 showToast('❌ ' + t('loginRequired'), 'error');
                 return;
             }
-            const msg = {
-                id: 'msg_' + Date.now(),
-                userId: currentUser.id,
-                userName: currentUser.name,
-                text: text,
-                timestamp: new Date().toISOString()
-            };
-            try {
-                await loadChatMessages();
-                chatMessages.push(msg);
-                await saveChatMessages(chatMessages);
-                input.value = '';
-                const container = document.getElementById('content');
-                renderChat(container);
-                const messagesDiv = document.getElementById('chatMessages');
-                if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
+            sendChatMessage(currentUser.id, currentUser.name, text);
+            input.value = '';
         }
 
         // ============================================================
