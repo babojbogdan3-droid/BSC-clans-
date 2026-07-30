@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           СТИЛИ (обновлены для юзернейма)
+           СТИЛИ (те же, что в последней версии, без изменений)
            ============================================================ */
         * {
             margin: 0;
@@ -548,7 +548,7 @@
         .footer-links a:hover { color: #fff; }
 
         /* ============================================================
-           АДМИН-ПАНЕЛЬ (новые стили)
+           АДМИН-ПАНЕЛЬ
            ============================================================ */
         .admin-panel {
             display: flex;
@@ -673,7 +673,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <header class="header">
             <h1>BSC</h1>
             <div class="profile-btn-wrap">
@@ -694,7 +693,6 @@
             </div>
         </header>
 
-        <!-- MENU -->
         <div class="menu">
             <button class="btn btn-primary" onclick="showTab('clans')" id="tabClans">🔴 КЛАНЫ</button>
             <button class="btn" onclick="showTab('requests')" id="tabRequests">📩 ЗАЯВКИ</button>
@@ -703,15 +701,12 @@
             <button class="btn" onclick="showTab('admin')" id="tabAdmin" style="display:none;">🛡️ АДМИН</button>
         </div>
 
-        <!-- CONTENT -->
         <div id="content">
             <div class="loading"><div class="spinner"></div>Загрузка...</div>
         </div>
 
-        <!-- MAIN ACTION -->
         <div id="mainActionButton" style="margin-top:12px;"></div>
 
-        <!-- FOOTER -->
         <footer class="footer" id="mainFooter">
             <div class="footer-top">
                 <div>
@@ -827,13 +822,11 @@
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
         const ADMIN_GAME_ID = '22887924';
-        const BREWPAGE_URL = 'https://brewpage.app/public/TDg5l8lmFi';
 
         let currentUser = null;
         let allUsers = [];
         let allClans = [];
         let allRequests = [];
-        let ratings = [];
         let currentTab = 'clans';
         let editingClanId = null;
 
@@ -863,23 +856,6 @@
         }
 
         // ============================================================
-        // РАБОТА С BREWPAGE
-        // ============================================================
-        async function loadRatings() {
-            try {
-                const resp = await fetch(BREWPAGE_URL);
-                if (!resp.ok) throw new Error('Ошибка загрузки рейтинга');
-                const data = await resp.json();
-                ratings = data.clans || [];
-                return ratings;
-            } catch (e) {
-                console.error('BrewPage error:', e);
-                ratings = [];
-                return [];
-            }
-        }
-
-        // ============================================================
         // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
         function isAdmin(user) {
@@ -901,8 +877,8 @@
         }
 
         function getClanElo(clanId) {
-            const r = ratings.find(x => x.id === clanId);
-            return r ? r.elo : 0;
+            const clan = allClans.find(c => c.id === clanId);
+            return clan && clan.elo !== undefined ? clan.elo : 0;
         }
 
         function showToast(text, type = 'info') {
@@ -929,7 +905,6 @@
                 allUsers = data.users || [];
                 allClans = data.clans || [];
                 allRequests = data.requests || [];
-                await loadRatings();
                 updateFooterStats();
 
                 const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -1170,7 +1145,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР КЛАНОВ (с юзернеймом лидера)
+        // РЕНДЕР КЛАНОВ
         // ============================================================
         async function renderClans(container) {
             await refreshData();
@@ -1254,7 +1229,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР МОЙ КЛАН (с юзернеймом)
+        // РЕНДЕР МОЙ КЛАН
         // ============================================================
         async function renderMyClan(container) {
             await refreshData();
@@ -1314,20 +1289,19 @@
         }
 
         // ============================================================
-        // РЕНДЕР РЕЙТИНГА (с юзернеймом)
+        // РЕНДЕР РЕЙТИНГА
         // ============================================================
         async function renderRating(container) {
             await refreshData();
 
-            if (!ratings.length || !allClans.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>Нет данных для рейтинга</p></div>`;
+            if (!allClans.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>Нет кланов для рейтинга</p></div>`;
                 return;
             }
 
-            const sorted = [...ratings].sort((a, b) => (b.elo || 0) - (a.elo || 0));
-            const activeRatings = sorted.filter(r => allClans.some(c => c.id === r.id));
+            const sorted = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
 
-            if (!activeRatings.length) {
+            if (!sorted.length) {
                 container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>Нет кланов с рейтингом</p></div>`;
                 return;
             }
@@ -1339,7 +1313,7 @@
                 <div class="rating-table">
             `;
 
-            activeRatings.forEach((r, index) => {
+            sorted.forEach((clan, index) => {
                 const place = index + 1;
                 let placeClass = '';
                 let medal = '';
@@ -1348,21 +1322,21 @@
                     medal = '🥈'; } else if (place === 3) { placeClass = 'bronze';
                     medal = '🥉'; }
 
-                const clan = allClans.find(c => c.id === r.id);
-                const leader = clan ? getClanLeader(clan) : null;
+                const leader = getClanLeader(clan);
                 const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                const elo = getClanElo(clan.id);
 
                 html += `
                     <div class="rating-row">
                         <span class="place ${placeClass}">${medal || place}</span>
                         <div class="clan-info">
                             <div class="name">
-                                ${r.name || 'Неизвестно'}
+                                ${clan.name}
                                 ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
-                                <span class="tag">[${r.tag || '??'}]</span>
+                                <span class="tag">[${clan.tag}]</span>
                             </div>
                         </div>
-                        <span class="elo">${r.elo || 0} ELO</span>
+                        <span class="elo">${elo} ELO</span>
                     </div>
                 `;
             });
@@ -1372,7 +1346,7 @@
         }
 
         // ============================================================
-        // НОВАЯ АДМИН-ПАНЕЛЬ (с карточками и редактированием elo)
+        // АДМИН-ПАНЕЛЬ (с сохранением elo в JSONBin)
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
@@ -1398,11 +1372,7 @@
             if (!allClans.length) {
                 html += `<div class="empty" style="padding:20px;">Нет кланов для управления</div>`;
             } else {
-                const sortedClans = [...allClans].sort((a, b) => {
-                    const eloA = getClanElo(a.id);
-                    const eloB = getClanElo(b.id);
-                    return eloB - eloA;
-                });
+                const sortedClans = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
 
                 sortedClans.forEach(clan => {
                     const elo = getClanElo(clan.id);
@@ -1434,7 +1404,7 @@
         }
 
         // ============================================================
-        // АДМИН: УСТАНОВИТЬ ELO
+        // АДМИН: УСТАНОВИТЬ ELO (в JSONBin)
         // ============================================================
         async function adminSetElo(clanId) {
             const input = document.getElementById(`elo_input_${clanId}`);
@@ -1446,32 +1416,18 @@
             }
 
             try {
-                // Обновляем локально
-                const localClan = ratings.find(r => r.id === clanId);
-                if (localClan) {
-                    localClan.elo = newElo;
-                } else {
-                    const clanFromMain = allClans.find(c => c.id === clanId);
-                    if (clanFromMain) {
-                        ratings.push({
-                            id: clanId,
-                            name: clanFromMain.name,
-                            tag: clanFromMain.tag,
-                            elo: newElo
-                        });
-                    } else {
-                        showToast('❌ Клан не найден', 'error');
-                        return;
-                    }
+                const data = await loadData();
+                const clan = data.clans.find(c => c.id === clanId);
+                if (!clan) {
+                    showToast('❌ Клан не найден', 'error');
+                    return;
                 }
-
-                // Обновляем интерфейс админки
+                clan.elo = newElo;
+                await saveData(data);
+                await refreshData();
+                showToast(`✅ ELO для "${clan.name}" обновлён до ${newElo}`, 'success');
                 renderAdmin(document.getElementById('content'));
-                showToast(`✅ ELO для клана обновлён до ${newElo} (локально)`, 'success');
-
-                // Инструкция для BrewPage
-                showToast('⚠️ Для сохранения на BrewPage скачай rating.json и загрузи заново', 'info');
-
+                showTab('clans');
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1501,39 +1457,18 @@
 
                 const newClan = {
                     id: 'clan_' + Date.now(),
-                    name,
-                    tag,
+                    name: name,
+                    tag: tag,
                     leaderId: currentUser.id,
                     members: [currentUser.id],
                     description: desc,
                     contact: '',
                     channel: '',
+                    elo: 0,
                     created: new Date().toISOString()
                 };
                 data.clans.push(newClan);
                 await saveData(data);
-
-                // Добавляем в рейтинг
-                try {
-                    const resp = await fetch(BREWPAGE_URL);
-                    const brewData = await resp.json();
-                    if (!brewData.clans) brewData.clans = [];
-                    brewData.clans.push({
-                        id: newClan.id,
-                        name: name,
-                        tag: tag,
-                        elo: 0
-                    });
-                    ratings.push({
-                        id: newClan.id,
-                        name: name,
-                        tag: tag,
-                        elo: 0
-                    });
-                    showToast('⚠️ Для сохранения рейтинга обнови файл на BrewPage', 'info');
-                } catch (e) {
-                    console.warn('BrewPage error:', e);
-                }
 
                 currentUser.clanId = newClan.id;
                 currentUser.role = 'leader';
@@ -1602,7 +1537,7 @@
         }
 
         // ============================================================
-        // ПРОСМОТР КЛАНА (с юзернеймом)
+        // ПРОСМОТР КЛАНА
         // ============================================================
         async function viewClan(clanId) {
             await refreshData();
@@ -1742,8 +1677,6 @@
                     currentUser.clanId = null;
                     localStorage.setItem('bsc_user', JSON.stringify(currentUser));
                 }
-                // Удаляем из рейтинга
-                ratings = ratings.filter(r => r.id !== clanId);
                 await saveData(data);
                 await refreshData();
                 showToast('✅ Клан удалён', 'success');
@@ -1840,7 +1773,7 @@
         }
 
         // ============================================================
-        // АДМИН ФУНКЦИИ (удаление, бан)
+        // АДМИН ФУНКЦИИ
         // ============================================================
         async function adminDeleteUser(userId) {
             if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
@@ -1921,7 +1854,6 @@
             allUsers = data.users || [];
             allClans = data.clans || [];
             allRequests = data.requests || [];
-            await loadRatings();
             if (currentUser) {
                 const updated = allUsers.find(u => u.id === currentUser.id);
                 if (updated) {
