@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BSC Clans</title>
     <script src="https://telegram.org/js/telegram.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СБРОС
+           ОБЩИЙ СБРОС И ПЕРЕМЕННЫЕ
            ============================================================ */
         * {
             margin: 0;
@@ -15,29 +16,125 @@
             box-sizing: border-box;
         }
         :root {
-            --bg-primary: #0b0e1a;
-            --bg-card: rgba(255, 255, 255, 0.04);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --text-primary: #f0f4ff;
-            --text-secondary: #a0b4d9;
-            --accent-cyan: #00e5ff;
-            --accent-purple: #b388ff;
-            --accent-glow: rgba(0, 229, 255, 0.25);
-            --radius: 16px;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+            --sky-start: #74b9ff;
+            --sky-end: #dfe6e9;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --card-border: rgba(255, 255, 255, 0.4);
+            --text-primary: #1e2a3a;
+            --text-secondary: #3d4f63;
+            --accent-blue: #0984e3;
+            --accent-light: #74b9ff;
+            --shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            --radius: 20px;
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: var(--bg-primary);
-            background-image: radial-gradient(circle at 20% 30%, rgba(0, 229, 255, 0.04) 0%, transparent 50%),
-                              radial-gradient(circle at 80% 70%, rgba(179, 136, 255, 0.04) 0%, transparent 50%);
-            color: var(--text-primary);
+            font-family: var(--font);
             min-height: 100vh;
-            padding: 16px;
+            background: linear-gradient(160deg, var(--sky-start) 0%, var(--sky-end) 100%);
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            backdrop-filter: blur(2px);
         }
+
+        /* ============================================================
+           ОБЛАКА (анимированные)
+           ============================================================ */
+        .clouds {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 1000px;
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+            animation: floatCloud linear infinite;
+            backdrop-filter: blur(2px);
+        }
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+            box-shadow: inherit;
+        }
+        .cloud1 {
+            width: 180px;
+            height: 50px;
+            top: 10%;
+            left: -200px;
+            animation-duration: 25s;
+            animation-delay: 0s;
+        }
+        .cloud1::after {
+            width: 80px;
+            height: 80px;
+            top: -40px;
+            left: 20px;
+        }
+        .cloud2 {
+            width: 220px;
+            height: 60px;
+            top: 25%;
+            left: -250px;
+            animation-duration: 30s;
+            animation-delay: -5s;
+        }
+        .cloud2::after {
+            width: 100px;
+            height: 100px;
+            top: -50px;
+            left: 30px;
+        }
+        .cloud3 {
+            width: 160px;
+            height: 45px;
+            top: 55%;
+            left: -180px;
+            animation-duration: 28s;
+            animation-delay: -10s;
+        }
+        .cloud3::after {
+            width: 70px;
+            height: 70px;
+            top: -35px;
+            left: 15px;
+        }
+        .cloud4 {
+            width: 200px;
+            height: 55px;
+            top: 80%;
+            left: -220px;
+            animation-duration: 32s;
+            animation-delay: -3s;
+        }
+        .cloud4::after {
+            width: 90px;
+            height: 90px;
+            top: -45px;
+            left: 25px;
+        }
+        @keyframes floatCloud {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw + 300px)); }
+        }
+
+        /* ============================================================
+           КОНТЕЙНЕР
+           ============================================================ */
         .container {
             max-width: 480px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         /* ============================================================
@@ -47,44 +144,45 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
+            padding: 16px 20px;
+            background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
             border-radius: var(--radius);
-            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
         }
         .header h1 {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-primary);
             letter-spacing: -0.5px;
+        }
+        .header h1 span {
+            color: var(--accent-blue);
         }
         .profile-btn-wrap {
             position: relative;
         }
         .profile-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-glass);
-            color: var(--text-primary);
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            font-size: 18px;
+            background: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            font-size: 20px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
         }
         .profile-btn:hover {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 24px var(--accent-glow);
-            transform: scale(1.05);
+            transform: scale(1.06);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
         }
         .profile-btn .badge {
             position: absolute;
@@ -92,51 +190,41 @@
             right: -4px;
             background: #ff3d71;
             color: #fff;
-            font-size: 9px;
+            font-size: 10px;
+            font-weight: 700;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            border: 2px solid var(--bg-primary);
+            border: 2px solid white;
         }
         .profile-dropdown {
             position: absolute;
-            top: 52px;
+            top: 54px;
             right: 0;
-            background: rgba(20, 26, 48, 0.92);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
             border-radius: var(--radius);
             padding: 16px;
-            min-width: 220px;
+            min-width: 200px;
             box-shadow: var(--shadow);
             display: none;
             z-index: 200;
             animation: fadeSlide 0.25s ease;
         }
-        .profile-dropdown.show {
-            display: block;
-        }
+        .profile-dropdown.show { display: block; }
         @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .profile-dropdown .info {
-            margin-bottom: 12px;
-        }
+        .profile-dropdown .info { margin-bottom: 12px; }
         .profile-dropdown .info .name {
             font-weight: 600;
             font-size: 15px;
+            color: var(--text-primary);
         }
         .profile-dropdown .info .detail {
             color: var(--text-secondary);
@@ -149,66 +237,61 @@
            ============================================================ */
         .menu {
             display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 8px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         .menu .btn {
             flex: 1;
-            text-align: center;
-            font-size: 12px;
-            padding: 8px 4px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glass);
-            color: var(--text-secondary);
-            transition: all 0.3s;
-            cursor: pointer;
+            padding: 10px 4px;
+            border-radius: 12px;
             font-weight: 600;
+            font-size: 13px;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: center;
         }
         .menu .btn:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--accent-cyan);
+            background: rgba(255,255,255,0.6);
+            transform: translateY(-2px);
         }
         .menu .btn-primary {
-            background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(179, 136, 255, 0.15));
-            border-color: var(--accent-cyan);
-            color: var(--text-primary);
-            box-shadow: 0 0 20px var(--accent-glow);
+            background: white;
+            color: var(--accent-blue);
+            border-color: white;
+            box-shadow: 0 4px 16px rgba(9, 132, 227, 0.15);
         }
         .menu .btn-primary:hover {
-            transform: scale(1.02);
+            box-shadow: 0 8px 28px rgba(9, 132, 227, 0.25);
+            transform: translateY(-2px);
         }
 
         /* ============================================================
            КАРТОЧКИ
            ============================================================ */
         .card {
-            background: var(--bg-card);
+            background: var(--card-bg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--card-border);
             border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 14px;
-            transition: all 0.3s;
+            padding: 18px;
+            margin-bottom: 16px;
             box-shadow: var(--shadow);
+            transition: all 0.3s;
             animation: fadeUp 0.4s ease;
         }
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card:hover {
-            border-color: var(--accent-cyan);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.1);
         }
         .card-header {
             display: flex;
@@ -219,89 +302,105 @@
         .card-title {
             font-size: 18px;
             font-weight: 700;
+            color: var(--text-primary);
         }
         .card-tag {
-            color: var(--accent-cyan);
             font-weight: 700;
             font-size: 13px;
-            background: rgba(0, 229, 255, 0.1);
-            padding: 2px 12px;
+            color: var(--accent-blue);
+            background: rgba(9,132,227,0.08);
+            padding: 2px 14px;
             border-radius: 20px;
-            border: 1px solid rgba(0, 229, 255, 0.15);
+            border: 1px solid rgba(9,132,227,0.15);
         }
         .card-sub {
             color: var(--text-secondary);
-            font-size: 13px;
-            margin: 4px 0 10px 0;
+            font-size: 14px;
+            margin: 4px 0 12px 0;
         }
         .card-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         /* ============================================================
            КНОПКИ
            ============================================================ */
         .btn {
-            padding: 6px 16px;
+            padding: 8px 18px;
             border: none;
-            border-radius: 8px;
-            font-size: 12px;
+            border-radius: 12px;
             font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text-primary);
-            border: 1px solid var(--border-glass);
+            transition: all 0.25s;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            background: rgba(255,255,255,0.6);
+            color: var(--text-primary);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
         .btn:hover {
-            transform: scale(1.04);
-            box-shadow: 0 0 20px var(--accent-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         }
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            color: #0b0e1a;
+            background: linear-gradient(135deg, #0984e3, #74b9ff);
+            color: white;
             border: none;
+            box-shadow: 0 4px 16px rgba(9,132,227,0.25);
         }
         .btn-primary:hover {
-            box-shadow: 0 0 32px var(--accent-glow);
+            box-shadow: 0 8px 32px rgba(9,132,227,0.35);
+            transform: translateY(-2px);
         }
         .btn-success {
-            background: #00e676;
-            color: #0b0e1a;
+            background: #00b894;
+            color: white;
             border: none;
+        }
+        .btn-success:hover {
+            background: #00a381;
+            transform: translateY(-2px);
         }
         .btn-danger {
             background: #ff3d71;
-            color: #fff;
+            color: white;
             border: none;
+        }
+        .btn-danger:hover {
+            background: #e62e5c;
+            transform: translateY(-2px);
         }
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-glass);
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(255,255,255,0.6);
         }
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255,255,255,0.8);
         }
         .btn-gold {
-            background: #ffd54f;
-            color: #0b0e1a;
+            background: #fdcb6e;
+            color: #1e2a3a;
             border: none;
         }
+        .btn-gold:hover {
+            background: #f6b93b;
+            transform: translateY(-2px);
+        }
         .btn-sm {
-            padding: 4px 12px;
-            font-size: 11px;
+            padding: 4px 14px;
+            font-size: 12px;
         }
         .btn-block {
             width: 100%;
             justify-content: center;
-            padding: 10px;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 15px;
         }
 
         /* ============================================================
@@ -310,9 +409,8 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(6px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -320,22 +418,15 @@
             z-index: 1000;
             animation: fadeIn 0.25s ease;
         }
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .modal {
-            background: rgba(20, 26, 48, 0.95);
+            background: rgba(255,255,255,0.92);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--card-border);
             border-radius: var(--radius);
             padding: 24px;
             max-width: 400px;
@@ -346,21 +437,14 @@
             animation: slideUp 0.3s ease;
         }
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .modal h2 {
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
             margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
         .modal label {
             display: block;
@@ -373,19 +457,20 @@
         .modal textarea,
         .modal select {
             width: 100%;
-            padding: 10px 12px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
-            border-radius: 8px;
+            padding: 12px 14px;
+            background: white;
+            border: 1px solid #dfe6e9;
+            border-radius: 12px;
             color: var(--text-primary);
             font-size: 14px;
-            transition: border 0.3s;
+            font-family: var(--font);
+            transition: border 0.2s;
         }
         .modal input:focus,
         .modal textarea:focus {
             outline: none;
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 16px var(--accent-glow);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 4px rgba(9,132,227,0.08);
         }
         .modal textarea {
             resize: vertical;
@@ -396,10 +481,7 @@
             gap: 10px;
             margin-top: 18px;
         }
-        .modal-actions .btn {
-            flex: 1;
-            justify-content: center;
-        }
+        .modal-actions .btn { flex: 1; justify-content: center; }
 
         /* ============================================================
            УЧАСТНИКИ
@@ -408,19 +490,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 4px;
-            border-left: 3px solid var(--accent-cyan);
+            padding: 8px 12px;
+            background: white;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 6px;
+            border-left: 4px solid var(--accent-blue);
         }
         .member-row .role-tag {
-            font-size: 10px;
+            font-size: 11px;
             color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0 8px;
-            border-radius: 10px;
+            background: #f1f2f6;
+            padding: 0 10px;
+            border-radius: 12px;
         }
         .member-row .actions {
             display: flex;
@@ -434,52 +516,38 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 0;
+            border-bottom: 1px solid #ecf0f1;
         }
-        .request-item:last-child {
-            border-bottom: none;
-        }
-        .request-item .req-name {
-            font-weight: 500;
-        }
-        .request-item .req-date {
-            color: var(--text-secondary);
-            font-size: 12px;
-        }
+        .request-item:last-child { border-bottom: none; }
+        .request-item .req-name { font-weight: 500; }
+        .request-item .req-date { color: var(--text-secondary); font-size: 12px; }
 
         /* ============================================================
-           ПУСТЫЕ СОСТОЯНИЯ / ЗАГРУЗКА
+           ПУСТЫЕ СОСТОЯНИЯ
            ============================================================ */
         .empty {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             color: var(--text-secondary);
         }
-        .empty .icon {
-            font-size: 40px;
-            display: block;
-            margin-bottom: 10px;
-        }
+        .empty .icon { font-size: 48px; display: block; margin-bottom: 12px; }
+
         .loading {
             text-align: center;
-            padding: 30px;
+            padding: 40px;
             color: var(--text-secondary);
         }
         .spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255, 255, 255, 0.06);
-            border-top: 3px solid var(--accent-cyan);
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid var(--accent-blue);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 12px;
+            margin: 0 auto 16px;
         }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ============================================================
            TOAST
@@ -489,11 +557,10 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(20, 26, 48, 0.92);
+            background: rgba(255,255,255,0.92);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border-glass);
-            padding: 12px 24px;
+            border: 1px solid var(--card-border);
+            padding: 14px 28px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             z-index: 2000;
@@ -504,18 +571,10 @@
             color: var(--text-primary);
             animation: fadeUp 0.3s ease;
         }
-        .toast.show {
-            display: block;
-        }
-        .toast.success {
-            border-color: #00e676;
-        }
-        .toast.error {
-            border-color: #ff3d71;
-        }
-        .toast.info {
-            border-color: var(--accent-cyan);
-        }
+        .toast.show { display: block; }
+        .toast.success { border-color: #00b894; }
+        .toast.error { border-color: #ff3d71; }
+        .toast.info { border-color: var(--accent-blue); }
 
         /* ============================================================
            ФУТЕР
@@ -523,34 +582,36 @@
         .footer {
             text-align: center;
             color: var(--text-secondary);
-            font-size: 11px;
-            margin-top: 24px;
+            font-size: 12px;
+            margin-top: 28px;
             padding-top: 16px;
-            border-top: 1px solid var(--border-glass);
+            border-top: 1px solid rgba(255,255,255,0.3);
         }
 
         /* ============================================================
            АДАПТИВ
            ============================================================ */
         @media (max-width: 480px) {
-            .header h1 {
-                font-size: 18px;
-            }
-            .modal {
-                padding: 16px;
-            }
-            .menu .btn {
-                font-size: 11px;
-                padding: 6px 2px;
-            }
+            body { padding: 12px; }
+            .header h1 { font-size: 20px; }
+            .menu .btn { font-size: 11px; padding: 8px 2px; }
+            .modal { padding: 16px; }
         }
     </style>
 </head>
 <body>
+    <!-- ОБЛАКА -->
+    <div class="clouds">
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+        <div class="cloud cloud4"></div>
+    </div>
+
     <div class="container">
         <!-- HEADER -->
         <header class="header">
-            <h1>⚡ BSC Clans</h1>
+            <h1>☁️ BSC Clans</h1>
             <div class="profile-btn-wrap">
                 <button class="profile-btn" onclick="toggleProfile()" id="profileToggle">
                     👤
@@ -564,7 +625,7 @@
                         <div class="detail" id="profRole">Роль: —</div>
                     </div>
                     <button class="btn btn-secondary btn-block btn-sm" onclick="openEditProfile()">✏️ Редактировать профиль</button>
-                    <button class="btn btn-danger btn-block btn-sm" onclick="logoutUser()" style="margin-top:6px;">🚪 Выйти</button>
+                    <button class="btn btn-danger btn-block btn-sm" onclick="logoutUser()" style="margin-top:8px;">🚪 Выйти</button>
                 </div>
             </div>
         </header>
@@ -589,7 +650,7 @@
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКИ (все те же, без изменений) -->
+    <!-- МОДАЛКИ (без изменений) -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -673,8 +734,7 @@
 
     <script>
         // ============================================================
-        // ВЕСЬ JS КОД (ТОЧНО ТАКОЙ ЖЕ, КАК В ПОСЛЕДНЕЙ РАБОЧЕЙ ВЕРСИИ)
-        // Я НЕ МЕНЯЛ НИЧЕГО, ЧТОБЫ НЕ СЛОМАТЬ
+        // ВЕСЬ JS (точно такой же, как в последней рабочей версии)
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
@@ -687,7 +747,6 @@
         let currentTab = 'clans';
         let editingClanId = null;
 
-        // Работа с JSONBin
         async function loadData() {
             const resp = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                 headers: { 'X-Master-Key': JSONBIN_API_KEY }
@@ -731,7 +790,6 @@
             t._timer = setTimeout(() => t.classList.remove('show'), 2500);
         }
 
-        // Инициализация
         async function initApp() {
             try {
                 const data = await loadData();
@@ -772,7 +830,6 @@
                         allUsers = ud.users || [];
                     }
 
-                    // АВТОМАТИЧЕСКОЕ ВОССТАНОВЛЕНИЕ CLANID ДЛЯ ЛИДЕРОВ
                     if (user.role === 'leader' && !user.clanId) {
                         const myClan = allClans.find(c => c.leaderId === user.id);
                         if (myClan) {
@@ -808,7 +865,6 @@
             }
         }
 
-        // Регистрация
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
             const tgName = document.getElementById('regTelegram').value.trim();
@@ -854,7 +910,6 @@
             renderMainActionButton();
         }
 
-        // Профиль
         function openEditProfile() {
             if (!currentUser) return;
             document.getElementById('editProfName').value = currentUser.name || '';
@@ -898,7 +953,6 @@
             }
         }
 
-        // UI
         function updateUI() {
             if (!currentUser) return;
             document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
@@ -950,7 +1004,6 @@
             else container.innerHTML = '<div class="empty">Неизвестная вкладка</div>';
         }
 
-        // Рендеры
         async function renderClans(container) {
             await refreshData();
             if (!allClans.length) {
@@ -1029,7 +1082,7 @@
                         const user = data.users.find(u => u.id === currentUser.id);
                         if (user) { user.clanId = clan.id;
                             await saveData(data); }
-                    } catch (e) { /* игнорируем */ }
+                    } catch (e) {}
                 }
             }
             if (!clan) {
@@ -1045,7 +1098,7 @@
                 memHtml += `<div class="member-row"><span>${user ? user.name : mid}</span><span class="role-tag">${mid === clan.leaderId ? '👑 Глава' : 'Участник'}</span></div>`;
             });
             container.innerHTML = `
-                <div class="card" style="border-color:var(--accent-cyan);">
+                <div class="card" style="border-color:var(--accent-blue);">
                     <div class="card-header"><span class="card-title">${clan.name}</span><span class="card-tag">[${clan.tag}]</span></div>
                     <div class="card-sub">Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length}</div>
                     ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
@@ -1065,10 +1118,10 @@
             }
             await refreshData();
             let html = `
-                <div class="card" style="border-color:#ffd54f;">
+                <div class="card" style="border-color:#fdcb6e;">
                     <div style="display:flex;justify-content:space-between;">
                         <h3>🛡️ Админ-панель</h3>
-                        <span style="color:#ffd54f;font-size:12px;">Админ</span>
+                        <span style="color:#fdcb6e;font-size:12px;">Админ</span>
                     </div>
                     <div style="color:var(--text-secondary);font-size:13px;">Кланов: ${allClans.length} | Пользователей: ${allUsers.length} | Заявок: ${allRequests.filter(r => r.status === 'pending').length}</div>
                     <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ Очистить всё</button>
@@ -1080,14 +1133,14 @@
                     const isAdminUser = isAdmin(user);
                     const isBanned = user.banned === true;
                     html += `
-                        <div class="card" style="border-color:${isAdminUser ? '#ffd54f' : 'var(--border-glass)'};">
+                        <div class="card" style="border-color:${isAdminUser ? '#fdcb6e' : 'var(--card-border)'};">
                             <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
                                 <div><strong>${user.name}</strong> ${isAdminUser ? '👑' : ''} ${isBanned ? '🔨' : ''}<br><span style="color:var(--text-secondary);font-size:12px;">Game ID: ${user.gameId}</span></div>
                                 <div>
                                     ${!isAdminUser ? `
                                         <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌</button>
                                         ${isBanned ? `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅</button>` : `<button class="btn btn-danger btn-sm" onclick="adminBanUser('${user.id}')">🔨</button>`}
-                                    ` : `<span style="color:#ffd54f;font-size:12px;">👑 Админ</span>`}
+                                    ` : `<span style="color:#fdcb6e;font-size:12px;">👑 Админ</span>`}
                                 </div>
                             </div>
                         </div>
@@ -1098,7 +1151,6 @@
             container.innerHTML = html;
         }
 
-        // Действия с кланами (без изменений)
         function openCreateClan() {
             if (currentUser.clanId) return showToast('❌ Вы уже в клане', 'error');
             document.getElementById('newClanName').value = '';
@@ -1402,7 +1454,6 @@
             }
         }
 
-        // Админ функции
         async function adminDeleteUser(userId) {
             if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
             const user = allUsers.find(u => u.id === userId);
@@ -1473,7 +1524,6 @@
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
-        // Вспомогательные
         async function refreshData() {
             const data = await loadData();
             allUsers = data.users || [];
@@ -1498,7 +1548,6 @@
             dd.classList.toggle('show');
         }
 
-        // Выход
         async function logoutUser() {
             if (!confirm('Выйти из аккаунта?')) return;
             try {
@@ -1522,7 +1571,6 @@
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
-        // Запуск
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
