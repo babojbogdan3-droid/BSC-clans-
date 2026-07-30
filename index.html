@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           СТИЛИ (с кнопкой языка в хедере)
+           СТИЛИ (с чатом)
            ============================================================ */
         * {
             margin: 0;
@@ -400,83 +400,76 @@
         }
         .modal-actions .btn { flex: 1; justify-content: center; }
 
-        .member-row {
+        /* ============================================================
+           СТИЛИ ДЛЯ ЧАТА
+           ============================================================ */
+        .chat-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 6px;
-            border-left: 3px solid var(--accent);
+            flex-direction: column;
+            height: 70vh;
         }
-        .member-row .role-tag {
-            font-size: 11px;
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.04);
-            padding: 0 10px;
-            border-radius: 12px;
-        }
-        .member-row .actions { display: flex; gap: 4px; }
-
-        .request-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
-        .request-item:last-child { border-bottom: none; }
-        .request-item .req-name { font-weight: 500; }
-        .request-item .req-date { color: var(--text-secondary); font-size: 12px; }
-
-        .rating-table {
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
             display: flex;
             flex-direction: column;
             gap: 6px;
+            margin-bottom: 10px;
         }
-        .rating-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.03);
+        .chat-message {
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 10px;
-            font-size: 14px;
+            padding: 8px 12px;
+            border-left: 3px solid var(--accent);
         }
-        .rating-row .place {
-            font-weight: 700;
-            font-size: 16px;
-            min-width: 32px;
-        }
-        .rating-row .place.gold { color: #f1c40f; }
-        .rating-row .place.silver { color: #bdc3c7; }
-        .rating-row .place.bronze { color: #e67e22; }
-        .rating-row .clan-info {
-            flex: 1;
-            margin-left: 12px;
-        }
-        .rating-row .clan-info .name {
-            font-weight: 600;
+        .chat-message .msg-header {
             display: flex;
-            align-items: center;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
+            align-items: baseline;
+            font-size: 13px;
         }
-        .rating-row .clan-info .name .leader-contact {
-            font-size: 12px;
-            font-weight: 400;
-            color: var(--text-secondary);
-            opacity: 0.6;
+        .chat-message .msg-header .msg-user {
+            font-weight: 600;
+            color: var(--text-primary);
         }
-        .rating-row .clan-info .tag {
-            color: var(--text-secondary);
-            font-size: 12px;
-        }
-        .rating-row .elo {
-            font-weight: 700;
+        .chat-message .msg-header .msg-clan {
             color: var(--accent);
+            font-size: 12px;
+        }
+        .chat-message .msg-header .msg-time {
+            color: var(--text-secondary);
+            font-size: 11px;
+            margin-left: auto;
+        }
+        .chat-message .msg-text {
+            margin-top: 4px;
+            font-size: 14px;
+            word-wrap: break-word;
+        }
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .chat-input-row input {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: var(--font);
+        }
+        .chat-input-row input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(91, 141, 239, 0.1);
+        }
+        .chat-input-row .btn {
+            padding: 10px 18px;
         }
 
         .empty {
@@ -662,6 +655,9 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            .chat-container { height: 65vh; }
+            .chat-input-row input { font-size: 13px; padding: 8px 12px; }
+            .chat-input-row .btn { padding: 8px 14px; font-size: 13px; }
         }
     </style>
 </head>
@@ -696,6 +692,7 @@
             <button class="btn" onclick="showTab('requests')" id="tabRequests">📩 ЗАЯВКИ</button>
             <button class="btn" onclick="showTab('myclan')" id="tabMyClan">⭐ МОЙ КЛАН</button>
             <button class="btn" onclick="showTab('rating')" id="tabRating">🏆 РЕЙТИНГ</button>
+            <button class="btn" onclick="showTab('chat')" id="tabChat">💬 ЧАТ</button>
             <button class="btn" onclick="showTab('admin')" id="tabAdmin" style="display:none;">🛡️ АДМИН</button>
         </div>
 
@@ -727,7 +724,7 @@
         </footer>
     </div>
 
-    <!-- МОДАЛКА ВЫБОРА ЯЗЫКА (ПОЯВЛЯЕТСЯ ПРИ ПЕРВОМ ВХОДЕ) -->
+    <!-- МОДАЛКА ВЫБОРА ЯЗЫКА -->
     <div class="modal-overlay" id="langModal">
         <div class="modal">
             <h2 id="langModalTitle">🌐 Выберите язык / Select language</h2>
@@ -735,7 +732,7 @@
                 <button class="btn btn-primary" onclick="setLanguage('ru')" style="font-size:18px; padding:12px 24px;">🇷🇺 Русский</button>
                 <button class="btn btn-primary" onclick="setLanguage('en')" style="font-size:18px; padding:12px 24px;">🇬🇧 English</button>
             </div>
-            <p style="color:var(--text-secondary); text-align:center; font-size:13px;" id="langModalHint">Выберите язык, который будет использоваться в приложении. / Select the language to be used in the app.</p>
+            <p style="color:var(--text-secondary); text-align:center; font-size:13px;" id="langModalHint">Выберите язык, который будет использоваться в приложении.</p>
         </div>
     </div>
 
@@ -847,11 +844,28 @@
 
     <script>
         // ============================================================
+        // НАСТРОЙКИ
+        // ============================================================
+        const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
+        const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
+        const CHAT_BIN_ID = '6a6b8b13f5f4af5e29d6c66a'; // 👈 НОВЫЙ БИН ДЛЯ ЧАТА
+        const ADMIN_GAME_ID = '22887924';
+
+        let currentUser = null;
+        let allUsers = [];
+        let allClans = [];
+        let allRequests = [];
+        let chatMessages = [];
+        let currentTab = 'clans';
+        let editingClanId = null;
+        let banTargetUserId = null;
+        let currentLang = 'ru';
+
+        // ============================================================
         // ПЕРЕВОДЫ
         // ============================================================
         const LANG = {
             ru: {
-                // Общие
                 'loading': 'Загрузка...',
                 'error': 'Ошибка',
                 'close': 'Закрыть',
@@ -874,6 +888,7 @@
                 'requests': 'ЗАЯВКИ',
                 'myclan': 'МОЙ КЛАН',
                 'rating': 'РЕЙТИНГ',
+                'chat': 'ЧАТ',
                 'admin': 'АДМИН',
                 'profile': 'Профиль',
                 'editProfile': 'Редактировать профиль',
@@ -889,7 +904,7 @@
                 'adminPanel': 'Админ-панель',
                 'userManagement': 'Управление пользователями',
                 'eloManagement': 'Управление рейтингом (ELO)',
-                'deleteUserConfirm': '❌ Точно удалить пользователя "{name}" ({id})? Все его данные будут удалены.',
+                'deleteUserConfirm': 'Точно удалить пользователя?',
                 'banUser': 'Забанить пользователя',
                 'banReasonPlaceholder': 'Нарушение правил',
                 'banDaysLabel': 'Срок бана (в днях, 0 = навсегда)',
@@ -958,7 +973,6 @@
                 'changeLanguage': 'Сменить язык',
                 'closeApp': 'Закрыть',
                 'refresh': 'Обновить',
-                // Добавленные для админки
                 'usersList': 'Пользователи',
                 'userId': 'ID',
                 'userGameId': 'Игровой ID',
@@ -1025,10 +1039,16 @@
                 'banSuccess': 'Пользователь забанен',
                 'banError': 'Ошибка бана',
                 'unbanSuccess': 'Пользователь разбанен',
-                'unbanError': 'Ошибка разбана'
+                'unbanError': 'Ошибка разбана',
+                'chatPlaceholder': 'Напишите сообщение...',
+                'chatSend': 'Отправить',
+                'chatEmpty': 'Сообщений пока нет. Будьте первым!',
+                'chatJoined': 'присоединился к чату',
+                'chatLeft': 'покинул чат',
+                'chatClanLabel': 'Клан:',
+                'loginRequired': 'Войдите, чтобы участвовать в чате'
             },
             en: {
-                // General
                 'loading': 'Loading...',
                 'error': 'Error',
                 'close': 'Close',
@@ -1051,6 +1071,7 @@
                 'requests': 'REQUESTS',
                 'myclan': 'MY CLAN',
                 'rating': 'RATING',
+                'chat': 'CHAT',
                 'admin': 'ADMIN',
                 'profile': 'Profile',
                 'editProfile': 'Edit profile',
@@ -1066,7 +1087,7 @@
                 'adminPanel': 'Admin panel',
                 'userManagement': 'User management',
                 'eloManagement': 'ELO management',
-                'deleteUserConfirm': '❌ Delete user "{name}" ({id})? All their data will be removed.',
+                'deleteUserConfirm': 'Delete user?',
                 'banUser': 'Ban user',
                 'banReasonPlaceholder': 'Rules violation',
                 'banDaysLabel': 'Ban duration (days, 0 = forever)',
@@ -1135,7 +1156,6 @@
                 'changeLanguage': 'Change language',
                 'closeApp': 'Close',
                 'refresh': 'Refresh',
-                // Admin
                 'usersList': 'Users',
                 'userId': 'ID',
                 'userGameId': 'Game ID',
@@ -1202,68 +1222,46 @@
                 'banSuccess': 'User banned',
                 'banError': 'Ban error',
                 'unbanSuccess': 'User unbanned',
-                'unbanError': 'Unban error'
+                'unbanError': 'Unban error',
+                'chatPlaceholder': 'Type a message...',
+                'chatSend': 'Send',
+                'chatEmpty': 'No messages yet. Be the first!',
+                'chatJoined': 'joined the chat',
+                'chatLeft': 'left the chat',
+                'chatClanLabel': 'Clan:',
+                'loginRequired': 'Login to participate in the chat'
             }
         };
 
         // ============================================================
-        // НАСТРОЙКИ
-        // ============================================================
-        const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
-        const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
-        const ADMIN_GAME_ID = '22887924';
-
-        let currentUser = null;
-        let allUsers = [];
-        let allClans = [];
-        let allRequests = [];
-        let currentTab = 'clans';
-        let editingClanId = null;
-        let banTargetUserId = null;
-        let currentLang = 'ru'; // 'ru' или 'en'
-
-        // ============================================================
-        // ПЕРЕВОДЫ И ЛОКАЛИЗАЦИЯ
+        // ОСНОВНЫЕ ФУНКЦИИ (без изменений, они уже были)
         // ============================================================
         function t(key) {
-            return LANG[currentLang] && LANG[currentLang][key] !== undefined
-                ? LANG[currentLang][key]
-                : key;
+            return LANG[currentLang] && LANG[currentLang][key] !== undefined ? LANG[currentLang][key] : key;
         }
 
         function applyLanguage() {
-            // Меню
             document.getElementById('tabClans').textContent = t('clans');
             document.getElementById('tabRequests').textContent = t('requests');
             document.getElementById('tabMyClan').textContent = t('myclan');
             document.getElementById('tabRating').textContent = t('rating');
+            document.getElementById('tabChat').textContent = t('chat');
             const adminTab = document.getElementById('tabAdmin');
             if (adminTab) adminTab.textContent = t('admin');
-            
-            // Профиль
             document.getElementById('profileEditBtn').textContent = t('editProfile');
             document.getElementById('profileLangBtn').textContent = t('changeLang');
             document.querySelector('#profileDropdown .btn-danger').textContent = t('logout');
-            
-            // Модалка языка
             document.getElementById('langModalTitle').textContent = t('selectLanguage');
             document.getElementById('langModalHint').textContent = t('selectLanguageHint');
-            
-            // Футер
             document.getElementById('footerBotStatus').textContent = t('botActive');
             document.getElementById('footerCreator').textContent = t('creator');
             document.getElementById('footerChannelLink').textContent = '📢 ' + t('channel');
             document.getElementById('footerChatLink').textContent = '💬 ' + t('chat');
-            
-            // Кнопка языка в хедере
             document.getElementById('headerLangBtn').title = t('changeLanguage');
-            
-            // Обновляем остальные элементы, если они видны
             updateAllTexts();
         }
 
         function updateAllTexts() {
-            // Модалка регистрации
             const regModal = document.getElementById('registerModal');
             if (regModal.classList.contains('show')) {
                 document.getElementById('registerTitle').textContent = t('welcome');
@@ -1275,8 +1273,6 @@
                 document.getElementById('regRoleLeader').textContent = t('roleLeader');
                 document.getElementById('registerBtn').textContent = t('register');
             }
-            
-            // Модалка редактирования профиля
             const editProfileModal = document.getElementById('editProfileModal');
             if (editProfileModal.classList.contains('show')) {
                 document.getElementById('editProfileTitle').textContent = t('editProfile');
@@ -1286,8 +1282,6 @@
                 document.getElementById('editProfileCancel').textContent = t('cancel');
                 document.getElementById('editProfileSave').textContent = t('save');
             }
-            
-            // Модалка создания клана
             const createClanModal = document.getElementById('createClanModal');
             if (createClanModal.classList.contains('show')) {
                 document.getElementById('createClanTitle').textContent = t('createClan');
@@ -1297,8 +1291,6 @@
                 document.getElementById('createClanCancel').textContent = t('cancel');
                 document.getElementById('createClanBtn').textContent = t('create');
             }
-            
-            // Модалка редактирования клана
             const editClanModal = document.getElementById('editClanModal');
             if (editClanModal.classList.contains('show')) {
                 document.getElementById('editClanTitle').textContent = t('editClan');
@@ -1310,8 +1302,6 @@
                 document.getElementById('editClanCancel').textContent = t('cancel');
                 document.getElementById('editClanSave').textContent = t('save');
             }
-            
-            // Модалка бана
             const banModal = document.getElementById('banModal');
             if (banModal.classList.contains('show')) {
                 document.getElementById('banTitle').textContent = t('banUser');
@@ -1320,17 +1310,19 @@
                 document.getElementById('banCancel').textContent = t('cancel');
                 document.getElementById('banConfirm').textContent = t('ban');
             }
-            
-            // Модалка просмотра клана
             const detailModal = document.getElementById('clanDetailModal');
             if (detailModal.classList.contains('show')) {
                 document.getElementById('detailClanClose').textContent = t('close');
             }
+            const chatContainer = document.getElementById('chatMessages');
+            if (chatContainer) {
+                const sendBtn = document.querySelector('.chat-input-row .btn');
+                if (sendBtn) sendBtn.textContent = t('chatSend');
+                const input = document.getElementById('chatInput');
+                if (input) input.placeholder = t('chatPlaceholder');
+            }
         }
 
-        // ============================================================
-        // РАБОТА С ЯЗЫКОМ
-        // ============================================================
         function setLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('bsc_lang', lang);
@@ -1342,13 +1334,9 @@
         function toggleLanguage() {
             const newLang = currentLang === 'ru' ? 'en' : 'ru';
             setLanguage(newLang);
-            // Закрываем профиль, если открыт
             document.getElementById('profileDropdown').classList.remove('show');
         }
 
-        // ============================================================
-        // РАБОТА С JSONBin
-        // ============================================================
         async function loadData() {
             const resp = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
                 headers: { 'X-Master-Key': JSONBIN_API_KEY }
@@ -1369,6 +1357,43 @@
             });
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             return await resp.json();
+        }
+
+        // ============================================================
+        // РАБОТА С ЧАТ-БИНОМ
+        // ============================================================
+        async function loadChatMessages() {
+            try {
+                const resp = await fetch(`https://api.jsonbin.io/v3/b/${CHAT_BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': JSONBIN_API_KEY }
+                });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                const json = await resp.json();
+                chatMessages = json.record?.messages || [];
+                return chatMessages;
+            } catch (e) {
+                console.warn('Chat load error:', e);
+                chatMessages = [];
+                return [];
+            }
+        }
+
+        async function saveChatMessages(messages) {
+            try {
+                const resp = await fetch(`https://api.jsonbin.io/v3/b/${CHAT_BIN_ID}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': JSONBIN_API_KEY
+                    },
+                    body: JSON.stringify({ messages: messages })
+                });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                return await resp.json();
+            } catch (e) {
+                console.error('Chat save error:', e);
+                throw e;
+            }
         }
 
         // ============================================================
@@ -1440,14 +1465,12 @@
         // ============================================================
         async function initApp() {
             try {
-                // Восстанавливаем язык
                 const savedLang = localStorage.getItem('bsc_lang');
                 if (savedLang === 'en' || savedLang === 'ru') {
                     currentLang = savedLang;
                 } else {
-                    // Показываем модалку выбора языка
                     document.getElementById('langModal').classList.add('show');
-                    return; // Ждём выбора языка
+                    return;
                 }
                 applyLanguage();
 
@@ -1457,7 +1480,6 @@
                 allRequests = data.requests || [];
                 updateFooterStats();
 
-                // Проверка истекших банов
                 let changed = false;
                 allUsers.forEach(user => {
                     if (user.bannedUntil && user.bannedUntil !== 'forever') {
@@ -1491,9 +1513,7 @@
 
                 if (user) {
                     if (isUserBanned(user)) {
-                        const banText = user.bannedUntil === 'forever' ? 
-                            t('banForever') : 
-                            t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
+                        const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
                         document.getElementById('content').innerHTML = `
                             <div class="card" style="border-color:#ff3d71;">
                                 <div style="color:#ff3d71;font-size:18px;">${t('accessDenied')}</div>
@@ -1551,7 +1571,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ (с переводом)
+        // РЕГИСТРАЦИЯ
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -1600,7 +1620,7 @@
         }
 
         // ============================================================
-        // ПРОФИЛЬ (с переводом)
+        // ПРОФИЛЬ
         // ============================================================
         function openEditProfile() {
             if (!currentUser) return;
@@ -1609,7 +1629,7 @@
             document.getElementById('editProfGameId').value = currentUser.gameId || '';
             document.getElementById('editProfileModal').classList.add('show');
             document.getElementById('profileDropdown').classList.remove('show');
-            applyLanguage(); // Обновляем переводы внутри модалки
+            applyLanguage();
         }
 
         async function saveProfile() {
@@ -1655,7 +1675,7 @@
             document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
             document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
             const clan = allClans.find(c => c.id === currentUser.clanId);
-            document.getElementById('profClan').textContent = t('clanLabel') + ': ' + (clan ? clan.name : '—');
+            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
             document.getElementById('profRole').textContent = t('role') + ': ' + (currentUser.role === 'admin' ? t('adminLabel') : currentUser.role === 'leader' ? t('roleLeader') : t('roleMember'));
 
             const adminTab = document.getElementById('tabAdmin');
@@ -1695,7 +1715,7 @@
         // ============================================================
         function showTab(tab) {
             currentTab = tab;
-            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabAdmin'].forEach(id => {
+            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabChat', 'tabAdmin'].forEach(id => {
                 const btn = document.getElementById(id);
                 if (btn) btn.className = 'btn';
             });
@@ -1704,6 +1724,7 @@
                 requests: 'tabRequests',
                 myclan: 'tabMyClan',
                 rating: 'tabRating',
+                chat: 'tabChat',
                 admin: 'tabAdmin'
             };
             const active = document.getElementById(map[tab]);
@@ -1715,6 +1736,7 @@
                 requests: renderRequests,
                 myclan: renderMyClan,
                 rating: renderRating,
+                chat: renderChat,
                 admin: renderAdmin
             };
             if (funcs[tab]) funcs[tab](container);
@@ -1722,7 +1744,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР КЛАНОВ (с переводом)
+        // РЕНДЕР КЛАНОВ
         // ============================================================
         async function renderClans(container) {
             await refreshData();
@@ -1775,7 +1797,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР ЗАЯВОК (с переводом)
+        // РЕНДЕР ЗАЯВОК
         // ============================================================
         async function renderRequests(container) {
             await refreshData();
@@ -1806,7 +1828,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР МОЙ КЛАН (с переводом)
+        // РЕНДЕР МОЙ КЛАН
         // ============================================================
         async function renderMyClan(container) {
             await refreshData();
@@ -1866,7 +1888,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР РЕЙТИНГА (с переводом)
+        // РЕНДЕР РЕЙТИНГА
         // ============================================================
         async function renderRating(container) {
             await refreshData();
@@ -1923,7 +1945,101 @@
         }
 
         // ============================================================
-        // АДМИН-ПАНЕЛЬ (с переводом)
+        // РЕНДЕР ЧАТА
+        // ============================================================
+        async function renderChat(container) {
+            await refreshData();
+            await loadChatMessages();
+            const now = Date.now();
+            const filtered = chatMessages.filter(m => {
+                const ts = new Date(m.timestamp).getTime();
+                return (now - ts) < 24 * 60 * 60 * 1000;
+            });
+            if (filtered.length !== chatMessages.length) {
+                chatMessages = filtered;
+                await saveChatMessages(chatMessages);
+            }
+
+            if (!currentUser) {
+                container.innerHTML = `<div class="empty"><span class="icon">💬</span><p>${t('loginRequired')}</p></div>`;
+                return;
+            }
+
+            let html = `
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+            `;
+            if (chatMessages.length === 0) {
+                html += `<div class="empty" style="padding:20px;"><span class="icon">💬</span><p>${t('chatEmpty')}</p></div>`;
+            } else {
+                const sorted = [...chatMessages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                sorted.forEach(msg => {
+                    const user = allUsers.find(u => u.id === msg.userId);
+                    const userName = user ? user.name : msg.userName || 'Unknown';
+                    const clan = user ? allClans.find(c => c.id === user.clanId) : null;
+                    const clanName = clan ? `[${clan.tag}]` : '';
+                    const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    html += `
+                        <div class="chat-message">
+                            <div class="msg-header">
+                                <span class="msg-user">${userName}</span>
+                                ${clanName ? `<span class="msg-clan">${clanName}</span>` : ''}
+                                <span class="msg-time">${time}</span>
+                            </div>
+                            <div class="msg-text">${msg.text}</div>
+                        </div>
+                    `;
+                });
+            }
+            html += `
+                    </div>
+                    <div class="chat-input-row">
+                        <input type="text" id="chatInput" placeholder="${t('chatPlaceholder')}" maxlength="200">
+                        <button class="btn btn-primary" onclick="sendChatMessage()">${t('chatSend')}</button>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+            const messagesDiv = document.getElementById('chatMessages');
+            if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            document.getElementById('chatInput')?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') sendChatMessage();
+            });
+            applyLanguage();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+            if (!currentUser) {
+                showToast('❌ ' + t('loginRequired'), 'error');
+                return;
+            }
+            const msg = {
+                id: 'msg_' + Date.now(),
+                userId: currentUser.id,
+                userName: currentUser.name,
+                text: text,
+                timestamp: new Date().toISOString()
+            };
+            try {
+                await loadChatMessages();
+                chatMessages.push(msg);
+                await saveChatMessages(chatMessages);
+                input.value = '';
+                const container = document.getElementById('content');
+                renderChat(container);
+                const messagesDiv = document.getElementById('chatMessages');
+                if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // АДМИН-ПАНЕЛЬ
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
@@ -1986,9 +2102,8 @@
                 });
             }
 
-            html += `</div>`; // userManagement
+            html += `</div>`;
 
-            // Управление рейтингом
             html += `
                 <div class="admin-section">
                     <div class="section-title">⚡ ${t('eloManagement')}</div>
@@ -2019,10 +2134,11 @@
                     `;
                 });
             }
-            html += `</div>`; // eloManagement
+            html += `</div>`;
 
-            html += `</div>`; // admin-panel
+            html += `</div>`;
             container.innerHTML = html;
+            applyLanguage();
         }
 
         // ============================================================
@@ -2073,7 +2189,7 @@
             document.getElementById('banDays').value = 7;
             document.getElementById('banReason').value = '';
             document.getElementById('banModal').classList.add('show');
-            applyLanguage(); // Обновляем переводы внутри модалки
+            applyLanguage();
         }
 
         async function confirmBan() {
