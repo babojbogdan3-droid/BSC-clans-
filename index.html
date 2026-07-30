@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BSC Clans</title>
+    <title>BSC</title>
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           ОСНОВНЫЕ ПЕРЕМЕННЫЕ И СБРОС
+           ГЛОБАЛЬНЫЙ СБРОС
            ============================================================ */
         * {
             margin: 0;
@@ -16,155 +16,62 @@
             box-sizing: border-box;
         }
         :root {
-            --sky-start: #74b9ff;
-            --sky-end: #dfe6e9;
-            --card-bg: rgba(255, 255, 255, 0.82);
-            --card-border: rgba(255, 255, 255, 0.4);
-            --text-primary: #1e2a3a;
-            --text-secondary: #3d4f63;
-            --accent-blue: #0984e3;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --bg: #0b0e17;
+            --card-bg: rgba(255, 255, 255, 0.04);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --text-primary: #f0f4ff;
+            --text-secondary: #8899bb;
+            --accent: #5b8def;
+            --accent-glow: rgba(91, 141, 239, 0.25);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             --radius: 16px;
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         body {
             font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
             min-height: 100vh;
-            background: linear-gradient(160deg, var(--sky-start) 0%, var(--sky-end) 100%);
             padding: 16px;
-            position: relative;
-            overflow-x: hidden;
+            background-image: radial-gradient(circle at 20% 30%, rgba(91, 141, 239, 0.06) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 70%, rgba(91, 141, 239, 0.04) 0%, transparent 50%);
         }
-
-        /* ============================================================
-           ОБЛАКА (ОПТИМИЗИРОВАННЫЕ)
-           ============================================================ */
-        .clouds {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .cloud {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 1000px;
-            will-change: transform;
-            animation: floatCloud linear infinite;
-        }
-        .cloud::after {
-            content: '';
-            position: absolute;
-            background: inherit;
-            border-radius: 50%;
-        }
-        .cloud1 {
-            width: 160px;
-            height: 44px;
-            top: 12%;
-            left: -200px;
-            animation-duration: 28s;
-        }
-        .cloud1::after {
-            width: 70px;
-            height: 70px;
-            top: -35px;
-            left: 20px;
-        }
-        .cloud2 {
-            width: 200px;
-            height: 54px;
-            top: 30%;
-            left: -250px;
-            animation-duration: 34s;
-            animation-delay: -4s;
-        }
-        .cloud2::after {
-            width: 90px;
-            height: 90px;
-            top: -45px;
-            left: 30px;
-        }
-        .cloud3 {
-            width: 140px;
-            height: 38px;
-            top: 65%;
-            left: -180px;
-            animation-duration: 30s;
-            animation-delay: -10s;
-        }
-        .cloud3::after {
-            width: 60px;
-            height: 60px;
-            top: -30px;
-            left: 15px;
-        }
-        @keyframes floatCloud {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(calc(100vw + 300px));
-            }
-        }
-
-        /* ============================================================
-           КОНТЕЙНЕР
-           ============================================================ */
         .container {
             max-width: 480px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
         }
 
         /* ============================================================
-           ХЕДЕР
+           ХЕДЕР (только "BSC")
            ============================================================ */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 14px 18px;
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 18px;
-            position: relative;
-            z-index: 10;
+            padding: 12px 0 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            margin-bottom: 20px;
         }
         .header h1 {
-            font-size: 22px;
+            font-size: 32px;
             font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #fff 30%, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .header h1 span {
-            color: var(--accent-blue);
-        }
-
-        /* ============================================================
-           ПРОФИЛЬ (ВСЕГДА ПОВЕРХ)
-           ============================================================ */
         .profile-btn-wrap {
             position: relative;
             z-index: 999;
         }
         .profile-btn {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: white;
-            border: none;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-            font-size: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            font-size: 20px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -173,7 +80,8 @@
             position: relative;
         }
         .profile-btn:hover {
-            transform: scale(1.05);
+            border-color: var(--accent);
+            box-shadow: 0 0 24px var(--accent-glow);
         }
         .profile-btn .badge {
             position: absolute;
@@ -189,20 +97,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid white;
+            border: 2px solid var(--bg);
         }
         .profile-dropdown {
             position: absolute;
-            top: 52px;
+            top: 54px;
             right: 0;
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--card-border);
+            background: rgba(18, 24, 40, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius);
             padding: 16px;
             min-width: 200px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            box-shadow: var(--shadow);
             display: none;
             z-index: 1000;
             animation: fadeSlide 0.2s ease;
@@ -211,22 +118,13 @@
             display: block;
         }
         @keyframes fadeSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .profile-dropdown .info {
-            margin-bottom: 12px;
-        }
+        .profile-dropdown .info { margin-bottom: 12px; }
         .profile-dropdown .info .name {
             font-weight: 600;
             font-size: 15px;
-            color: var(--text-primary);
         }
         .profile-dropdown .info .detail {
             color: var(--text-secondary);
@@ -239,63 +137,58 @@
            ============================================================ */
         .menu {
             display: flex;
-            gap: 6px;
-            margin-bottom: 18px;
+            gap: 8px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         .menu .btn {
             flex: 1;
             padding: 10px 4px;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 12px;
-            background: rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
         }
         .menu .btn:hover {
-            background: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.12);
         }
         .menu .btn-primary {
-            background: white;
-            color: var(--accent-blue);
-            border-color: white;
-            box-shadow: 0 2px 12px rgba(9, 132, 227, 0.12);
+            background: rgba(91, 141, 239, 0.12);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
         .menu .btn-primary:hover {
-            box-shadow: 0 4px 20px rgba(9, 132, 227, 0.2);
+            background: rgba(91, 141, 239, 0.2);
         }
 
         /* ============================================================
-           КАРТОЧКИ (ЛЁГКИЕ, БЕЗ BLUR)
+           КАРТОЧКИ
            ============================================================ */
         .card {
             background: var(--card-bg);
+            backdrop-filter: blur(4px);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
             padding: 16px;
             margin-bottom: 14px;
             box-shadow: var(--shadow);
-            transition: all 0.2s;
+            transition: all 0.25s;
             animation: fadeUp 0.3s ease;
         }
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(16px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card:hover {
+            border-color: rgba(91, 141, 239, 0.2);
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         }
         .card-header {
             display: flex;
@@ -306,21 +199,28 @@
         .card-title {
             font-size: 18px;
             font-weight: 700;
-            color: var(--text-primary);
         }
         .card-tag {
             font-weight: 700;
             font-size: 13px;
-            color: var(--accent-blue);
-            background: rgba(9, 132, 227, 0.08);
+            color: var(--accent);
+            background: rgba(91, 141, 239, 0.1);
             padding: 2px 14px;
             border-radius: 20px;
-            border: 1px solid rgba(9, 132, 227, 0.12);
+            border: 1px solid rgba(91, 141, 239, 0.15);
         }
         .card-sub {
             color: var(--text-secondary);
             font-size: 14px;
-            margin: 4px 0 12px 0;
+            margin: 4px 0 8px 0;
+        }
+        .card-sub .badge-online {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #2ecc71;
+            border-radius: 50%;
+            margin-right: 6px;
         }
         .card-actions {
             display: flex;
@@ -335,7 +235,7 @@
         .btn {
             padding: 8px 18px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
@@ -343,53 +243,53 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
         .btn-primary {
-            background: linear-gradient(135deg, #0984e3, #74b9ff);
-            color: white;
+            background: var(--accent);
+            color: #fff;
             border: none;
-            box-shadow: 0 4px 16px rgba(9, 132, 227, 0.2);
+            box-shadow: 0 4px 16px var(--accent-glow);
         }
         .btn-primary:hover {
-            box-shadow: 0 6px 24px rgba(9, 132, 227, 0.3);
+            box-shadow: 0 6px 28px var(--accent-glow);
         }
         .btn-success {
-            background: #00b894;
-            color: white;
+            background: #2ecc71;
+            color: #fff;
             border: none;
         }
         .btn-success:hover {
-            background: #00a381;
+            background: #27ae60;
         }
         .btn-danger {
             background: #ff3d71;
-            color: white;
+            color: #fff;
             border: none;
         }
         .btn-danger:hover {
             background: #e62e5c;
         }
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.08);
         }
         .btn-gold {
-            background: #fdcb6e;
-            color: #1e2a3a;
+            background: #f1c40f;
+            color: #0b0e17;
             border: none;
         }
         .btn-gold:hover {
-            background: #f6b93b;
+            background: #f39c12;
         }
         .btn-sm {
             padding: 4px 14px;
@@ -408,9 +308,8 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -418,46 +317,35 @@
             z-index: 1001;
             animation: fadeIn 0.2s ease;
         }
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .modal {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
+            background: rgba(18, 24, 40, 0.96);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius);
             padding: 24px;
             max-width: 400px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
             animation: slideUp 0.25s ease;
         }
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .modal h2 {
             font-size: 22px;
             font-weight: 700;
-            color: var(--text-primary);
             margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .modal label {
             display: block;
@@ -471,9 +359,9 @@
         .modal select {
             width: 100%;
             padding: 12px 14px;
-            background: white;
-            border: 1px solid #dfe6e9;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
             color: var(--text-primary);
             font-size: 14px;
             font-family: var(--font);
@@ -482,8 +370,8 @@
         .modal input:focus,
         .modal textarea:focus {
             outline: none;
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 4px rgba(9, 132, 227, 0.06);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(91, 141, 239, 0.1);
         }
         .modal textarea {
             resize: vertical;
@@ -494,10 +382,7 @@
             gap: 10px;
             margin-top: 18px;
         }
-        .modal-actions .btn {
-            flex: 1;
-            justify-content: center;
-        }
+        .modal-actions .btn { flex: 1; justify-content: center; }
 
         /* ============================================================
            УЧАСТНИКИ
@@ -507,23 +392,20 @@
             justify-content: space-between;
             align-items: center;
             padding: 8px 12px;
-            background: white;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
             font-size: 14px;
             margin-bottom: 6px;
-            border-left: 4px solid var(--accent-blue);
+            border-left: 3px solid var(--accent);
         }
         .member-row .role-tag {
             font-size: 11px;
             color: var(--text-secondary);
-            background: #f1f2f6;
+            background: rgba(255, 255, 255, 0.04);
             padding: 0 10px;
             border-radius: 12px;
         }
-        .member-row .actions {
-            display: flex;
-            gap: 4px;
-        }
+        .member-row .actions { display: flex; gap: 4px; }
 
         /* ============================================================
            ЗАЯВКИ
@@ -533,18 +415,11 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            border-bottom: 1px solid #ecf0f1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .request-item:last-child {
-            border-bottom: none;
-        }
-        .request-item .req-name {
-            font-weight: 500;
-        }
-        .request-item .req-date {
-            color: var(--text-secondary);
-            font-size: 12px;
-        }
+        .request-item:last-child { border-bottom: none; }
+        .request-item .req-name { font-weight: 500; }
+        .request-item .req-date { color: var(--text-secondary); font-size: 12px; }
 
         /* ============================================================
            ПУСТЫЕ СОСТОЯНИЯ
@@ -554,11 +429,7 @@
             padding: 40px 20px;
             color: var(--text-secondary);
         }
-        .empty .icon {
-            font-size: 48px;
-            display: block;
-            margin-bottom: 12px;
-        }
+        .empty .icon { font-size: 48px; display: block; margin-bottom: 12px; }
 
         .loading {
             text-align: center;
@@ -568,17 +439,13 @@
         .spinner {
             width: 36px;
             height: 36px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid var(--accent-blue);
+            border: 3px solid rgba(255, 255, 255, 0.06);
+            border-top: 3px solid var(--accent);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
         }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ============================================================
            TOAST
@@ -588,10 +455,9 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(18, 24, 40, 0.95);
             backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid var(--card-border);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             padding: 12px 24px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
@@ -603,18 +469,10 @@
             color: var(--text-primary);
             animation: fadeUp 0.3s ease;
         }
-        .toast.show {
-            display: block;
-        }
-        .toast.success {
-            border-color: #00b894;
-        }
-        .toast.error {
-            border-color: #ff3d71;
-        }
-        .toast.info {
-            border-color: var(--accent-blue);
-        }
+        .toast.show { display: block; }
+        .toast.success { border-color: #2ecc71; }
+        .toast.error { border-color: #ff3d71; }
+        .toast.info { border-color: var(--accent); }
 
         /* ============================================================
            ФУТЕР
@@ -625,41 +483,25 @@
             font-size: 12px;
             margin-top: 24px;
             padding-top: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         /* ============================================================
            АДАПТИВ
            ============================================================ */
         @media (max-width: 480px) {
-            body {
-                padding: 12px;
-            }
-            .header h1 {
-                font-size: 18px;
-            }
-            .menu .btn {
-                font-size: 11px;
-                padding: 8px 2px;
-            }
-            .modal {
-                padding: 16px;
-            }
+            body { padding: 12px; }
+            .header h1 { font-size: 28px; }
+            .menu .btn { font-size: 11px; padding: 8px 2px; }
+            .modal { padding: 16px; }
         }
     </style>
 </head>
 <body>
-    <!-- ОБЛАКА -->
-    <div class="clouds">
-        <div class="cloud cloud1"></div>
-        <div class="cloud cloud2"></div>
-        <div class="cloud cloud3"></div>
-    </div>
-
     <div class="container">
         <!-- HEADER -->
         <header class="header">
-            <h1>☁️ BSC Clans</h1>
+            <h1>BSC</h1>
             <div class="profile-btn-wrap">
                 <button class="profile-btn" onclick="toggleProfile()" id="profileToggle">
                     👤
@@ -691,7 +533,7 @@
             <div class="loading"><div class="spinner"></div>Загрузка...</div>
         </div>
 
-        <!-- MAIN ACTION BUTTON -->
+        <!-- MAIN ACTION -->
         <div id="mainActionButton" style="margin-top:12px;"></div>
 
         <!-- FOOTER -->
@@ -699,6 +541,7 @@
     </div>
 
     <!-- МОДАЛКИ -->
+    <!-- Регистрация -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -719,6 +562,7 @@
         </div>
     </div>
 
+    <!-- Редактирование профиля -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
             <h2>✏️ Редактировать профиль</h2>
@@ -735,6 +579,7 @@
         </div>
     </div>
 
+    <!-- Создание клана -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
             <h2>➕ Создать клан</h2>
@@ -751,6 +596,7 @@
         </div>
     </div>
 
+    <!-- Редактирование клана (ДОБАВЛЕНЫ ПОЛЯ "Связь" и "Канал") -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
             <h2>✏️ Редактировать клан</h2>
@@ -760,6 +606,10 @@
             <input type="text" id="editClanTag" style="text-transform:uppercase;">
             <label>Описание</label>
             <textarea id="editClanDesc"></textarea>
+            <label>Связь (Telegram владельца, без @)</label>
+            <input type="text" id="editClanContact" placeholder="noisyboy141">
+            <label>Канал (ссылка или юзернейм)</label>
+            <input type="text" id="editClanChannel" placeholder="@bsc_channel или https://t.me/...">
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModal('editClanModal')">Отмена</button>
                 <button class="btn btn-primary" onclick="saveEditClan()">Сохранить</button>
@@ -767,6 +617,7 @@
         </div>
     </div>
 
+    <!-- Просмотр клана -->
     <div class="modal-overlay" id="clanDetailModal">
         <div class="modal">
             <h2 id="detailClanName">🏰 Клан</h2>
@@ -782,7 +633,7 @@
 
     <script>
         // ============================================================
-        // ВЕСЬ JS (БЕЗ ИЗМЕНЕНИЙ — РАБОЧИЙ)
+        // ВЕСЬ JS (с обновлённой логикой для полей contact и channel)
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
@@ -1052,6 +903,9 @@
             else container.innerHTML = '<div class="empty">Неизвестная вкладка</div>';
         }
 
+        // ============================================================
+        // РЕНДЕР КЛАНОВ (с отображением полей contact и channel)
+        // ============================================================
         async function renderClans(container) {
             await refreshData();
             if (!allClans.length) {
@@ -1069,14 +923,22 @@
                 const showDelete = isLeader || isAdminUser;
                 const showEdit = isLeader || isAdminUser;
 
+                // Доп. информация
+                let extra = '';
+                if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 Связь: @${clan.contact}</div>`;
+                if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 Канал: ${clan.channel}</div>`;
+
                 html += `
                     <div class="card">
                         <div class="card-header">
                             <span class="card-title">${clan.name}</span>
                             <span class="card-tag">[${clan.tag}]</span>
                         </div>
-                        <div class="card-sub">Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length}</div>
-                        ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
+                        <div class="card-sub">
+                            <span class="badge-online"></span> Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length}
+                        </div>
+                        ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;margin-bottom:4px;">${clan.description}</div>` : ''}
+                        ${extra}
                         <div class="card-actions">
                             <button class="btn btn-secondary btn-sm" onclick="viewClan('${clan.id}')">👁️ Просмотр</button>
                             ${showApply ? `<button class="btn btn-success btn-sm" onclick="applyToClan('${clan.id}')">📩 Вступить</button>` : ''}
@@ -1089,6 +951,9 @@
             container.innerHTML = html;
         }
 
+        // ============================================================
+        // РЕНДЕР ЗАЯВОК (без изменений)
+        // ============================================================
         async function renderRequests(container) {
             await refreshData();
             const myClan = allClans.find(c => c.leaderId === currentUser.id);
@@ -1117,6 +982,9 @@
             container.innerHTML = html;
         }
 
+        // ============================================================
+        // РЕНДЕР МОЙ КЛАН (с отображением contact и channel)
+        // ============================================================
         async function renderMyClan(container) {
             await refreshData();
             let clan = allClans.find(c => c.id === currentUser.clanId);
@@ -1145,11 +1013,17 @@
                 const user = allUsers.find(u => u.id === mid);
                 memHtml += `<div class="member-row"><span>${user ? user.name : mid}</span><span class="role-tag">${mid === clan.leaderId ? '👑 Глава' : 'Участник'}</span></div>`;
             });
+
+            let extra = '';
+            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 Связь: @${clan.contact}</div>`;
+            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 Канал: ${clan.channel}</div>`;
+
             container.innerHTML = `
-                <div class="card" style="border-color:var(--accent-blue);">
+                <div class="card" style="border-color:var(--accent);">
                     <div class="card-header"><span class="card-title">${clan.name}</span><span class="card-tag">[${clan.tag}]</span></div>
-                    <div class="card-sub">Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length}</div>
+                    <div class="card-sub"><span class="badge-online"></span> Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length}</div>
                     ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
+                    ${extra}
                     <div style="margin-top:8px;">${memHtml}</div>
                     <div class="card-actions">
                         ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 Распустить</button>` : ''}
@@ -1159,6 +1033,9 @@
             `;
         }
 
+        // ============================================================
+        // РЕНДЕР АДМИНКИ (без изменений)
+        // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
                 container.innerHTML = `<div class="empty">⛔ Доступ запрещён</div>`;
@@ -1166,10 +1043,10 @@
             }
             await refreshData();
             let html = `
-                <div class="card" style="border-color:#fdcb6e;">
+                <div class="card" style="border-color:#f1c40f;">
                     <div style="display:flex;justify-content:space-between;">
                         <h3>🛡️ Админ-панель</h3>
-                        <span style="color:#fdcb6e;font-size:12px;">Админ</span>
+                        <span style="color:#f1c40f;font-size:12px;">Админ</span>
                     </div>
                     <div style="color:var(--text-secondary);font-size:13px;">Кланов: ${allClans.length} | Пользователей: ${allUsers.length} | Заявок: ${allRequests.filter(r => r.status === 'pending').length}</div>
                     <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ Очистить всё</button>
@@ -1181,14 +1058,14 @@
                     const isAdminUser = isAdmin(user);
                     const isBanned = user.banned === true;
                     html += `
-                        <div class="card" style="border-color:${isAdminUser ? '#fdcb6e' : 'var(--card-border)'};">
+                        <div class="card" style="border-color:${isAdminUser ? '#f1c40f' : 'var(--card-border)'};">
                             <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;">
                                 <div><strong>${user.name}</strong> ${isAdminUser ? '👑' : ''} ${isBanned ? '🔨' : ''}<br><span style="color:var(--text-secondary);font-size:12px;">Game ID: ${user.gameId}</span></div>
                                 <div>
                                     ${!isAdminUser ? `
                                         <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌</button>
                                         ${isBanned ? `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅</button>` : `<button class="btn btn-danger btn-sm" onclick="adminBanUser('${user.id}')">🔨</button>`}
-                                    ` : `<span style="color:#fdcb6e;font-size:12px;">👑 Админ</span>`}
+                                    ` : `<span style="color:#f1c40f;font-size:12px;">👑 Админ</span>`}
                                 </div>
                             </div>
                         </div>
@@ -1199,6 +1076,9 @@
             container.innerHTML = html;
         }
 
+        // ============================================================
+        // ДЕЙСТВИЯ С КЛАНАМИ (обновлены openEditClan и saveEditClan)
+        // ============================================================
         function openCreateClan() {
             if (currentUser.clanId) return showToast('❌ Вы уже в клане', 'error');
             document.getElementById('newClanName').value = '';
@@ -1225,6 +1105,8 @@
                     leaderId: currentUser.id,
                     members: [currentUser.id],
                     description: desc,
+                    contact: '',
+                    channel: '',
                     created: new Date().toISOString()
                 };
                 data.clans.push(newClan);
@@ -1259,6 +1141,8 @@
             document.getElementById('editClanName').value = clan.name;
             document.getElementById('editClanTag').value = clan.tag;
             document.getElementById('editClanDesc').value = clan.description || '';
+            document.getElementById('editClanContact').value = clan.contact || '';
+            document.getElementById('editClanChannel').value = clan.channel || '';
             document.getElementById('editClanModal').classList.add('show');
         }
 
@@ -1266,6 +1150,9 @@
             const name = document.getElementById('editClanName').value.trim();
             const tag = document.getElementById('editClanTag').value.trim().toUpperCase();
             const desc = document.getElementById('editClanDesc').value.trim();
+            const contact = document.getElementById('editClanContact').value.trim();
+            const channel = document.getElementById('editClanChannel').value.trim();
+
             if (!name) return showToast('❌ Введите название', 'error');
             if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ Тег 2-6 символов', 'error');
 
@@ -1276,6 +1163,9 @@
                 clan.name = name;
                 clan.tag = tag;
                 clan.description = desc;
+                clan.contact = contact;
+                clan.channel = channel;
+
                 await saveData(data);
                 await refreshData();
                 closeModal('editClanModal');
@@ -1286,6 +1176,9 @@
             }
         }
 
+        // ============================================================
+        // ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений)
+        // ============================================================
         async function viewClan(clanId) {
             await refreshData();
             const clan = allClans.find(c => c.id === clanId);
@@ -1297,10 +1190,15 @@
             const isAdminUser = isAdmin(currentUser);
             const canManage = isLeader || isAdminUser;
 
+            let extra = '';
+            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 Связь: @${clan.contact}</div>`;
+            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 Канал: ${clan.channel}</div>`;
+
             document.getElementById('detailClanName').textContent = `🏰 ${clan.name} [${clan.tag}]`;
             document.getElementById('detailClanInfo').innerHTML = `
                 <div style="color:var(--text-secondary);font-size:14px;">Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length}</div>
                 ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
+                ${extra}
             `;
 
             let memHtml = '';
@@ -1502,6 +1400,9 @@
             }
         }
 
+        // ============================================================
+        // АДМИН ФУНКЦИИ
+        // ============================================================
         async function adminDeleteUser(userId) {
             if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
             const user = allUsers.find(u => u.id === userId);
@@ -1572,6 +1473,9 @@
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
+        // ============================================================
+        // ВСПОМОГАТЕЛЬНЫЕ
+        // ============================================================
         async function refreshData() {
             const data = await loadData();
             allUsers = data.users || [];
