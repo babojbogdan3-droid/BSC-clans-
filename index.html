@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        /* Стили (те же, без изменений) */
+        /* Стили (без изменений) */
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0b0e17;--card-bg:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.06);--text-primary:#f0f4ff;--text-secondary:#8899bb;--accent:#5b8def;--accent-glow:rgba(91,141,239,0.25);--shadow:0 8px 32px rgba(0,0,0,0.6);--radius:16px;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
         body{font-family:var(--font);background:var(--bg);color:var(--text-primary);min-height:100vh;padding:16px;background-image:radial-gradient(circle at 20% 30%,rgba(91,141,239,0.06)0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(91,141,239,0.04)0%,transparent 50%)}
@@ -296,37 +296,7 @@
 
     <script>
         // ============================================================
-        // НАСТРОЙКИ FIREBASE (ТВОИ, УЖЕ ЕСТЬ)
-        // ============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
-            authDomain: "bsc-chat-7288d.firebaseapp.com",
-            databaseURL: "https://bsc-chat-7288d-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "bsc-chat-7288d",
-            storageBucket: "bsc-chat-7288d.firebasestorage.app",
-            messagingSenderId: "272501279718",
-            appId: "1:272501279718:web:4e9fa2ff3d57dcf1ca2427"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // ============================================================
-        // ПЕРЕМЕННЫЕ
-        // ============================================================
-        let currentUser = null;
-        let allUsers = [];
-        let allClans = [];
-        let allRequests = [];
-        let chatMessages = [];
-        let currentTab = 'clans';
-        let editingClanId = null;
-        let banTargetUserId = null;
-        let currentLang = 'ru';
-        let chatListener = null;
-
-        // ============================================================
-        // ПЕРЕВОДЫ (ТОЛЬКО ОСНОВНЫЕ, ОСТАЛЬНЫЕ БЫЛИ)
+        // ПЕРЕВОДЫ (ТОЛЬКО ОСНОВНЫЕ)
         // ============================================================
         const LANG = {
             ru: {
@@ -467,7 +437,42 @@
         };
 
         // ============================================================
-        // ОСНОВНЫЕ ФУНКЦИИ (С FIREBASE ВМЕСТО JSONBIN)
+        // НАСТРОЙКИ
+        // ============================================================
+        const ADMIN_GAME_ID = '22887924'; // 👈 ВАЖНО! Добавлено вручную
+
+        // ============================================================
+        // НАСТРОЙКИ FIREBASE
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
+            authDomain: "bsc-chat-7288d.firebaseapp.com",
+            databaseURL: "https://bsc-chat-7288d-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bsc-chat-7288d",
+            storageBucket: "bsc-chat-7288d.firebasestorage.app",
+            messagingSenderId: "272501279718",
+            appId: "1:272501279718:web:4e9fa2ff3d57dcf1ca2427"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // ============================================================
+        // ПЕРЕМЕННЫЕ
+        // ============================================================
+        let currentUser = null;
+        let allUsers = [];
+        let allClans = [];
+        let allRequests = [];
+        let chatMessages = [];
+        let currentTab = 'clans';
+        let editingClanId = null;
+        let banTargetUserId = null;
+        let currentLang = 'ru';
+        let chatListener = null;
+
+        // ============================================================
+        // ОСНОВНЫЕ ФУНКЦИИ
         // ============================================================
         function t(key) {
             return LANG[currentLang] && LANG[currentLang][key] !== undefined ? LANG[currentLang][key] : key;
@@ -730,12 +735,14 @@
                 return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
+            const isAdminUser = gameId === ADMIN_GAME_ID;
+
             const newUser = {
                 id: tgId,
                 name: name,
                 telegramUsername: tgName.startsWith('@') ? tgName : '@' + tgName,
                 gameId: gameId,
-                role: gameId === ADMIN_GAME_ID ? 'admin' : role,
+                role: isAdminUser ? 'admin' : role,
                 clanId: null
             };
 
