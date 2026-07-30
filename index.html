@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           СТИЛИ (те же, что в последней версии, без изменений)
+           ГЛОБАЛЬНЫЕ СТИЛИ (такие же, как в предыдущей версии)
            ============================================================ */
         * {
             margin: 0;
@@ -548,106 +548,85 @@
         .footer-links a:hover { color: #fff; }
 
         /* ============================================================
-           АДМИН-ПАНЕЛЬ
+           АДМИН-ПАНЕЛЬ (обновлена для пользователей)
            ============================================================ */
         .admin-panel {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        .admin-panel .admin-card {
+        .admin-panel .admin-section {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
             padding: 14px;
-            transition: all 0.25s;
         }
-        .admin-panel .admin-card:hover {
-            border-color: rgba(91, 141, 239, 0.2);
-        }
-        .admin-panel .admin-card .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .admin-panel .admin-card .admin-header .clan-name {
-            font-weight: 600;
+        .admin-panel .admin-section .section-title {
             font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .admin-panel .admin-card .admin-header .clan-name .leader-contact {
-            font-size: 12px;
-            font-weight: 400;
-            color: var(--text-secondary);
-            opacity: 0.6;
-        }
-        .admin-panel .admin-card .admin-header .clan-tag {
-            font-size: 13px;
-            color: var(--accent);
-            background: rgba(91, 141, 239, 0.1);
-            padding: 0 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(91, 141, 239, 0.15);
-        }
-        .admin-panel .admin-card .admin-elo-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 6px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .admin-panel .admin-card .admin-elo-row .current-elo {
-            color: var(--accent);
             font-weight: 600;
+            margin-bottom: 10px;
         }
-        .admin-panel .admin-card .admin-elo-row .elo-edit {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .admin-panel .admin-card .admin-elo-row .elo-edit input {
-            width: 70px;
-            padding: 4px 8px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-            font-weight: 600;
-            text-align: center;
-        }
-        .admin-panel .admin-card .admin-elo-row .elo-edit input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        .admin-panel .admin-card .admin-elo-row .elo-edit .btn {
-            padding: 4px 12px;
-            font-size: 13px;
-        }
-        .admin-panel .admin-stats {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: var(--radius);
-            padding: 14px;
-            margin-bottom: 4px;
-        }
-        .admin-panel .admin-stats .stats-row {
+        .admin-panel .admin-section .stats-row {
             display: flex;
             gap: 16px;
             flex-wrap: wrap;
             color: var(--text-secondary);
             font-size: 13px;
         }
-        .admin-panel .admin-stats .stats-row span {
+        .admin-panel .admin-section .stats-row span {
             color: var(--text-primary);
             font-weight: 600;
+        }
+
+        .user-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .user-card:hover {
+            border-color: rgba(91, 141, 239, 0.2);
+        }
+        .user-card .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .user-card .user-header .user-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .user-card .user-header .user-status {
+            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 12px;
+        }
+        .user-card .user-header .user-status.active {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+        }
+        .user-card .user-header .user-status.banned {
+            background: rgba(255, 61, 113, 0.15);
+            color: #ff3d71;
+        }
+        .user-card .user-details {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .user-card .user-details span {
+            display: inline-block;
+            margin-right: 12px;
+        }
+        .user-card .user-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         @media (max-width: 480px) {
@@ -657,16 +636,9 @@
             .modal { padding: 16px; }
             .footer-top { flex-direction: column; align-items: flex-start; }
             .footer-status { text-align: left; width: 100%; }
-            .admin-panel .admin-card .admin-header {
+            .user-card .user-header {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-            .admin-panel .admin-card .admin-elo-row {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .admin-panel .admin-card .admin-elo-row .elo-edit {
-                justify-content: flex-start;
             }
         }
     </style>
@@ -729,7 +701,7 @@
         </footer>
     </div>
 
-    <!-- МОДАЛКИ (без изменений) -->
+    <!-- МОДАЛКИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -813,6 +785,22 @@
         </div>
     </div>
 
+    <!-- НОВАЯ МОДАЛКА ДЛЯ БАНА -->
+    <div class="modal-overlay" id="banModal">
+        <div class="modal">
+            <h2>🔨 Забанить пользователя</h2>
+            <p id="banUserName" style="color:var(--text-secondary); margin-bottom:12px;">Пользователь: </p>
+            <label>Срок бана (в днях, 0 = навсегда)</label>
+            <input type="number" id="banDays" value="7" min="0">
+            <label>Причина (необязательно)</label>
+            <input type="text" id="banReason" placeholder="Нарушение правил" maxlength="100">
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('banModal')">Отмена</button>
+                <button class="btn btn-danger" onclick="confirmBan()">🔨 Забанить</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <script>
@@ -829,6 +817,7 @@
         let allRequests = [];
         let currentTab = 'clans';
         let editingClanId = null;
+        let banTargetUserId = null;
 
         // ============================================================
         // РАБОТА С JSONBin
@@ -881,6 +870,25 @@
             return clan && clan.elo !== undefined ? clan.elo : 0;
         }
 
+        function isUserBanned(user) {
+            if (!user.bannedUntil) return false;
+            const now = Date.now();
+            const banDate = new Date(user.bannedUntil).getTime();
+            return banDate > now;
+        }
+
+        function getBanStatusText(user) {
+            if (!user.bannedUntil) return { text: 'Активен', class: 'active' };
+            const now = Date.now();
+            const banDate = new Date(user.bannedUntil).getTime();
+            if (banDate > now) {
+                const remaining = Math.ceil((banDate - now) / (1000 * 60 * 60 * 24));
+                return { text: `Забанен (осталось ${remaining} д.)`, class: 'banned' };
+            } else {
+                return { text: 'Активен', class: 'active' };
+            }
+        }
+
         function showToast(text, type = 'info') {
             const t = document.getElementById('toast');
             t.textContent = text;
@@ -907,6 +915,24 @@
                 allRequests = data.requests || [];
                 updateFooterStats();
 
+                // Проверка истекших банов
+                let changed = false;
+                allUsers.forEach(user => {
+                    if (user.bannedUntil) {
+                        const banDate = new Date(user.bannedUntil).getTime();
+                        if (banDate <= Date.now()) {
+                            delete user.bannedUntil;
+                            delete user.bannedReason;
+                            changed = true;
+                        }
+                    }
+                });
+                if (changed) {
+                    const updatedData = await loadData();
+                    updatedData.users = allUsers;
+                    await saveData(updatedData);
+                }
+
                 const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 let tgId = tg ? tg.id.toString() : null;
 
@@ -922,11 +948,12 @@
                 let user = allUsers.find(u => u.id === tgId);
 
                 if (user) {
-                    if (user.banned) {
+                    if (isUserBanned(user)) {
                         document.getElementById('content').innerHTML = `
                             <div class="card" style="border-color:#ff3d71;">
                                 <div style="color:#ff3d71;font-size:18px;">⛔ ДОСТУП ЗАПРЕЩЁН</div>
-                                <div style="color:var(--text-secondary);">Ваш аккаунт забанен.</div>
+                                <div style="color:var(--text-secondary);">Ваш аккаунт забанен до ${new Date(user.bannedUntil).toLocaleDateString()}</div>
+                                ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">Причина: ${user.bannedReason}</div>` : ''}
                             </div>
                         `;
                         return;
@@ -1346,7 +1373,7 @@
         }
 
         // ============================================================
-        // АДМИН-ПАНЕЛЬ (с сохранением elo в JSONBin)
+        // НОВАЯ АДМИН-ПАНЕЛЬ (с пользователями, баном, удалением)
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
@@ -1357,8 +1384,8 @@
 
             let html = `
                 <div class="admin-panel">
-                    <div class="admin-stats">
-                        <div style="font-size:18px;font-weight:700;margin-bottom:8px;">🛡️ Админ-панель</div>
+                    <div class="admin-section">
+                        <div class="section-title">🛡️ Админ-панель</div>
                         <div class="stats-row">
                             <span>Кланов: ${allClans.length}</span>
                             <span>Пользователей: ${allUsers.length}</span>
@@ -1366,45 +1393,196 @@
                         </div>
                         <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ Очистить всё</button>
                     </div>
-                    <div style="font-size:16px;font-weight:600;margin:8px 0 4px;">Управление рейтингом (ELO)</div>
+
+                    <div class="admin-section">
+                        <div class="section-title">👥 Управление пользователями</div>
             `;
 
-            if (!allClans.length) {
-                html += `<div class="empty" style="padding:20px;">Нет кланов для управления</div>`;
+            if (!allUsers.length) {
+                html += `<div class="empty" style="padding:20px;">Нет зарегистрированных пользователей</div>`;
             } else {
-                const sortedClans = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
-
-                sortedClans.forEach(clan => {
-                    const elo = getClanElo(clan.id);
-                    const leader = getClanLeader(clan);
-                    const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                allUsers.forEach(user => {
+                    const status = getBanStatusText(user);
+                    const isUserAdmin = isAdmin(user);
+                    const isBanned = status.class === 'banned';
                     html += `
-                        <div class="admin-card">
-                            <div class="admin-header">
-                                <div class="clan-name">
-                                    ${clan.name}
-                                    ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
-                                    <span class="clan-tag">[${clan.tag}]</span>
+                        <div class="user-card">
+                            <div class="user-header">
+                                <div class="user-name">
+                                    ${user.name}
+                                    ${isUserAdmin ? '👑' : ''}
+                                    <span class="user-status ${status.class}">${status.text}</span>
                                 </div>
                             </div>
-                            <div class="admin-elo-row">
-                                <span class="current-elo">⭐ ${elo} ELO</span>
-                                <div class="elo-edit">
-                                    <input type="number" id="elo_input_${clan.id}" value="${elo}" min="0">
-                                    <button class="btn btn-primary btn-sm" onclick="adminSetElo('${clan.id}')">💾 Сохранить</button>
-                                </div>
+                            <div class="user-details">
+                                <span>🆔 ${user.id}</span>
+                                <span>📱 ${user.telegramUsername || '—'}</span>
+                                <span>🎮 ${user.gameId || '—'}</span>
+                                <span>🎭 ${user.role || 'member'}</span>
+                            </div>
+                            <div class="user-actions">
+                                ${!isUserAdmin ? `
+                                    <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌ Удалить</button>
+                                    ${isBanned ? 
+                                        `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅ Разбанить</button>` :
+                                        `<button class="btn btn-danger btn-sm" onclick="openBanModal('${user.id}')">🔨 Забанить</button>`
+                                    }
+                                ` : `
+                                    <span style="color:var(--accent);font-size:12px;">👑 Администратор</span>
+                                `}
                             </div>
                         </div>
                     `;
                 });
             }
 
-            html += `</div>`;
+            html += `</div>`; // закрываем admin-section
+
+            // Управление рейтингом
+            html += `
+                <div class="admin-section">
+                    <div class="section-title">⚡ Управление рейтингом (ELO)</div>
+            `;
+            if (!allClans.length) {
+                html += `<div class="empty" style="padding:20px;">Нет кланов для управления</div>`;
+            } else {
+                const sortedClans = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
+                sortedClans.forEach(clan => {
+                    const elo = getClanElo(clan.id);
+                    const leader = getClanLeader(clan);
+                    const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                    html += `
+                        <div class="admin-card" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:12px;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+                                <div>
+                                    <span style="font-weight:600;">${clan.name}</span>
+                                    ${leaderContact ? `<span style="font-size:12px;color:var(--text-secondary);">${leaderContact}</span>` : ''}
+                                    <span style="font-size:13px;color:var(--accent);margin-left:6px;">[${clan.tag}]</span>
+                                </div>
+                                <span style="color:var(--accent);font-weight:600;">⭐ ${elo} ELO</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+                                <input type="number" id="elo_input_${clan.id}" value="${elo}" min="0" style="width:70px;padding:4px 8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--text-primary);font-size:14px;font-weight:600;text-align:center;">
+                                <button class="btn btn-primary btn-sm" onclick="adminSetElo('${clan.id}')">💾 Сохранить</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            html += `</div>`; // закрываем admin-section
+
+            html += `</div>`; // закрываем admin-panel
             container.innerHTML = html;
         }
 
         // ============================================================
-        // АДМИН: УСТАНОВИТЬ ELO (в JSONBin)
+        // АДМИН: УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ
+        // ============================================================
+        async function adminDeleteUser(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ Пользователь не найден', 'error');
+            if (isAdmin(user)) return showToast('❌ Нельзя удалить администратора!', 'error');
+            if (!confirm(`❌ Точно удалить пользователя "${user.name}" (${user.id})?\nВсе его данные будут удалены.`)) return;
+
+            try {
+                const data = await loadData();
+                data.users = data.users.filter(u => u.id !== userId);
+                data.clans.forEach(c => {
+                    if (c.members) c.members = c.members.filter(m => m !== userId);
+                    if (c.leaderId === userId) {
+                        const newL = c.members && c.members.length ? c.members[0] : null;
+                        if (newL) {
+                            const lu = data.users.find(u => u.id === newL);
+                            c.leaderId = newL;
+                            c.leaderName = lu ? lu.name : 'Неизвестен';
+                        } else {
+                            data.clans = data.clans.filter(cl => cl.id !== c.id);
+                        }
+                    }
+                });
+                data.requests = data.requests.filter(r => r.userId !== userId);
+                await saveData(data);
+                await refreshData();
+                showToast(`✅ Пользователь "${user.name}" удалён`, 'success');
+                showTab('admin');
+                updateFooterStats();
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        // ============================================================
+        // БАН
+        // ============================================================
+        function openBanModal(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ Пользователь не найден', 'error');
+            if (isAdmin(user)) return showToast('❌ Нельзя забанить администратора!', 'error');
+            banTargetUserId = userId;
+            document.getElementById('banUserName').textContent = `Пользователь: ${user.name} (${user.id})`;
+            document.getElementById('banDays').value = 7;
+            document.getElementById('banReason').value = '';
+            document.getElementById('banModal').classList.add('show');
+        }
+
+        async function confirmBan() {
+            const days = parseInt(document.getElementById('banDays').value);
+            const reason = document.getElementById('banReason').value.trim();
+            if (isNaN(days) || days < 0) {
+                showToast('❌ Введите корректное число дней (0 = навсегда)', 'error');
+                return;
+            }
+            if (!banTargetUserId) return;
+
+            const user = allUsers.find(u => u.id === banTargetUserId);
+            if (!user) return showToast('❌ Пользователь не найден', 'error');
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === banTargetUserId);
+                if (!target) return showToast('❌ Пользователь не найден', 'error');
+
+                if (days === 0) {
+                    target.bannedUntil = 'forever';
+                } else {
+                    const until = new Date();
+                    until.setDate(until.getDate() + days);
+                    target.bannedUntil = until.toISOString();
+                }
+                target.bannedReason = reason || 'Без причины';
+
+                await saveData(data);
+                await refreshData();
+                closeModal('banModal');
+                showToast(`✅ Пользователь "${user.name}" забанен`, 'success');
+                showTab('admin');
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
+        }
+
+        async function adminUnbanUser(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ Пользователь не найден', 'error');
+            if (!confirm(`✅ Разбанить пользователя "${user.name}"?`)) return;
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === userId);
+                if (target) {
+                    delete target.bannedUntil;
+                    delete target.bannedReason;
+                }
+                await saveData(data);
+                await refreshData();
+                showToast(`✅ Пользователь "${user.name}" разбанен`, 'success');
+                showTab('admin');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        // ============================================================
+        // АДМИН: УСТАНОВИТЬ ELO
         // ============================================================
         async function adminSetElo(clanId) {
             const input = document.getElementById(`elo_input_${clanId}`);
@@ -1773,67 +1951,11 @@
         }
 
         // ============================================================
-        // АДМИН ФУНКЦИИ
+        // АДМИН: ОЧИСТКА ВСЕХ ДАННЫХ
         // ============================================================
-        async function adminDeleteUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ Пользователь не найден', 'error');
-            if (isAdmin(user)) return showToast('❌ Нельзя удалить админа', 'error');
-            if (!confirm(`Удалить пользователя "${user.name}"?`)) return;
-
-            try {
-                const data = await loadData();
-                data.users = data.users.filter(u => u.id !== userId);
-                data.clans.forEach(c => { if (c.members) c.members = c.members.filter(m => m !== userId); if (c.leaderId === userId) { const newL = c.members && c.members.length ? c.members[0] : null;
-                        if (newL) { const lu = data.users.find(u => u.id === newL);
-                            c.leaderId = newL;
-                            c.leaderName = lu ? lu.name : 'Неизвестен'; } else { data.clans = data.clans.filter(cl => cl.id !== c.id); } } });
-                data.requests = data.requests.filter(r => r.userId !== userId);
-                await saveData(data);
-                await refreshData();
-                showToast(`✅ ${user.name} удалён`, 'success');
-                showTab('admin');
-                updateFooterStats();
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
-        async function adminBanUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ Пользователь не найден', 'error');
-            if (isAdmin(user)) return showToast('❌ Нельзя забанить админа', 'error');
-            if (!confirm(`Забанить "${user.name}"?`)) return;
-            try {
-                const data = await loadData();
-                const target = data.users.find(u => u.id === userId);
-                if (target) target.banned = true;
-                await saveData(data);
-                await refreshData();
-                showToast(`✅ ${user.name} забанен`, 'success');
-                showTab('admin');
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
-        async function adminUnbanUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ Пользователь не найден', 'error');
-            if (!confirm(`Разбанить "${user.name}"?`)) return;
-            try {
-                const data = await loadData();
-                const target = data.users.find(u => u.id === userId);
-                if (target) target.banned = false;
-                await saveData(data);
-                await refreshData();
-                showToast(`✅ ${user.name} разбанен`, 'success');
-                showTab('admin');
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
         async function clearAllData() {
             if (!isAdmin(currentUser)) return;
-            if (!confirm('⚠️ Очистить всё?')) return;
+            if (!confirm('⚠️ Очистить все данные?')) return;
             try {
                 const data = await loadData();
                 data.users = [];
