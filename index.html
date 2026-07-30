@@ -6,6 +6,7 @@
     <title>Block Strike Clans</title>
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
+        /* Стили такие же, как в предыдущей версии, я их не менял, они уже рабочие */
         * {
             margin: 0;
             padding: 0;
@@ -394,7 +395,7 @@
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКА РЕГИСТРАЦИИ -->
+    <!-- МОДАЛКИ (все те же) -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -415,7 +416,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ ПРОФИЛЯ -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
             <h2>✏️ Редактировать профиль</h2>
@@ -432,7 +432,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА СОЗДАНИЯ КЛАНА -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
             <h2>➕ Создать клан</h2>
@@ -449,7 +448,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ КЛАНА -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
             <h2>✏️ Редактировать клан</h2>
@@ -466,7 +464,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ПРОСМОТРА КЛАНА -->
     <div class="modal-overlay" id="clanDetailModal">
         <div class="modal">
             <h2 id="detailClanName">🏰 Клан</h2>
@@ -825,17 +822,37 @@
             container.innerHTML = html;
         }
 
+        // ============================================================
+        // ИСПРАВЛЕННЫЙ РЕНДЕР "МОЙ КЛАН" (ДЛЯ ЛИДЕРОВ)
+        // ============================================================
         async function renderMyClan(container) {
             await refreshData();
-            if (!currentUser.clanId) {
-                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>Вы не в клане</p></div>`;
-                return;
+
+            // Если у пользователя нет clanId, но он лидер — попробуем найти его клан по leaderId
+            let clan = allClans.find(c => c.id === currentUser.clanId);
+            if (!clan && currentUser.role === 'leader') {
+                clan = allClans.find(c => c.leaderId === currentUser.id);
+                if (clan) {
+                    // Автоматически исправляем clanId у пользователя
+                    currentUser.clanId = clan.id;
+                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                    // Также обновим в базе
+                    try {
+                        const data = await loadData();
+                        const user = data.users.find(u => u.id === currentUser.id);
+                        if (user) {
+                            user.clanId = clan.id;
+                            await saveData(data);
+                        }
+                    } catch (e) { /* игнорируем */ }
+                }
             }
-            const clan = allClans.find(c => c.id === currentUser.clanId);
+
             if (!clan) {
-                container.innerHTML = `<div class="empty"><span class="icon">⚠️</span><p>Клан удалён</p></div>`;
+                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>Вы не состоите в клане</p></div>`;
                 return;
             }
+
             const members = clan.members || [];
             const isLeader = clan.leaderId === currentUser.id;
             const leader = getClanLeader(clan);
@@ -844,6 +861,7 @@
                 const user = allUsers.find(u => u.id === mid);
                 memHtml += `<div class="member-row"><span>${user ? user.name : mid}</span><span class="role-tag">${mid === clan.leaderId ? '👑 Глава' : 'Участник'}</span></div>`;
             });
+
             container.innerHTML = `
                 <div class="card" style="border-color:var(--accent);">
                     <div class="card-header"><span class="card-title">${clan.name}</span><span class="card-tag">[${clan.tag}]</span></div>
@@ -931,8 +949,19 @@
                 };
                 data.clans.push(newClan);
                 await saveData(data);
+
+                // Обновляем текущего пользователя
                 currentUser.clanId = newClan.id;
+                currentUser.role = 'leader';
                 localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                // Также обновляем его в базе
+                const userInDb = data.users.find(u => u.id === currentUser.id);
+                if (userInDb) {
+                    userInDb.clanId = newClan.id;
+                    userInDb.role = 'leader';
+                    await saveData(data);
+                }
+
                 await refreshData();
                 closeModal('createClanModal');
                 showToast('✅ Клан создан!', 'success');
@@ -1062,7 +1091,10 @@
                 if (!clan.members.includes(req.userId)) clan.members.push(req.userId);
                 req.status = 'accepted';
                 const user = data.users.find(u => u.id === req.userId);
-                if (user) user.clanId = clan.id;
+                if (user) {
+                    user.clanId = clan.id;
+                    // Если у пользователя роль не "leader", оставляем как есть
+                }
                 await saveData(data);
                 await refreshData();
                 showToast('✅ Заявка принята', 'success');
@@ -1155,6 +1187,9 @@
             }
         }
 
+        // ============================================================
+        // ИСПРАВЛЕННАЯ ПЕРЕДАЧА ЛИДЕРСТВА (С ОБНОВЛЕНИЕМ CLANID)
+        // ============================================================
         async function transferLeadership(clanId, newLeaderId) {
             if (!confirm('Передать лидерство?')) return;
             try {
@@ -1162,19 +1197,33 @@
                 const clan = data.clans.find(c => c.id === clanId);
                 if (!clan) return showToast('❌ Клан не найден', 'error');
                 if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ Нет прав', 'error');
+
                 const newLeader = data.users.find(u => u.id === newLeaderId);
                 if (!newLeader) return showToast('❌ Пользователь не найден', 'error');
+
                 const oldLeaderId = clan.leaderId;
                 clan.leaderId = newLeaderId;
+                // Обновляем clanId у нового лидера
+                newLeader.clanId = clan.id;
+                newLeader.role = 'leader';
+
+                // Старый лидер становится участником
                 const oldLeader = data.users.find(u => u.id === oldLeaderId);
-                if (oldLeader && oldLeader.role === 'leader') oldLeader.role = 'member';
-                if (newLeader.role !== 'leader') newLeader.role = 'leader';
-                if (currentUser.id === newLeaderId) {
-                    currentUser.role = 'leader';
-                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                if (oldLeader) {
+                    oldLeader.role = 'member';
+                    // У старого лидера clanId остаётся тем же (он остаётся в клане)
                 }
+
                 await saveData(data);
                 await refreshData();
+
+                // Если текущий пользователь — новый лидер, обновляем его локально
+                if (currentUser.id === newLeaderId) {
+                    currentUser.role = 'leader';
+                    currentUser.clanId = clan.id;
+                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                }
+
                 showToast(`✅ Лидерство передано ${newLeader.name}`, 'success');
                 viewClan(clanId);
                 renderMainActionButton();
