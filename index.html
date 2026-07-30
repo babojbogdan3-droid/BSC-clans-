@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           ГЛОБАЛЬНЫЙ СБРОС (МИНИМУМ НАГРУЗКИ)
+           ГЛОБАЛЬНЫЙ СБРОС
            ============================================================ */
         * {
             margin: 0;
@@ -22,9 +22,9 @@
             --text-primary: #f0f4ff;
             --text-secondary: #8899bb;
             --accent: #5b8def;
-            --accent-glow: rgba(91, 141, 239, 0.15);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --radius: 14px;
+            --accent-glow: rgba(91, 141, 239, 0.25);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --radius: 16px;
             --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         body {
@@ -32,8 +32,9 @@
             background: var(--bg);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 14px;
-            background-image: radial-gradient(circle at 20% 30%, rgba(91, 141, 239, 0.04) 0%, transparent 50%);
+            padding: 16px;
+            background-image: radial-gradient(circle at 20% 30%, rgba(91, 141, 239, 0.06) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 70%, rgba(91, 141, 239, 0.04) 0%, transparent 50%);
         }
         .container {
             max-width: 480px;
@@ -41,20 +42,20 @@
         }
 
         /* ============================================================
-           ХЕДЕР (ТОЛЬКО BSC)
+           ХЕДЕР
            ============================================================ */
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 8px 0 16px 0;
+            padding: 12px 0 20px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         .header h1 {
             font-size: 32px;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
             background: linear-gradient(135deg, #fff 30%, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -64,15 +65,15 @@
             z-index: 999;
         }
         .profile-btn {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--text-primary);
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            transition: 0.15s;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -80,6 +81,7 @@
         }
         .profile-btn:hover {
             border-color: var(--accent);
+            box-shadow: 0 0 24px var(--accent-glow);
         }
         .profile-btn .badge {
             position: absolute;
@@ -99,147 +101,163 @@
         }
         .profile-dropdown {
             position: absolute;
-            top: 48px;
+            top: 54px;
             right: 0;
-            background: rgba(18, 24, 40, 0.96);
+            background: rgba(18, 24, 40, 0.95);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius);
-            padding: 14px;
-            min-width: 190px;
+            padding: 16px;
+            min-width: 200px;
             box-shadow: var(--shadow);
             display: none;
             z-index: 1000;
+            animation: fadeSlide 0.2s ease;
         }
         .profile-dropdown.show {
             display: block;
         }
-        .profile-dropdown .info { margin-bottom: 10px; }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .profile-dropdown .info { margin-bottom: 12px; }
         .profile-dropdown .info .name {
             font-weight: 600;
-            font-size: 14px;
+            font-size: 15px;
         }
         .profile-dropdown .info .detail {
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 13px;
             margin-top: 2px;
         }
 
         /* ============================================================
-           МЕНЮ (ПЛОСКИЕ КНОПКИ, БЕЗ ЛИШНИХ ЭФФЕКТОВ)
+           МЕНЮ
            ============================================================ */
         .menu {
             display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 8px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         .menu .btn {
             flex: 1;
-            padding: 8px 4px;
+            padding: 10px 4px;
             border-radius: 10px;
             font-weight: 600;
             font-size: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             color: var(--text-secondary);
             cursor: pointer;
-            transition: 0.15s;
+            transition: all 0.2s;
             text-align: center;
         }
         .menu .btn:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.12);
         }
         .menu .btn-primary {
-            background: rgba(91, 141, 239, 0.1);
+            background: rgba(91, 141, 239, 0.12);
             border-color: var(--accent);
             color: var(--text-primary);
+            box-shadow: 0 0 20px var(--accent-glow);
         }
         .menu .btn-primary:hover {
-            background: rgba(91, 141, 239, 0.16);
+            background: rgba(91, 141, 239, 0.2);
         }
 
         /* ============================================================
-           КАРТОЧКИ (СВЕТЛЫЕ, БЕЗ BLUR)
+           КАРТОЧКИ
            ============================================================ */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius);
-            padding: 14px;
-            margin-bottom: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
             box-shadow: var(--shadow);
-            transition: 0.15s;
+            transition: all 0.25s;
+            animation: fadeUp 0.3s ease;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card:hover {
-            border-color: rgba(91, 141, 239, 0.15);
+            border-color: rgba(91, 141, 239, 0.2);
+            transform: translateY(-2px);
         }
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
         .card-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
         }
         .card-tag {
             font-weight: 700;
             font-size: 13px;
             color: var(--accent);
-            background: rgba(91, 141, 239, 0.08);
-            padding: 0 12px;
+            background: rgba(91, 141, 239, 0.1);
+            padding: 2px 14px;
             border-radius: 20px;
-            border: 1px solid rgba(91, 141, 239, 0.08);
+            border: 1px solid rgba(91, 141, 239, 0.15);
         }
         .card-sub {
             color: var(--text-secondary);
-            font-size: 13px;
-            margin: 2px 0 8px 0;
+            font-size: 14px;
+            margin: 4px 0 8px 0;
         }
         .card-sub .badge-online {
             display: inline-block;
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             background: #2ecc71;
             border-radius: 50%;
-            margin-right: 4px;
+            margin-right: 6px;
         }
         .card-actions {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         /* ============================================================
-           КНОПКИ (БЕЗ ГРАДИЕНТОВ, ПРОСТЫЕ)
+           КНОПКИ
            ============================================================ */
         .btn {
-            padding: 6px 16px;
+            padding: 8px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
-            transition: 0.15s;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            background: rgba(255, 255, 255, 0.04);
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
         .btn:hover {
-            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
         }
         .btn-primary {
             background: var(--accent);
             color: #fff;
             border: none;
+            box-shadow: 0 4px 16px var(--accent-glow);
         }
         .btn-primary:hover {
-            background: #4a7ad9;
+            box-shadow: 0 6px 28px var(--accent-glow);
         }
         .btn-success {
             background: #2ecc71;
@@ -258,11 +276,11 @@
             background: #e62e5c;
         }
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.08);
         }
         .btn-gold {
             background: #f1c40f;
@@ -273,14 +291,14 @@
             background: #f39c12;
         }
         .btn-sm {
-            padding: 3px 12px;
-            font-size: 11px;
+            padding: 4px 14px;
+            font-size: 12px;
         }
         .btn-block {
             width: 100%;
             justify-content: center;
-            padding: 10px;
-            font-size: 14px;
+            padding: 12px;
+            font-size: 15px;
         }
 
         /* ============================================================
@@ -289,28 +307,41 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
             display: none;
             justify-content: center;
             align-items: center;
             padding: 20px;
             z-index: 1001;
+            animation: fadeIn 0.2s ease;
         }
         .modal-overlay.show { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
         .modal {
             background: rgba(18, 24, 40, 0.96);
+            backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: var(--radius);
-            padding: 20px;
+            padding: 24px;
             max-width: 400px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .modal h2 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             background: linear-gradient(135deg, #fff, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -320,34 +351,35 @@
             font-size: 13px;
             color: var(--text-secondary);
             margin-bottom: 4px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
         .modal input,
         .modal textarea,
         .modal select {
             width: 100%;
-            padding: 10px 12px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 8px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
             color: var(--text-primary);
             font-size: 14px;
             font-family: var(--font);
-            transition: 0.15s;
+            transition: border 0.2s;
         }
         .modal input:focus,
         .modal textarea:focus {
             outline: none;
             border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(91, 141, 239, 0.1);
         }
         .modal textarea {
             resize: vertical;
-            min-height: 50px;
+            min-height: 60px;
         }
         .modal-actions {
             display: flex;
             gap: 10px;
-            margin-top: 16px;
+            margin-top: 18px;
         }
         .modal-actions .btn { flex: 1; justify-content: center; }
 
@@ -358,19 +390,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 10px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 4px;
-            border-left: 2px solid var(--accent);
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 6px;
+            border-left: 3px solid var(--accent);
         }
         .member-row .role-tag {
             font-size: 11px;
             color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.02);
-            padding: 0 8px;
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0 10px;
+            border-radius: 12px;
         }
         .member-row .actions { display: flex; gap: 4px; }
 
@@ -381,8 +413,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
         .request-item:last-child { border-bottom: none; }
         .request-item .req-name { font-weight: 500; }
@@ -393,24 +425,24 @@
            ============================================================ */
         .empty {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             color: var(--text-secondary);
         }
-        .empty .icon { font-size: 40px; display: block; margin-bottom: 8px; }
+        .empty .icon { font-size: 48px; display: block; margin-bottom: 12px; }
 
         .loading {
             text-align: center;
-            padding: 30px;
+            padding: 40px;
             color: var(--text-secondary);
         }
         .spinner {
-            width: 30px;
-            height: 30px;
-            border: 2px solid rgba(255, 255, 255, 0.04);
-            border-top: 2px solid var(--accent);
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(255, 255, 255, 0.06);
+            border-top: 3px solid var(--accent);
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            margin: 0 auto 12px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -419,20 +451,22 @@
            ============================================================ */
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(18, 24, 40, 0.95);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             z-index: 2000;
             display: none;
             max-width: 90%;
             text-align: center;
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-primary);
+            animation: fadeUp 0.3s ease;
         }
         .toast.show { display: block; }
         .toast.success { border-color: #2ecc71; }
@@ -440,72 +474,67 @@
         .toast.info { border-color: var(--accent); }
 
         /* ============================================================
-           ФУТЕР (СОЛИДНЫЙ, СТАТИСТИКА + ОНЛАЙН)
+           ФУТЕР (СОЛИДНЫЙ, С РАБОЧИМИ ССЫЛКАМИ)
            ============================================================ */
         .footer {
-            margin-top: 20px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .footer .row {
+        .footer-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 6px;
+            gap: 10px;
         }
-        .footer .stat {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .footer .stat strong {
-            color: var(--text-primary);
+        .footer-brand {
             font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
         }
-        .footer .status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        .footer .status .dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #2ecc71;
-            animation: pulse-dot 2s infinite;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        .footer .links {
-            display: flex;
-            gap: 12px;
+        .footer-stats {
             font-size: 12px;
             color: var(--text-secondary);
         }
-        .footer .links a {
+        .footer-status {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .footer-status .online {
+            color: #2ecc71;
+        }
+        .footer-links {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 11px;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .footer-links a {
             color: var(--accent);
             text-decoration: none;
+            transition: color 0.2s;
         }
-        .footer .links a:hover {
-            text-decoration: underline;
+        .footer-links a:hover {
+            color: #fff;
         }
 
         /* ============================================================
            АДАПТИВ
            ============================================================ */
         @media (max-width: 480px) {
-            body { padding: 10px; }
+            body { padding: 12px; }
             .header h1 { font-size: 28px; }
-            .menu .btn { font-size: 11px; padding: 6px 2px; }
-            .modal { padding: 14px; }
+            .menu .btn { font-size: 11px; padding: 8px 2px; }
+            .modal { padding: 16px; }
+            .footer-top { flex-direction: column; align-items: flex-start; }
+            .footer-status { text-align: left; width: 100%; }
         }
     </style>
 </head>
@@ -548,28 +577,31 @@
         <!-- MAIN ACTION -->
         <div id="mainActionButton" style="margin-top:12px;"></div>
 
-        <!-- FOOTER (СОЛИДНЫЙ) -->
-        <footer class="footer">
-            <div class="row">
-                <div class="stat">
-                    <strong id="totalClans">0</strong> кланов &bull; <strong id="totalMembers">0</strong> участников
+        <!-- FOOTER (НОВЫЙ, С РАБОЧИМИ ССЫЛКАМИ) -->
+        <footer class="footer" id="mainFooter">
+            <div class="footer-top">
+                <div>
+                    <div class="footer-brand">⚡ BSC Clans</div>
+                    <div class="footer-stats">
+                        👥 Кланов: <span id="totalClans">0</span> • 
+                        👤 Участников: <span id="totalMembers">0</span>
+                    </div>
                 </div>
-                <div class="status">
-                    <span class="dot"></span> Онлайн
+                <div class="footer-status">
+                    <div><span class="online">●</span> Бот активен</div>
+                    <div>v2.0 • 2026</div>
                 </div>
             </div>
-            <div class="row">
-                <div class="links">
-                    <span>Создатель: @NoisyBoy141</span>
-                    <a href="#">Канал</a>
-                    <a href="#">Чат</a>
-                </div>
-                <span style="font-size:12px; color:var(--text-secondary);">v2.0 &bull; 2026</span>
+            <div class="footer-links">
+                <span>Создатель: @NoisyBoy141</span>
+                <a href="https://t.me/TheChannelBSC" target="_blank">📢 Канал</a>
+                <a href="https://t.me/+5WdmSbxSUHsyYmMy" target="_blank">💬 Чат</a>
             </div>
         </footer>
     </div>
 
-    <!-- МОДАЛКИ (БЕЗ ИЗМЕНЕНИЙ) -->
+    <!-- МОДАЛКИ -->
+    <!-- Регистрация -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -590,6 +622,7 @@
         </div>
     </div>
 
+    <!-- Редактирование профиля -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
             <h2>✏️ Редактировать профиль</h2>
@@ -606,6 +639,7 @@
         </div>
     </div>
 
+    <!-- Создание клана -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
             <h2>➕ Создать клан</h2>
@@ -622,6 +656,7 @@
         </div>
     </div>
 
+    <!-- Редактирование клана -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
             <h2>✏️ Редактировать клан</h2>
@@ -642,6 +677,7 @@
         </div>
     </div>
 
+    <!-- Просмотр клана -->
     <div class="modal-overlay" id="clanDetailModal">
         <div class="modal">
             <h2 id="detailClanName">🏰 Клан</h2>
@@ -657,7 +693,7 @@
 
     <script>
         // ============================================================
-        // ВЕСЬ JS (МИНИМАЛЬНО НАГРУЖАЕТ)
+        // ВЕСЬ JS (с обновлением статистики в футере)
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
@@ -713,12 +749,21 @@
             t._timer = setTimeout(() => t.classList.remove('show'), 2500);
         }
 
+        // Обновление статистики в футере
+        function updateFooterStats() {
+            const totalClans = allClans.length;
+            const totalMembers = allClans.reduce((sum, c) => sum + (c.members || []).length, 0);
+            document.getElementById('totalClans').textContent = totalClans;
+            document.getElementById('totalMembers').textContent = totalMembers;
+        }
+
         async function initApp() {
             try {
                 const data = await loadData();
                 allUsers = data.users || [];
                 allClans = data.clans || [];
                 allRequests = data.requests || [];
+                updateFooterStats();
 
                 const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 let tgId = tg ? tg.id.toString() : null;
@@ -751,6 +796,7 @@
                         if (target) { target.role = 'admin';
                             await saveData(ud); }
                         allUsers = ud.users || [];
+                        updateFooterStats();
                     }
 
                     if (user.role === 'leader' && !user.clanId) {
@@ -762,6 +808,7 @@
                             if (uu) { uu.clanId = myClan.id;
                                 await saveData(upd); }
                             allUsers = upd.users || [];
+                            updateFooterStats();
                         }
                     }
 
@@ -775,6 +822,7 @@
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
+                updateFooterStats();
 
             } catch (e) {
                 console.error(e);
@@ -831,6 +879,7 @@
             updateUI();
             showTab('clans');
             renderMainActionButton();
+            updateFooterStats();
         }
 
         function openEditProfile() {
@@ -871,6 +920,7 @@
                 showToast('✅ Профиль обновлён', 'success');
                 updateUI();
                 showTab(currentTab);
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -899,12 +949,7 @@
                 badge.style.display = 'none';
             }
             renderMainActionButton();
-
-            // Обновление статистики в футере (без нагрузки)
-            const totalClans = allClans.length;
-            const totalMembers = allClans.reduce((sum, c) => sum + (c.members || []).length, 0);
-            document.getElementById('totalClans').textContent = totalClans;
-            document.getElementById('totalMembers').textContent = totalMembers;
+            updateFooterStats();
         }
 
         function renderMainActionButton() {
@@ -934,7 +979,7 @@
         }
 
         // ============================================================
-        // РЕНДЕРЫ (БЕЗ ЛИШНИХ ЭФФЕКТОВ)
+        // РЕНДЕР КЛАНОВ
         // ============================================================
         async function renderClans(container) {
             await refreshData();
@@ -978,8 +1023,12 @@
                 `;
             });
             container.innerHTML = html;
+            updateFooterStats();
         }
 
+        // ============================================================
+        // РЕНДЕР ЗАЯВОК
+        // ============================================================
         async function renderRequests(container) {
             await refreshData();
             const myClan = allClans.find(c => c.leaderId === currentUser.id);
@@ -1008,6 +1057,9 @@
             container.innerHTML = html;
         }
 
+        // ============================================================
+        // РЕНДЕР МОЙ КЛАН
+        // ============================================================
         async function renderMyClan(container) {
             await refreshData();
             let clan = allClans.find(c => c.id === currentUser.clanId);
@@ -1054,8 +1106,12 @@
                     </div>
                 </div>
             `;
+            updateFooterStats();
         }
 
+        // ============================================================
+        // РЕНДЕР АДМИНКИ
+        // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
                 container.innerHTML = `<div class="empty">⛔ Доступ запрещён</div>`;
@@ -1094,10 +1150,11 @@
                 html += `</div>`;
             }
             container.innerHTML = html;
+            updateFooterStats();
         }
 
         // ============================================================
-        // ДЕЙСТВИЯ (БЕЗ ИЗМЕНЕНИЙ)
+        // ДЕЙСТВИЯ С КЛАНАМИ
         // ============================================================
         function openCreateClan() {
             if (currentUser.clanId) return showToast('❌ Вы уже в клане', 'error');
@@ -1148,6 +1205,7 @@
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1191,14 +1249,12 @@
                 closeModal('editClanModal');
                 showToast('✅ Клан обновлён', 'success');
                 showTab(currentTab);
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
         }
 
-        // ============================================================
-        // ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ)
-        // ============================================================
         async function viewClan(clanId) {
             await refreshData();
             const clan = allClans.find(c => c.id === clanId);
@@ -1271,6 +1327,7 @@
                 await refreshData();
                 showToast('✅ Заявка отправлена', 'success');
                 showTab('clans');
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1294,6 +1351,7 @@
                 await refreshData();
                 showToast('✅ Заявка принята', 'success');
                 showTab('requests');
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1335,6 +1393,7 @@
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1357,6 +1416,7 @@
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1377,6 +1437,7 @@
                 await refreshData();
                 showToast('✅ Игрок кикнут', 'success');
                 viewClan(clanId);
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1415,6 +1476,7 @@
                 showToast(`✅ Лидерство передано ${newLeader.name}`, 'success');
                 viewClan(clanId);
                 renderMainActionButton();
+                updateFooterStats();
             } catch (e) {
                 showToast('❌ ' + e.message, 'error');
             }
@@ -1442,6 +1504,7 @@
                 await refreshData();
                 showToast(`✅ ${user.name} удалён`, 'success');
                 showTab('admin');
+                updateFooterStats();
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
@@ -1509,6 +1572,7 @@
                 }
             }
             updateUI();
+            updateFooterStats();
         }
 
         function closeModal(id) {
@@ -1540,6 +1604,7 @@
                 showTab('clans');
                 renderMainActionButton();
                 showToast('✅ Вы вышли', 'success');
+                updateFooterStats();
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
