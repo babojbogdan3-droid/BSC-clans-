@@ -9,7 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        /* Стили (те же, без изменений) */
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0b0e17;--card-bg:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.06);--text-primary:#f0f4ff;--text-secondary:#8899bb;--accent:#5b8def;--accent-glow:rgba(91,141,239,0.25);--shadow:0 8px 32px rgba(0,0,0,0.6);--radius:16px;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
         body{font-family:var(--font);background:var(--bg);color:var(--text-primary);min-height:100vh;padding:16px;background-image:radial-gradient(circle at 20% 30%,rgba(91,141,239,0.06)0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(91,141,239,0.04)0%,transparent 50%)}
@@ -182,7 +181,6 @@
         </footer>
     </div>
 
-    <!-- МОДАЛКИ (все те же) -->
     <div class="modal-overlay" id="langModal">
         <div class="modal">
             <h2 id="langModalTitle">🌐 Выберите язык / Select language</h2>
@@ -296,7 +294,7 @@
 
     <script>
         // ============================================================
-        // ПЕРЕВОДЫ (ТОЛЬКО ОСНОВНЫЕ)
+        // ПЕРЕВОДЫ (ОСНОВНЫЕ)
         // ============================================================
         const LANG = {
             ru: {
@@ -441,9 +439,6 @@
         // ============================================================
         const ADMIN_GAME_ID = '22887924';
 
-        // ============================================================
-        // НАСТРОЙКИ FIREBASE (ТВОИ)
-        // ============================================================
         const firebaseConfig = {
             apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
             authDomain: "bsc-chat-7288d.firebaseapp.com",
@@ -472,7 +467,7 @@
         let chatListener = null;
 
         // ============================================================
-        // ОСНОВНЫЕ ФУНКЦИИ
+        // ФУНКЦИИ
         // ============================================================
         function t(key) {
             return LANG[currentLang] && LANG[currentLang][key] !== undefined ? LANG[currentLang][key] : key;
@@ -496,11 +491,6 @@
             document.getElementById('footerChannelLink').textContent = '📢 ' + t('channel');
             document.getElementById('footerChatLink').textContent = '💬 ' + t('chat');
             document.getElementById('headerLangBtn').title = t('changeLanguage');
-            updateAllTexts();
-        }
-
-        function updateAllTexts() {
-            // Модалки (без изменений)
         }
 
         function setLanguage(lang) {
@@ -517,9 +507,6 @@
             document.getElementById('profileDropdown').classList.remove('show');
         }
 
-        // ============================================================
-        // ВСПОМОГАТЕЛЬНЫЕ
-        // ============================================================
         function isAdmin(user) {
             return user && user.gameId === ADMIN_GAME_ID;
         }
@@ -582,21 +569,25 @@
         }
 
         // ============================================================
-        // ЗАГРУЗКА ДАННЫХ ИЗ FIREBASE (С АВТОСОЗДАНИЕМ)
+        // РАБОТА С FIREBASE (С АВТОСОЗДАНИЕМ ДАННЫХ)
         // ============================================================
         async function loadData() {
-            return new Promise((resolve) => {
-                db.ref('/').once('value', (snapshot) => {
-                    let data = snapshot.val();
-                    if (!data || !data.users || !data.clans || !data.requests) {
-                        // Если данных нет — создаём структуру
-                        const newData = { users: [], clans: [], requests: [], chat: {} };
-                        db.ref('/').set(newData);
-                        data = newData;
-                    }
-                    resolve(data);
-                });
-            });
+            try {
+                const snapshot = await db.ref('/').once('value');
+                let data = snapshot.val();
+                if (!data || typeof data !== 'object') {
+                    data = { users: [], clans: [], requests: [] };
+                    await db.ref('/').set(data);
+                }
+                // Проверяем, что все ключи есть
+                if (!data.users) data.users = [];
+                if (!data.clans) data.clans = [];
+                if (!data.requests) data.requests = [];
+                return data;
+            } catch (e) {
+                console.error('Load data error:', e);
+                return { users: [], clans: [], requests: [] };
+            }
         }
 
         async function saveData(data) {
@@ -623,6 +614,7 @@
                 allRequests = data.requests || [];
                 updateFooterStats();
 
+                // Проверяем истекшие баны
                 let changed = false;
                 allUsers.forEach(user => {
                     if (user.bannedUntil && user.bannedUntil !== 'forever') {
@@ -705,7 +697,7 @@
                 updateFooterStats();
 
             } catch (e) {
-                console.error(e);
+                console.error('Init error:', e);
                 document.getElementById('content').innerHTML = `
                     <div class="card" style="border-color:#ff3d71;">
                         <div style="color:#ff3d71;">❌ ${t('error')}</div>
@@ -717,7 +709,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ (FIREBASE)
+        // РЕГИСТРАЦИЯ
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -768,332 +760,7 @@
         }
 
         // ============================================================
-        // ПРОФИЛЬ
-        // ============================================================
-        function openEditProfile() {
-            if (!currentUser) return;
-            document.getElementById('editProfName').value = currentUser.name || '';
-            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
-            document.getElementById('editProfGameId').value = currentUser.gameId || '';
-            document.getElementById('editProfileModal').classList.add('show');
-            document.getElementById('profileDropdown').classList.remove('show');
-            applyLanguage();
-        }
-
-        async function saveProfile() {
-            const name = document.getElementById('editProfName').value.trim();
-            const tgName = document.getElementById('editProfTelegram').value.trim();
-            const gameId = document.getElementById('editProfGameId').value.trim();
-
-            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
-            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
-            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
-            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
-
-            try {
-                const data = await loadData();
-                const user = data.users.find(u => u.id === currentUser.id);
-                if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-
-                if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                    return showToast('❌ ' + t('nicknameTaken'), 'error');
-                }
-
-                user.name = name;
-                user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
-                user.gameId = gameId;
-
-                await saveData(data);
-                await refreshData();
-                closeModal('editProfileModal');
-                showToast('✅ ' + t('profileUpdated'), 'success');
-                updateUI();
-                showTab(currentTab);
-                updateFooterStats();
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
-        }
-
-        // ============================================================
-        // UI
-        // ============================================================
-        function updateUI() {
-            if (!currentUser) return;
-            document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
-            document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
-            const clan = allClans.find(c => c.id === currentUser.clanId);
-            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
-            document.getElementById('profRole').textContent = t('role') + ': ' + (currentUser.role === 'admin' ? t('adminLabel') : currentUser.role === 'leader' ? t('roleLeader') : t('roleMember'));
-
-            const adminTab = document.getElementById('tabAdmin');
-            if (isAdmin(currentUser)) {
-                adminTab.style.display = 'inline-block';
-            } else {
-                adminTab.style.display = 'none';
-            }
-
-            const pending = allRequests.filter(r => {
-                const c = allClans.find(cl => cl.id === r.clanId);
-                return c && c.leaderId === currentUser.id && r.status === 'pending';
-            });
-            const badge = document.getElementById('notifBadge');
-            if (pending.length > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = pending.length;
-            } else {
-                badge.style.display = 'none';
-            }
-            renderMainActionButton();
-            updateFooterStats();
-        }
-
-        function renderMainActionButton() {
-            const el = document.getElementById('mainActionButton');
-            if (!currentUser) { el.innerHTML = ''; return; }
-            if (!currentUser.clanId) {
-                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
-            } else {
-                el.innerHTML = '';
-            }
-        }
-
-        // ============================================================
-        // ВКЛАДКИ
-        // ============================================================
-        function showTab(tab) {
-            currentTab = tab;
-            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabChat', 'tabAdmin'].forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.className = 'btn';
-            });
-            const map = {
-                clans: 'tabClans',
-                requests: 'tabRequests',
-                myclan: 'tabMyClan',
-                rating: 'tabRating',
-                chat: 'tabChat',
-                admin: 'tabAdmin'
-            };
-            const active = document.getElementById(map[tab]);
-            if (active) active.className = 'btn btn-primary';
-
-            const container = document.getElementById('content');
-            const funcs = {
-                clans: renderClans,
-                requests: renderRequests,
-                myclan: renderMyClan,
-                rating: renderRating,
-                chat: renderChat,
-                admin: renderAdmin
-            };
-            if (funcs[tab]) funcs[tab](container);
-            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
-        }
-
-        // ============================================================
-        // РЕНДЕР КЛАНОВ (Firebase)
-        // ============================================================
-        async function renderClans(container) {
-            await refreshData();
-            if (!allClans.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">📭</span><p>${t('noClans')}</p></div>`;
-                return;
-            }
-            let html = '';
-            allClans.forEach(clan => {
-                const members = clan.members || [];
-                const isLeader = clan.leaderId === currentUser.id;
-                const isMember = members.includes(currentUser.id);
-                const isAdminUser = isAdmin(currentUser);
-                const leader = getClanLeader(clan);
-                const leaderContact = leader ? getUserTelegram(leader.id) : '';
-                const showApply = !isMember && !isLeader && !currentUser.clanId;
-                const showDelete = isLeader || isAdminUser;
-                const showEdit = isLeader || isAdminUser;
-                const elo = getClanElo(clan.id);
-
-                let extra = '';
-                if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
-                if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
-
-                html += `
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">
-                                ${clan.name}
-                                ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
-                            </div>
-                            <span class="card-tag">[${clan.tag}]</span>
-                        </div>
-                        <div class="card-sub">
-                            <span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}
-                        </div>
-                        ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;margin-bottom:4px;">${clan.description}</div>` : ''}
-                        ${extra}
-                        <div class="card-actions">
-                            <button class="btn btn-secondary btn-sm" onclick="viewClan('${clan.id}')">👁️ ${t('view')}</button>
-                            ${showApply ? `<button class="btn btn-success btn-sm" onclick="applyToClan('${clan.id}')">📩 ${t('apply')}</button>` : ''}
-                            ${showDelete ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
-                            ${showEdit ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-            updateFooterStats();
-        }
-
-        // ============================================================
-        // РЕНДЕР ЗАЯВОК (Firebase)
-        // ============================================================
-        async function renderRequests(container) {
-            await refreshData();
-            const myClan = allClans.find(c => c.leaderId === currentUser.id);
-            if (!myClan) {
-                container.innerHTML = `<div class="empty"><span class="icon">📩</span><p>${t('notClanLeader')}</p></div>`;
-                return;
-            }
-            const pending = allRequests.filter(r => r.clanId === myClan.id && r.status === 'pending');
-            if (!pending.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">✅</span><p>${t('noPendingRequests')}</p></div>`;
-                return;
-            }
-            let html = `<div style="color:var(--text-secondary);margin-bottom:8px;">${t('pendingRequests').replace('{count}', pending.length)}</div>`;
-            pending.forEach(req => {
-                const user = allUsers.find(u => u.id === req.userId);
-                html += `
-                    <div class="request-item">
-                        <div><div class="req-name">${user ? user.name : 'Игрок'}</div><div class="req-date">${t('userId')}: ${req.userId}</div></div>
-                        <div>
-                            <button class="btn btn-success btn-sm" onclick="acceptRequest('${req.id}')">✅</button>
-                            <button class="btn btn-danger btn-sm" onclick="rejectRequest('${req.id}')">❌</button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // РЕНДЕР МОЙ КЛАН (Firebase)
-        // ============================================================
-        async function renderMyClan(container) {
-            await refreshData();
-            let clan = allClans.find(c => c.id === currentUser.clanId);
-            if (!clan && currentUser.role === 'leader') {
-                clan = allClans.find(c => c.leaderId === currentUser.id);
-                if (clan) {
-                    currentUser.clanId = clan.id;
-                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-                    try {
-                        const data = await loadData();
-                        const user = data.users.find(u => u.id === currentUser.id);
-                        if (user) { user.clanId = clan.id;
-                            await saveData(data); }
-                    } catch (e) {}
-                }
-            }
-            if (!clan) {
-                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>${t('notInClan')}</p></div>`;
-                return;
-            }
-            const members = clan.members || [];
-            const isLeader = clan.leaderId === currentUser.id;
-            const leader = getClanLeader(clan);
-            const leaderContact = leader ? getUserTelegram(leader.id) : '';
-            const elo = getClanElo(clan.id);
-            let memHtml = '';
-            members.forEach(mid => {
-                const user = allUsers.find(u => u.id === mid);
-                memHtml += `<div class="member-row"><span>${user ? user.name : mid}</span><span class="role-tag">${mid === clan.leaderId ? '👑 ' + t('leaderLabel') : t('roleMember')}</span></div>`;
-            });
-
-            let extra = '';
-            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
-            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
-
-            container.innerHTML = `
-                <div class="card" style="border-color:var(--accent);">
-                    <div class="card-header">
-                        <div class="card-title">
-                            ${clan.name}
-                            ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
-                        </div>
-                        <span class="card-tag">[${clan.tag}]</span>
-                    </div>
-                    <div class="card-sub"><span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}</div>
-                    ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
-                    ${extra}
-                    <div style="margin-top:8px;">${memHtml}</div>
-                    <div class="card-actions">
-                        ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
-                        ${(isLeader || isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
-                    </div>
-                </div>
-            `;
-            updateFooterStats();
-        }
-
-        // ============================================================
-        // РЕНДЕР РЕЙТИНГА (Firebase)
-        // ============================================================
-        async function renderRating(container) {
-            await refreshData();
-
-            if (!allClans.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
-                return;
-            }
-
-            const sorted = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
-
-            if (!sorted.length) {
-                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
-                return;
-            }
-
-            let html = `
-                <div style="margin-bottom:12px;color:var(--text-secondary);font-size:14px;">
-                    🏆 ${t('ratingTop')}
-                </div>
-                <div class="rating-table">
-            `;
-
-            sorted.forEach((clan, index) => {
-                const place = index + 1;
-                let placeClass = '';
-                let medal = '';
-                if (place === 1) { placeClass = 'gold';
-                    medal = '🥇'; } else if (place === 2) { placeClass = 'silver';
-                    medal = '🥈'; } else if (place === 3) { placeClass = 'bronze';
-                    medal = '🥉'; }
-
-                const leader = getClanLeader(clan);
-                const leaderContact = leader ? getUserTelegram(leader.id) : '';
-                const elo = getClanElo(clan.id);
-
-                html += `
-                    <div class="rating-row">
-                        <span class="place ${placeClass}">${medal || place}</span>
-                        <div class="clan-info">
-                            <div class="name">
-                                ${clan.name}
-                                ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
-                                <span class="tag">[${clan.tag}]</span>
-                            </div>
-                        </div>
-                        <span class="elo">${elo} ${t('eloLabel')}</span>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        // РЕНДЕР ЧАТА (Firebase)
+        // ЧАТ
         // ============================================================
         function loadChatMessages(callback) {
             if (chatListener) {
@@ -1212,7 +879,229 @@
         }
 
         // ============================================================
-        // АДМИН-ПАНЕЛЬ (Firebase)
+        // ВКЛАДКИ И РЕНДЕРЫ (ОСНОВНЫЕ)
+        // ============================================================
+        function showTab(tab) {
+            currentTab = tab;
+            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabChat', 'tabAdmin'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.className = 'btn';
+            });
+            const map = {
+                clans: 'tabClans',
+                requests: 'tabRequests',
+                myclan: 'tabMyClan',
+                rating: 'tabRating',
+                chat: 'tabChat',
+                admin: 'tabAdmin'
+            };
+            const active = document.getElementById(map[tab]);
+            if (active) active.className = 'btn btn-primary';
+
+            const container = document.getElementById('content');
+            const funcs = {
+                clans: renderClans,
+                requests: renderRequests,
+                myclan: renderMyClan,
+                rating: renderRating,
+                chat: renderChat,
+                admin: renderAdmin
+            };
+            if (funcs[tab]) funcs[tab](container);
+            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
+        }
+
+        async function renderClans(container) {
+            await refreshData();
+            if (!allClans.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">📭</span><p>${t('noClans')}</p></div>`;
+                return;
+            }
+            let html = '';
+            allClans.forEach(clan => {
+                const members = clan.members || [];
+                const isLeader = clan.leaderId === currentUser.id;
+                const isMember = members.includes(currentUser.id);
+                const isAdminUser = isAdmin(currentUser);
+                const leader = getClanLeader(clan);
+                const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                const showApply = !isMember && !isLeader && !currentUser.clanId;
+                const showDelete = isLeader || isAdminUser;
+                const showEdit = isLeader || isAdminUser;
+                const elo = getClanElo(clan.id);
+
+                let extra = '';
+                if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+                if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
+
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                ${clan.name}
+                                ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                            </div>
+                            <span class="card-tag">[${clan.tag}]</span>
+                        </div>
+                        <div class="card-sub">
+                            <span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}
+                        </div>
+                        ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;margin-bottom:4px;">${clan.description}</div>` : ''}
+                        ${extra}
+                        <div class="card-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="viewClan('${clan.id}')">👁️ ${t('view')}</button>
+                            ${showApply ? `<button class="btn btn-success btn-sm" onclick="applyToClan('${clan.id}')">📩 ${t('apply')}</button>` : ''}
+                            ${showDelete ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
+                            ${showEdit ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            updateFooterStats();
+        }
+
+        async function renderRequests(container) {
+            await refreshData();
+            const myClan = allClans.find(c => c.leaderId === currentUser.id);
+            if (!myClan) {
+                container.innerHTML = `<div class="empty"><span class="icon">📩</span><p>${t('notClanLeader')}</p></div>`;
+                return;
+            }
+            const pending = allRequests.filter(r => r.clanId === myClan.id && r.status === 'pending');
+            if (!pending.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">✅</span><p>${t('noPendingRequests')}</p></div>`;
+                return;
+            }
+            let html = `<div style="color:var(--text-secondary);margin-bottom:8px;">${t('pendingRequests').replace('{count}', pending.length)}</div>`;
+            pending.forEach(req => {
+                const user = allUsers.find(u => u.id === req.userId);
+                html += `
+                    <div class="request-item">
+                        <div><div class="req-name">${user ? user.name : 'Игрок'}</div><div class="req-date">${t('userId')}: ${req.userId}</div></div>
+                        <div>
+                            <button class="btn btn-success btn-sm" onclick="acceptRequest('${req.id}')">✅</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectRequest('${req.id}')">❌</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        async function renderMyClan(container) {
+            await refreshData();
+            let clan = allClans.find(c => c.id === currentUser.clanId);
+            if (!clan && currentUser.role === 'leader') {
+                clan = allClans.find(c => c.leaderId === currentUser.id);
+                if (clan) {
+                    currentUser.clanId = clan.id;
+                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                    try {
+                        const data = await loadData();
+                        const user = data.users.find(u => u.id === currentUser.id);
+                        if (user) { user.clanId = clan.id;
+                            await saveData(data); }
+                    } catch (e) {}
+                }
+            }
+            if (!clan) {
+                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>${t('notInClan')}</p></div>`;
+                return;
+            }
+            const members = clan.members || [];
+            const isLeader = clan.leaderId === currentUser.id;
+            const leader = getClanLeader(clan);
+            const leaderContact = leader ? getUserTelegram(leader.id) : '';
+            const elo = getClanElo(clan.id);
+            let memHtml = '';
+            members.forEach(mid => {
+                const user = allUsers.find(u => u.id === mid);
+                memHtml += `<div class="member-row"><span>${user ? user.name : mid}</span><span class="role-tag">${mid === clan.leaderId ? '👑 ' + t('leaderLabel') : t('roleMember')}</span></div>`;
+            });
+
+            let extra = '';
+            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
+
+            container.innerHTML = `
+                <div class="card" style="border-color:var(--accent);">
+                    <div class="card-header">
+                        <div class="card-title">
+                            ${clan.name}
+                            ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                        </div>
+                        <span class="card-tag">[${clan.tag}]</span>
+                    </div>
+                    <div class="card-sub"><span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}</div>
+                    ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
+                    ${extra}
+                    <div style="margin-top:8px;">${memHtml}</div>
+                    <div class="card-actions">
+                        ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
+                        ${(isLeader || isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
+                    </div>
+                </div>
+            `;
+            updateFooterStats();
+        }
+
+        async function renderRating(container) {
+            await refreshData();
+
+            if (!allClans.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
+                return;
+            }
+
+            const sorted = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
+
+            if (!sorted.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
+                return;
+            }
+
+            let html = `
+                <div style="margin-bottom:12px;color:var(--text-secondary);font-size:14px;">
+                    🏆 ${t('ratingTop')}
+                </div>
+                <div class="rating-table">
+            `;
+
+            sorted.forEach((clan, index) => {
+                const place = index + 1;
+                let placeClass = '';
+                let medal = '';
+                if (place === 1) { placeClass = 'gold';
+                    medal = '🥇'; } else if (place === 2) { placeClass = 'silver';
+                    medal = '🥈'; } else if (place === 3) { placeClass = 'bronze';
+                    medal = '🥉'; }
+
+                const leader = getClanLeader(clan);
+                const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                const elo = getClanElo(clan.id);
+
+                html += `
+                    <div class="rating-row">
+                        <span class="place ${placeClass}">${medal || place}</span>
+                        <div class="clan-info">
+                            <div class="name">
+                                ${clan.name}
+                                ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                                <span class="tag">[${clan.tag}]</span>
+                            </div>
+                        </div>
+                        <span class="elo">${elo} ${t('eloLabel')}</span>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // АДМИН-ПАНЕЛЬ
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
@@ -1315,144 +1204,7 @@
         }
 
         // ============================================================
-        // АДМИН: УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ (Firebase)
-        // ============================================================
-        async function adminDeleteUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
-            if (!confirm(t('confirmDeleteUser'))) return;
-
-            try {
-                const data = await loadData();
-                data.users = data.users.filter(u => u.id !== userId);
-                data.clans.forEach(c => {
-                    if (c.members) c.members = c.members.filter(m => m !== userId);
-                    if (c.leaderId === userId) {
-                        const newL = c.members && c.members.length ? c.members[0] : null;
-                        if (newL) {
-                            const lu = data.users.find(u => u.id === newL);
-                            c.leaderId = newL;
-                            c.leaderName = lu ? lu.name : 'Неизвестен';
-                        } else {
-                            data.clans = data.clans.filter(cl => cl.id !== c.id);
-                        }
-                    }
-                });
-                data.requests = data.requests.filter(r => r.userId !== userId);
-                await saveData(data);
-                await refreshData();
-                showToast('✅ ' + t('userDeleted').replace('{name}', user.name), 'success');
-                showTab('admin');
-                updateFooterStats();
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
-        // ============================================================
-        // БАН (Firebase)
-        // ============================================================
-        function openBanModal(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
-            banTargetUserId = userId;
-            document.getElementById('banUserName').textContent = t('banUser') + ': ' + user.name + ' (' + user.id + ')';
-            document.getElementById('banDays').value = 7;
-            document.getElementById('banReason').value = '';
-            document.getElementById('banModal').classList.add('show');
-            applyLanguage();
-        }
-
-        async function confirmBan() {
-            const days = parseInt(document.getElementById('banDays').value);
-            const reason = document.getElementById('banReason').value.trim();
-            if (isNaN(days) || days < 0) {
-                showToast('❌ ' + t('enterValidElo'), 'error');
-                return;
-            }
-            if (!banTargetUserId) return;
-
-            const user = allUsers.find(u => u.id === banTargetUserId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-
-            try {
-                const data = await loadData();
-                const target = data.users.find(u => u.id === banTargetUserId);
-                if (!target) return showToast('❌ ' + t('userNotFound'), 'error');
-
-                if (days === 0) {
-                    target.bannedUntil = 'forever';
-                } else {
-                    const until = new Date();
-                    until.setDate(until.getDate() + days);
-                    target.bannedUntil = until.toISOString();
-                }
-                target.bannedReason = reason || t('banReasonPlaceholder');
-
-                await saveData(data);
-                await refreshData();
-                closeModal('banModal');
-                showToast('✅ ' + t('userBanned').replace('{name}', user.name), 'success');
-                showTab('admin');
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
-        }
-
-        async function adminUnbanUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-            if (!confirm(t('unbanConfirm').replace('{name}', user.name))) return;
-
-            try {
-                const data = await loadData();
-                const target = data.users.find(u => u.id === userId);
-                if (target) {
-                    delete target.bannedUntil;
-                    delete target.bannedReason;
-                }
-                await saveData(data);
-                await refreshData();
-                showToast('✅ ' + t('userUnbanned').replace('{name}', user.name), 'success');
-                showTab('admin');
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
-        // ============================================================
-        // АДМИН: УСТАНОВИТЬ ELO (Firebase)
-        // ============================================================
-        async function adminSetElo(clanId) {
-            const input = document.getElementById(`elo_input_${clanId}`);
-            if (!input) return;
-            const newElo = parseInt(input.value);
-            if (isNaN(newElo) || newElo < 0) {
-                showToast('❌ ' + t('enterValidElo'), 'error');
-                return;
-            }
-
-            try {
-                const data = await loadData();
-                const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) {
-                    showToast('❌ ' + t('clanNotFound'), 'error');
-                    return;
-                }
-                clan.elo = newElo;
-                await saveData(data);
-                await refreshData();
-                showToast('✅ ' + t('eloUpdated').replace('{name}', clan.name).replace('{elo}', newElo), 'success');
-                renderAdmin(document.getElementById('content'));
-                showTab('clans');
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
-        }
-
-        // ============================================================
-        // ДЕЙСТВИЯ С КЛАНАМИ (Firebase)
+        // ДЕЙСТВИЯ С КЛАНАМИ (ОСНОВНЫЕ)
         // ============================================================
         function openCreateClan() {
             if (currentUser.clanId) return showToast('❌ ' + t('youAreInClan'), 'error');
@@ -1556,9 +1308,6 @@
             }
         }
 
-        // ============================================================
-        // ПРОСМОТР КЛАНА (Firebase)
-        // ============================================================
         async function viewClan(clanId) {
             await refreshData();
             const clan = allClans.find(c => c.id === clanId);
@@ -1794,8 +1543,136 @@
         }
 
         // ============================================================
-        // АДМИН: ОЧИСТКА ВСЕХ ДАННЫХ (Firebase)
+        // АДМИН ФУНКЦИИ
         // ============================================================
+        async function adminDeleteUser(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
+            if (!confirm(t('confirmDeleteUser'))) return;
+
+            try {
+                const data = await loadData();
+                data.users = data.users.filter(u => u.id !== userId);
+                data.clans.forEach(c => {
+                    if (c.members) c.members = c.members.filter(m => m !== userId);
+                    if (c.leaderId === userId) {
+                        const newL = c.members && c.members.length ? c.members[0] : null;
+                        if (newL) {
+                            const lu = data.users.find(u => u.id === newL);
+                            c.leaderId = newL;
+                            c.leaderName = lu ? lu.name : 'Неизвестен';
+                        } else {
+                            data.clans = data.clans.filter(cl => cl.id !== c.id);
+                        }
+                    }
+                });
+                data.requests = data.requests.filter(r => r.userId !== userId);
+                await saveData(data);
+                await refreshData();
+                showToast('✅ ' + t('userDeleted').replace('{name}', user.name), 'success');
+                showTab('admin');
+                updateFooterStats();
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        function openBanModal(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
+            banTargetUserId = userId;
+            document.getElementById('banUserName').textContent = t('banUser') + ': ' + user.name + ' (' + user.id + ')';
+            document.getElementById('banDays').value = 7;
+            document.getElementById('banReason').value = '';
+            document.getElementById('banModal').classList.add('show');
+            applyLanguage();
+        }
+
+        async function confirmBan() {
+            const days = parseInt(document.getElementById('banDays').value);
+            const reason = document.getElementById('banReason').value.trim();
+            if (isNaN(days) || days < 0) {
+                showToast('❌ ' + t('enterValidElo'), 'error');
+                return;
+            }
+            if (!banTargetUserId) return;
+
+            const user = allUsers.find(u => u.id === banTargetUserId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === banTargetUserId);
+                if (!target) return showToast('❌ ' + t('userNotFound'), 'error');
+
+                if (days === 0) {
+                    target.bannedUntil = 'forever';
+                } else {
+                    const until = new Date();
+                    until.setDate(until.getDate() + days);
+                    target.bannedUntil = until.toISOString();
+                }
+                target.bannedReason = reason || t('banReasonPlaceholder');
+
+                await saveData(data);
+                await refreshData();
+                closeModal('banModal');
+                showToast('✅ ' + t('userBanned').replace('{name}', user.name), 'success');
+                showTab('admin');
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
+        }
+
+        async function adminUnbanUser(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (!confirm(t('unbanConfirm').replace('{name}', user.name))) return;
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === userId);
+                if (target) {
+                    delete target.bannedUntil;
+                    delete target.bannedReason;
+                }
+                await saveData(data);
+                await refreshData();
+                showToast('✅ ' + t('userUnbanned').replace('{name}', user.name), 'success');
+                showTab('admin');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function adminSetElo(clanId) {
+            const input = document.getElementById(`elo_input_${clanId}`);
+            if (!input) return;
+            const newElo = parseInt(input.value);
+            if (isNaN(newElo) || newElo < 0) {
+                showToast('❌ ' + t('enterValidElo'), 'error');
+                return;
+            }
+
+            try {
+                const data = await loadData();
+                const clan = data.clans.find(c => c.id === clanId);
+                if (!clan) {
+                    showToast('❌ ' + t('clanNotFound'), 'error');
+                    return;
+                }
+                clan.elo = newElo;
+                await saveData(data);
+                await refreshData();
+                showToast('✅ ' + t('eloUpdated').replace('{name}', clan.name).replace('{elo}', newElo), 'success');
+                renderAdmin(document.getElementById('content'));
+                showTab('clans');
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
+        }
+
         async function clearAllData() {
             if (!isAdmin(currentUser)) return;
             if (!confirm(t('clearAllConfirm'))) return;
@@ -1812,8 +1689,57 @@
         }
 
         // ============================================================
-        // ВСПОМОГАТЕЛЬНЫЕ (Firebase)
+        // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
+        function updateUI() {
+            if (!currentUser) return;
+            document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
+            document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
+            const clan = allClans.find(c => c.id === currentUser.clanId);
+            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
+            document.getElementById('profRole').textContent = t('role') + ': ' + (currentUser.role === 'admin' ? t('adminLabel') : currentUser.role === 'leader' ? t('roleLeader') : t('roleMember'));
+
+            const adminTab = document.getElementById('tabAdmin');
+            if (isAdmin(currentUser)) {
+                adminTab.style.display = 'inline-block';
+            } else {
+                adminTab.style.display = 'none';
+            }
+
+            const pending = allRequests.filter(r => {
+                const c = allClans.find(cl => cl.id === r.clanId);
+                return c && c.leaderId === currentUser.id && r.status === 'pending';
+            });
+            const badge = document.getElementById('notifBadge');
+            if (pending.length > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = pending.length;
+            } else {
+                badge.style.display = 'none';
+            }
+            renderMainActionButton();
+            updateFooterStats();
+        }
+
+        function renderMainActionButton() {
+            const el = document.getElementById('mainActionButton');
+            if (!currentUser) { el.innerHTML = ''; return; }
+            if (!currentUser.clanId) {
+                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
+            } else {
+                el.innerHTML = '';
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function toggleProfile() {
+            const dd = document.getElementById('profileDropdown');
+            dd.classList.toggle('show');
+        }
+
         async function refreshData() {
             const data = await loadData();
             allUsers = data.users || [];
@@ -1828,15 +1754,6 @@
             }
             updateUI();
             updateFooterStats();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
-        }
-
-        function toggleProfile() {
-            const dd = document.getElementById('profileDropdown');
-            dd.classList.toggle('show');
         }
 
         async function logoutUser() {
@@ -1863,9 +1780,6 @@
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
-        // ============================================================
-        // ЗАПУСК
-        // ============================================================
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
