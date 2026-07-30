@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         /* ============================================================
-           СТИЛИ (те же, что были, добавил для рейтинга)
+           СТИЛИ (обновлены для юзернейма)
            ============================================================ */
         * {
             margin: 0;
@@ -179,6 +179,7 @@
         }
         .card-header {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 4px;
@@ -186,6 +187,16 @@
         .card-title {
             font-size: 18px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .card-title .leader-contact {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            opacity: 0.7;
         }
         .card-tag {
             font-weight: 700;
@@ -365,7 +376,6 @@
         }
         .modal-actions .btn { flex: 1; justify-content: center; }
 
-        /* УЧАСТНИКИ */
         .member-row {
             display: flex;
             justify-content: space-between;
@@ -386,7 +396,6 @@
         }
         .member-row .actions { display: flex; gap: 4px; }
 
-        /* ЗАЯВКИ */
         .request-item {
             display: flex;
             justify-content: space-between;
@@ -398,7 +407,6 @@
         .request-item .req-name { font-weight: 500; }
         .request-item .req-date { color: var(--text-secondary); font-size: 12px; }
 
-        /* РЕЙТИНГ (таблица) */
         .rating-table {
             display: flex;
             flex-direction: column;
@@ -427,6 +435,16 @@
         }
         .rating-row .clan-info .name {
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .rating-row .clan-info .name .leader-contact {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            opacity: 0.6;
         }
         .rating-row .clan-info .tag {
             color: var(--text-secondary);
@@ -437,7 +455,6 @@
             color: var(--accent);
         }
 
-        /* ПУСТЫЕ СОСТОЯНИЯ */
         .empty {
             text-align: center;
             padding: 40px 20px;
@@ -461,7 +478,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* TOAST */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -486,7 +502,6 @@
         .toast.error { border-color: #ff3d71; }
         .toast.info { border-color: var(--accent); }
 
-        /* ФУТЕР */
         .footer {
             margin-top: 28px;
             padding-top: 16px;
@@ -532,6 +547,109 @@
         }
         .footer-links a:hover { color: #fff; }
 
+        /* ============================================================
+           АДМИН-ПАНЕЛЬ (новые стили)
+           ============================================================ */
+        .admin-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .admin-panel .admin-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 14px;
+            transition: all 0.25s;
+        }
+        .admin-panel .admin-card:hover {
+            border-color: rgba(91, 141, 239, 0.2);
+        }
+        .admin-panel .admin-card .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .admin-panel .admin-card .admin-header .clan-name {
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .admin-panel .admin-card .admin-header .clan-name .leader-contact {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        .admin-panel .admin-card .admin-header .clan-tag {
+            font-size: 13px;
+            color: var(--accent);
+            background: rgba(91, 141, 239, 0.1);
+            padding: 0 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(91, 141, 239, 0.15);
+        }
+        .admin-panel .admin-card .admin-elo-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .admin-panel .admin-card .admin-elo-row .current-elo {
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .admin-panel .admin-card .admin-elo-row .elo-edit {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .admin-panel .admin-card .admin-elo-row .elo-edit input {
+            width: 70px;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .admin-panel .admin-card .admin-elo-row .elo-edit input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .admin-panel .admin-card .admin-elo-row .elo-edit .btn {
+            padding: 4px 12px;
+            font-size: 13px;
+        }
+        .admin-panel .admin-stats {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 4px;
+        }
+        .admin-panel .admin-stats .stats-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .admin-panel .admin-stats .stats-row span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
         @media (max-width: 480px) {
             body { padding: 12px; }
             .header h1 { font-size: 28px; }
@@ -539,6 +657,17 @@
             .modal { padding: 16px; }
             .footer-top { flex-direction: column; align-items: flex-start; }
             .footer-status { text-align: left; width: 100%; }
+            .admin-panel .admin-card .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .admin-panel .admin-card .admin-elo-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .admin-panel .admin-card .admin-elo-row .elo-edit {
+                justify-content: flex-start;
+            }
         }
     </style>
 </head>
@@ -605,7 +734,7 @@
         </footer>
     </div>
 
-    <!-- МОДАЛКИ -->
+    <!-- МОДАЛКИ (без изменений) -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -698,13 +827,13 @@
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
         const ADMIN_GAME_ID = '22887924';
-        const BREWPAGE_URL = 'https://brewpage.app/public/TDg5l8lmFi'; // Твоя ссылка
+        const BREWPAGE_URL = 'https://brewpage.app/public/TDg5l8lmFi';
 
         let currentUser = null;
         let allUsers = [];
         let allClans = [];
         let allRequests = [];
-        let ratings = []; // рейтинг из BrewPage
+        let ratings = [];
         let currentTab = 'clans';
         let editingClanId = null;
 
@@ -734,7 +863,7 @@
         }
 
         // ============================================================
-        // РАБОТА С BREWPAGE (рейтинг)
+        // РАБОТА С BREWPAGE
         // ============================================================
         async function loadRatings() {
             try {
@@ -750,47 +879,6 @@
             }
         }
 
-        async function updateRatingOnBrewPage(clanId, newElo) {
-            try {
-                // Загружаем текущий рейтинг
-                const resp = await fetch(BREWPAGE_URL);
-                const data = await resp.json();
-                if (!data.clans) data.clans = [];
-
-                // Ищем клан
-                const clan = data.clans.find(c => c.id === clanId);
-                if (clan) {
-                    clan.elo = newElo;
-                } else {
-                    // Если клана нет — добавляем (но в теории он уже должен быть)
-                    const clanFromMain = allClans.find(c => c.id === clanId);
-                    if (clanFromMain) {
-                        data.clans.push({
-                            id: clanId,
-                            name: clanFromMain.name,
-                            tag: clanFromMain.tag,
-                            elo: newElo
-                        });
-                    } else {
-                        showToast('❌ Клан не найден', 'error');
-                        return;
-                    }
-                }
-
-                // Сохраняем обратно в BrewPage (через PUT)
-                // К сожалению, BrewPage не поддерживает PUT напрямую.
-                // Придётся использовать публикацию через форму или обновлять вручную.
-                // ВРЕМЕННОЕ РЕШЕНИЕ: показываем инструкцию
-                showToast('⚠️ Изменение рейтинга в BrewPage требует ручного обновления файла. Покажи это админу.', 'info');
-                console.log('Новый рейтинг для', clanId, ':', newElo);
-
-                // В будущем можно будет использовать BrewPage API, если появится.
-
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
-        }
-
         // ============================================================
         // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
@@ -801,6 +889,11 @@
         function getUserName(id) {
             const u = allUsers.find(x => x.id === id);
             return u ? u.name : id;
+        }
+
+        function getUserTelegram(id) {
+            const u = allUsers.find(x => x.id === id);
+            return u ? u.telegramUsername || '' : '';
         }
 
         function getClanLeader(clan) {
@@ -1077,7 +1170,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР КЛАНОВ (с рейтингом)
+        // РЕНДЕР КЛАНОВ (с юзернеймом лидера)
         // ============================================================
         async function renderClans(container) {
             await refreshData();
@@ -1092,6 +1185,7 @@
                 const isMember = members.includes(currentUser.id);
                 const isAdminUser = isAdmin(currentUser);
                 const leader = getClanLeader(clan);
+                const leaderContact = leader ? getUserTelegram(leader.id) : '';
                 const showApply = !isMember && !isLeader && !currentUser.clanId;
                 const showDelete = isLeader || isAdminUser;
                 const showEdit = isLeader || isAdminUser;
@@ -1104,7 +1198,10 @@
                 html += `
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title">${clan.name}</span>
+                            <div class="card-title">
+                                ${clan.name}
+                                ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                            </div>
                             <span class="card-tag">[${clan.tag}]</span>
                         </div>
                         <div class="card-sub">
@@ -1157,7 +1254,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР МОЙ КЛАН
+        // РЕНДЕР МОЙ КЛАН (с юзернеймом)
         // ============================================================
         async function renderMyClan(container) {
             await refreshData();
@@ -1182,6 +1279,7 @@
             const members = clan.members || [];
             const isLeader = clan.leaderId === currentUser.id;
             const leader = getClanLeader(clan);
+            const leaderContact = leader ? getUserTelegram(leader.id) : '';
             const elo = getClanElo(clan.id);
             let memHtml = '';
             members.forEach(mid => {
@@ -1195,7 +1293,13 @@
 
             container.innerHTML = `
                 <div class="card" style="border-color:var(--accent);">
-                    <div class="card-header"><span class="card-title">${clan.name}</span><span class="card-tag">[${clan.tag}]</span></div>
+                    <div class="card-header">
+                        <div class="card-title">
+                            ${clan.name}
+                            ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                        </div>
+                        <span class="card-tag">[${clan.tag}]</span>
+                    </div>
                     <div class="card-sub"><span class="badge-online"></span> Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} elo</div>
                     ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
                     ${extra}
@@ -1210,7 +1314,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР РЕЙТИНГА (ТАБЛИЦА BEST CLANS)
+        // РЕНДЕР РЕЙТИНГА (с юзернеймом)
         // ============================================================
         async function renderRating(container) {
             await refreshData();
@@ -1220,10 +1324,7 @@
                 return;
             }
 
-            // Сортируем кланы по ELO (по убыванию)
             const sorted = [...ratings].sort((a, b) => (b.elo || 0) - (a.elo || 0));
-
-            // Берём только те, которые есть в allClans (активные)
             const activeRatings = sorted.filter(r => allClans.some(c => c.id === r.id));
 
             if (!activeRatings.length) {
@@ -1247,12 +1348,19 @@
                     medal = '🥈'; } else if (place === 3) { placeClass = 'bronze';
                     medal = '🥉'; }
 
+                const clan = allClans.find(c => c.id === r.id);
+                const leader = clan ? getClanLeader(clan) : null;
+                const leaderContact = leader ? getUserTelegram(leader.id) : '';
+
                 html += `
                     <div class="rating-row">
                         <span class="place ${placeClass}">${medal || place}</span>
                         <div class="clan-info">
-                            <span class="name">${r.name || 'Неизвестно'}</span>
-                            <span class="tag">[${r.tag || '??'}]</span>
+                            <div class="name">
+                                ${r.name || 'Неизвестно'}
+                                ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                                <span class="tag">[${r.tag || '??'}]</span>
+                            </div>
                         </div>
                         <span class="elo">${r.elo || 0} ELO</span>
                     </div>
@@ -1264,7 +1372,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР АДМИНКИ (с управлением рейтингом)
+        // НОВАЯ АДМИН-ПАНЕЛЬ (с карточками и редактированием elo)
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
@@ -1274,55 +1382,54 @@
             await refreshData();
 
             let html = `
-                <div class="card" style="border-color:#f1c40f;">
-                    <div style="display:flex;justify-content:space-between;">
-                        <h3>🛡️ Админ-панель</h3>
-                        <span style="color:#f1c40f;font-size:12px;">Админ</span>
+                <div class="admin-panel">
+                    <div class="admin-stats">
+                        <div style="font-size:18px;font-weight:700;margin-bottom:8px;">🛡️ Админ-панель</div>
+                        <div class="stats-row">
+                            <span>Кланов: ${allClans.length}</span>
+                            <span>Пользователей: ${allUsers.length}</span>
+                            <span>Заявок: ${allRequests.filter(r => r.status === 'pending').length}</span>
+                        </div>
+                        <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ Очистить всё</button>
                     </div>
-                    <div style="color:var(--text-secondary);font-size:13px;">
-                        Кланов: ${allClans.length} | Пользователей: ${allUsers.length} | Заявок: ${allRequests.filter(r => r.status === 'pending').length}
-                    </div>
-                    <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ Очистить всё</button>
-                </div>
+                    <div style="font-size:16px;font-weight:600;margin:8px 0 4px;">Управление рейтингом (ELO)</div>
             `;
 
-            // Управление рейтингом
-            html += `
-                <div class="card" style="border-color:var(--accent);">
-                    <h4>⚡ Управление рейтингом (ELO)</h4>
-                    <div style="color:var(--text-secondary);font-size:13px;margin-bottom:8px;">
-                        Изменяй ELO для любого клана. Данные сохранятся в BrewPage.
-                    </div>
-                    <div id="ratingAdminList"></div>
-                </div>
-            `;
+            if (!allClans.length) {
+                html += `<div class="empty" style="padding:20px;">Нет кланов для управления</div>`;
+            } else {
+                const sortedClans = [...allClans].sort((a, b) => {
+                    const eloA = getClanElo(a.id);
+                    const eloB = getClanElo(b.id);
+                    return eloB - eloA;
+                });
 
-            // Список кланов для редактирования рейтинга
-            let listHtml = '';
-            const sortedClans = [...allClans].sort((a, b) => {
-                const eloA = getClanElo(a.id);
-                const eloB = getClanElo(b.id);
-                return eloB - eloA;
-            });
-
-            sortedClans.forEach(clan => {
-                const elo = getClanElo(clan.id);
-                listHtml += `
-                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
-                        <div>
-                            <strong>${clan.name}</strong> <span style="color:var(--text-secondary);font-size:12px;">[${clan.tag}]</span>
-                            <span style="color:var(--accent);margin-left:8px;">${elo} ELO</span>
+                sortedClans.forEach(clan => {
+                    const elo = getClanElo(clan.id);
+                    const leader = getClanLeader(clan);
+                    const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                    html += `
+                        <div class="admin-card">
+                            <div class="admin-header">
+                                <div class="clan-name">
+                                    ${clan.name}
+                                    ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                                    <span class="clan-tag">[${clan.tag}]</span>
+                                </div>
+                            </div>
+                            <div class="admin-elo-row">
+                                <span class="current-elo">⭐ ${elo} ELO</span>
+                                <div class="elo-edit">
+                                    <input type="number" id="elo_input_${clan.id}" value="${elo}" min="0">
+                                    <button class="btn btn-primary btn-sm" onclick="adminSetElo('${clan.id}')">💾 Сохранить</button>
+                                </div>
+                            </div>
                         </div>
-                        <div style="display:flex;gap:6px;align-items:center;">
-                            <input type="number" id="elo_input_${clan.id}" value="${elo}" style="width:60px;padding:4px 6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:var(--text-primary);font-size:13px;">
-                            <button class="btn btn-primary btn-sm" onclick="adminSetElo('${clan.id}')">💾</button>
-                        </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
 
-            html = html.replace('</div>', listHtml + '</div></div>');
-
+            html += `</div>`;
             container.innerHTML = html;
         }
 
@@ -1334,40 +1441,12 @@
             if (!input) return;
             const newElo = parseInt(input.value);
             if (isNaN(newElo) || newElo < 0) {
-                showToast('❌ Введите корректное число', 'error');
+                showToast('❌ Введите корректное число (≥0)', 'error');
                 return;
             }
 
             try {
-                // Находим клан в BrewPage
-                const resp = await fetch(BREWPAGE_URL);
-                const data = await resp.json();
-                if (!data.clans) data.clans = [];
-
-                const clan = data.clans.find(c => c.id === clanId);
-                if (clan) {
-                    clan.elo = newElo;
-                } else {
-                    // Если клана нет в рейтинге — добавляем
-                    const clanFromMain = allClans.find(c => c.id === clanId);
-                    if (clanFromMain) {
-                        data.clans.push({
-                            id: clanId,
-                            name: clanFromMain.name,
-                            tag: clanFromMain.tag,
-                            elo: newElo
-                        });
-                    } else {
-                        showToast('❌ Клан не найден', 'error');
-                        return;
-                    }
-                }
-
-                // Обновляем через PUT (если бы BrewPage поддерживал)
-                // Пока просто обновляем локально и показываем инструкцию
-                showToast(`✅ ELO для клана обновлён до ${newElo} (локально)`, 'success');
-
-                // Обновляем локальный рейтинг
+                // Обновляем локально
                 const localClan = ratings.find(r => r.id === clanId);
                 if (localClan) {
                     localClan.elo = newElo;
@@ -1380,12 +1459,15 @@
                             tag: clanFromMain.tag,
                             elo: newElo
                         });
+                    } else {
+                        showToast('❌ Клан не найден', 'error');
+                        return;
                     }
                 }
 
-                // Перерисовываем админку и обновляем остальные вкладки
+                // Обновляем интерфейс админки
                 renderAdmin(document.getElementById('content'));
-                showTab('clans');
+                showToast(`✅ ELO для клана обновлён до ${newElo} (локально)`, 'success');
 
                 // Инструкция для BrewPage
                 showToast('⚠️ Для сохранения на BrewPage скачай rating.json и загрузи заново', 'info');
@@ -1431,7 +1513,7 @@
                 data.clans.push(newClan);
                 await saveData(data);
 
-                // Добавляем клан в рейтинг (BrewPage)
+                // Добавляем в рейтинг
                 try {
                     const resp = await fetch(BREWPAGE_URL);
                     const brewData = await resp.json();
@@ -1442,7 +1524,6 @@
                         tag: tag,
                         elo: 0
                     });
-                    // Временно сохраняем локально
                     ratings.push({
                         id: newClan.id,
                         name: name,
@@ -1521,7 +1602,7 @@
         }
 
         // ============================================================
-        // ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений)
+        // ПРОСМОТР КЛАНА (с юзернеймом)
         // ============================================================
         async function viewClan(clanId) {
             await refreshData();
@@ -1530,6 +1611,7 @@
 
             const members = clan.members || [];
             const leader = getClanLeader(clan);
+            const leaderContact = leader ? getUserTelegram(leader.id) : '';
             const isLeader = clan.leaderId === currentUser.id;
             const isAdminUser = isAdmin(currentUser);
             const canManage = isLeader || isAdminUser;
@@ -1541,7 +1623,11 @@
 
             document.getElementById('detailClanName').textContent = `🏰 ${clan.name} [${clan.tag}]`;
             document.getElementById('detailClanInfo').innerHTML = `
-                <div style="color:var(--text-secondary);font-size:14px;">Глава: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} elo</div>
+                <div style="color:var(--text-secondary);font-size:14px;">
+                    Глава: ${leader ? leader.name : 'Неизвестен'} 
+                    ${leaderContact ? `(${leaderContact})` : ''} 
+                    • 👥 ${members.length} • ⭐ ${elo} elo
+                </div>
                 ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
                 ${extra}
             `;
