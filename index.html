@@ -986,16 +986,15 @@
         // ============================================================
         // НАСТРОЙКИ FIREBASE (ТВОИ)
         // ============================================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
-            authDomain: "bsc-chat-7288d.firebaseapp.com",
-            databaseURL: "https://bsc-chat-7288d-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "bsc-chat-7288d",
-            storageBucket: "bsc-chat-7288d.firebasestorage.app",
-            messagingSenderId: "272501279718",
-            appId: "1:272501279718:web:4e9fa2ff3d57dcf1ca2427"
-        };
-
+  const firebaseConfig = {
+    apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
+    authDomain: "bsc-chat-7288d.firebaseapp.com",
+    databaseURL: "https://bsc-chat-7288d-default-rtdb.firebaseio.com",
+    projectId: "bsc-chat-7288d",
+    storageBucket: "bsc-chat-7288d.firebasestorage.app",
+    messagingSenderId: "272501279718",
+    appId: "1:272501279718:web:4e9fa2ff3d57dcf1ca2427"
+};
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
