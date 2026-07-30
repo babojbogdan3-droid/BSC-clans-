@@ -6,7 +6,9 @@
     <title>Block Strike Clans</title>
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
-        /* Стили такие же, как в предыдущей версии, я их не менял, они уже рабочие */
+        /* ============================================================
+           СТИЛИ (БЕЗ ИЗМЕНЕНИЙ, ОНИ РАБОЧИЕ)
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -395,7 +397,7 @@
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКИ (все те же) -->
+    <!-- МОДАЛКИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать</h2>
@@ -590,6 +592,9 @@
                     return;
                 }
 
+                // 🛠️ АВТОМАТИЧЕСКАЯ ПОЧИНКА: если у пользователя нет clanId, но он является лидером какого-то клана
+                await fixUserClanId();
+
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
@@ -603,6 +608,34 @@
                         <button class="btn btn-primary" style="margin-top:10px;" onclick="initApp()">🔄 Обновить</button>
                     </div>
                 `;
+            }
+        }
+
+        // ============================================================
+        // АВТОМАТИЧЕСКАЯ ПОЧИНКА CLANID
+        // ============================================================
+        async function fixUserClanId() {
+            if (!currentUser) return;
+            // Если у пользователя нет clanId, но он является лидером какого-то клана
+            if (!currentUser.clanId) {
+                const clan = allClans.find(c => c.leaderId === currentUser.id);
+                if (clan) {
+                    currentUser.clanId = clan.id;
+                    currentUser.role = 'leader';
+                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                    // Обновляем в базе
+                    try {
+                        const data = await loadData();
+                        const user = data.users.find(u => u.id === currentUser.id);
+                        if (user) {
+                            user.clanId = clan.id;
+                            user.role = 'leader';
+                            await saveData(data);
+                            // Обновляем локальные данные
+                            allUsers = data.users || [];
+                        }
+                    } catch (e) { /* игнорируем */ }
+                }
             }
         }
 
@@ -823,31 +856,34 @@
         }
 
         // ============================================================
-        // ИСПРАВЛЕННЫЙ РЕНДЕР "МОЙ КЛАН" (ДЛЯ ЛИДЕРОВ)
+        // ИСПРАВЛЕННЫЙ РЕНДЕР "МОЙ КЛАН" (С АВТОПОЧИНКОЙ)
         // ============================================================
         async function renderMyClan(container) {
             await refreshData();
 
-            // Если у пользователя нет clanId, но он лидер — попробуем найти его клан по leaderId
+            // 1. Если у пользователя нет clanId — пытаемся найти его клан по leaderId
             let clan = allClans.find(c => c.id === currentUser.clanId);
-            if (!clan && currentUser.role === 'leader') {
+            if (!clan) {
                 clan = allClans.find(c => c.leaderId === currentUser.id);
                 if (clan) {
-                    // Автоматически исправляем clanId у пользователя
+                    // Автоматически исправляем clanId у пользователя в памяти и в базе
                     currentUser.clanId = clan.id;
+                    currentUser.role = 'leader';
                     localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-                    // Также обновим в базе
                     try {
                         const data = await loadData();
                         const user = data.users.find(u => u.id === currentUser.id);
                         if (user) {
                             user.clanId = clan.id;
+                            user.role = 'leader';
                             await saveData(data);
+                            allUsers = data.users || [];
                         }
                     } catch (e) { /* игнорируем */ }
                 }
             }
 
+            // 2. Если всё равно нет клана — пользователь не состоит в клане
             if (!clan) {
                 container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>Вы не состоите в клане</p></div>`;
                 return;
@@ -954,13 +990,14 @@
                 currentUser.clanId = newClan.id;
                 currentUser.role = 'leader';
                 localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-                // Также обновляем его в базе
+                // Обновляем в базе
                 const userInDb = data.users.find(u => u.id === currentUser.id);
                 if (userInDb) {
                     userInDb.clanId = newClan.id;
                     userInDb.role = 'leader';
                     await saveData(data);
                 }
+                allUsers = data.users || [];
 
                 await refreshData();
                 closeModal('createClanModal');
@@ -1093,7 +1130,6 @@
                 const user = data.users.find(u => u.id === req.userId);
                 if (user) {
                     user.clanId = clan.id;
-                    // Если у пользователя роль не "leader", оставляем как есть
                 }
                 await saveData(data);
                 await refreshData();
@@ -1188,7 +1224,7 @@
         }
 
         // ============================================================
-        // ИСПРАВЛЕННАЯ ПЕРЕДАЧА ЛИДЕРСТВА (С ОБНОВЛЕНИЕМ CLANID)
+        // ИСПРАВЛЕННАЯ ПЕРЕДАЧА ЛИДЕРСТВА
         // ============================================================
         async function transferLeadership(clanId, newLeaderId) {
             if (!confirm('Передать лидерство?')) return;
@@ -1203,15 +1239,16 @@
 
                 const oldLeaderId = clan.leaderId;
                 clan.leaderId = newLeaderId;
-                // Обновляем clanId у нового лидера
+
+                // Новый лидер
                 newLeader.clanId = clan.id;
                 newLeader.role = 'leader';
 
-                // Старый лидер становится участником
+                // Старый лидер — остаётся участником
                 const oldLeader = data.users.find(u => u.id === oldLeaderId);
                 if (oldLeader) {
                     oldLeader.role = 'member';
-                    // У старого лидера clanId остаётся тем же (он остаётся в клане)
+                    // oldLeader.clanId остаётся тем же
                 }
 
                 await saveData(data);
@@ -1245,10 +1282,19 @@
             try {
                 const data = await loadData();
                 data.users = data.users.filter(u => u.id !== userId);
-                data.clans.forEach(c => { if (c.members) c.members = c.members.filter(m => m !== userId); if (c.leaderId === userId) { const newL = c.members && c.members.length ? c.members[0] : null;
-                        if (newL) { const lu = data.users.find(u => u.id === newL);
+                data.clans.forEach(c => {
+                    if (c.members) c.members = c.members.filter(m => m !== userId);
+                    if (c.leaderId === userId) {
+                        const newL = c.members && c.members.length ? c.members[0] : null;
+                        if (newL) {
+                            const lu = data.users.find(u => u.id === newL);
                             c.leaderId = newL;
-                            c.leaderName = lu ? lu.name : 'Неизвестен'; } else { data.clans = data.clans.filter(cl => cl.id !== c.id); } } });
+                            c.leaderName = lu ? lu.name : 'Неизвестен';
+                        } else {
+                            data.clans = data.clans.filter(cl => cl.id !== c.id);
+                        }
+                    }
+                });
                 data.requests = data.requests.filter(r => r.userId !== userId);
                 await saveData(data);
                 await refreshData();
@@ -1340,9 +1386,19 @@
             try {
                 const data = await loadData();
                 data.users = data.users.filter(u => u.id !== currentUser.id);
-                data.clans.forEach(c => { if (c.members) c.members = c.members.filter(m => m !== currentUser.id); if (c.leaderId === currentUser.id) { const nl = c.members && c.members.length ? c.members[0] : null; if (nl) { const lu = data.users.find(u => u.id === nl);
+                data.clans.forEach(c => {
+                    if (c.members) c.members = c.members.filter(m => m !== currentUser.id);
+                    if (c.leaderId === currentUser.id) {
+                        const nl = c.members && c.members.length ? c.members[0] : null;
+                        if (nl) {
+                            const lu = data.users.find(u => u.id === nl);
                             c.leaderId = nl;
-                            c.leaderName = lu ? lu.name : 'Неизвестен'; } else { data.clans = data.clans.filter(cl => cl.id !== c.id); } } });
+                            c.leaderName = lu ? lu.name : 'Неизвестен';
+                        } else {
+                            data.clans = data.clans.filter(cl => cl.id !== c.id);
+                        }
+                    }
+                });
                 await saveData(data);
                 localStorage.removeItem('bsc_user');
                 localStorage.removeItem('bsc_test_id');
