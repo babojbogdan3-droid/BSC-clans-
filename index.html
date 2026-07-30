@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
         /* ============================================================
-           СТИЛИ (ТЕ ЖЕ)
+           СТИЛИ (с анимациями и улучшениями)
            ============================================================ */
         * {
             margin: 0;
@@ -41,6 +41,7 @@
             max-width: 520px;
             margin: 0 auto;
         }
+        /* ХЕДЕР */
         .header {
             display: flex;
             align-items: center;
@@ -129,6 +130,8 @@
             font-size: 13px;
             margin-top: 2px;
         }
+
+        /* КАРТОЧКИ */
         .card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -138,11 +141,30 @@
             transition: all 0.3s;
             backdrop-filter: blur(4px);
             box-shadow: var(--shadow);
+            animation: fadeInUp 0.4s ease;
         }
         .card:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
         .card-header {
             display: flex;
@@ -174,6 +196,8 @@
             flex-wrap: wrap;
             margin-top: 10px;
         }
+
+        /* КНОПКИ */
         .btn {
             padding: 8px 18px;
             border: none;
@@ -233,6 +257,8 @@
             width: 100%;
             justify-content: center;
         }
+
+        /* МОДАЛКИ */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -248,16 +274,6 @@
         .modal-overlay.show {
             display: flex;
         }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
         .modal {
             background: var(--card);
             border: 1px solid var(--border);
@@ -268,6 +284,7 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: var(--shadow);
+            animation: fadeInUp 0.3s ease;
         }
         .modal h2 {
             font-size: 20px;
@@ -314,6 +331,7 @@
             flex: 1;
             justify-content: center;
         }
+
         .member-list {
             display: flex;
             flex-direction: column;
@@ -341,6 +359,7 @@
             display: flex;
             gap: 4px;
         }
+
         .request-item {
             display: flex;
             justify-content: space-between;
@@ -358,6 +377,7 @@
             color: var(--muted);
             font-size: 12px;
         }
+
         .empty {
             text-align: center;
             padding: 30px 20px;
@@ -368,6 +388,7 @@
             display: block;
             margin-bottom: 10px;
         }
+
         .loading {
             text-align: center;
             padding: 30px;
@@ -387,6 +408,7 @@
                 transform: rotate(360deg);
             }
         }
+
         .footer {
             text-align: center;
             color: var(--muted);
@@ -395,6 +417,37 @@
             padding-top: 16px;
             border-top: 1px solid var(--border);
         }
+
+        /* Toast-уведомления */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.show {
+            display: block;
+        }
+        .toast.success {
+            border-color: var(--success);
+        }
+        .toast.error {
+            border-color: var(--danger);
+        }
+        .toast.info {
+            border-color: var(--accent);
+        }
+
         @media (max-width: 480px) {
             .header-left h1 {
                 font-size: 18px;
@@ -446,7 +499,7 @@
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКИ -->
+    <!-- МОДАЛКА РЕГИСТРАЦИИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать!</h2>
@@ -468,6 +521,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ ПРОФИЛЯ -->
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
             <h2>✏️ Редактировать профиль</h2>
@@ -484,6 +538,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА СОЗДАНИЯ КЛАНА -->
     <div class="modal-overlay" id="createClanModal">
         <div class="modal">
             <h2>➕ Создать клан</h2>
@@ -500,17 +555,7 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="clanDetailModal">
-        <div class="modal">
-            <h2 id="detailClanName">🏰 Название</h2>
-            <div id="detailClanInfo"></div>
-            <div id="detailMembers" class="member-list"></div>
-            <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="closeModal('clanDetailModal')">Закрыть</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- МОДАЛКА РЕДАКТИРОВАНИЯ КЛАНА -->
     <div class="modal-overlay" id="editClanModal">
         <div class="modal">
             <h2>✏️ Редактировать клан</h2>
@@ -527,14 +572,28 @@
         </div>
     </div>
 
+    <!-- МОДАЛКА ПРОСМОТРА КЛАНА -->
+    <div class="modal-overlay" id="clanDetailModal">
+        <div class="modal">
+            <h2 id="detailClanName">🏰 Название</h2>
+            <div id="detailClanInfo"></div>
+            <div id="detailMembers" class="member-list"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('clanDetailModal')">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST-УВЕДОМЛЕНИЕ -->
+    <div id="toast" class="toast"></div>
+
     <script>
         // ============================================================
         // НАСТРОЙКИ
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
-        // 👇 ТВОЙ ИГРОВОЙ ID — АДМИН
-        const ADMIN_GAME_ID = '22887924';
+        const ADMIN_GAME_ID = '22887924'; // ТВОЙ ИГРОВОЙ ID
 
         let currentUser = null;
         let allUsers = [];
@@ -552,11 +611,7 @@
             });
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             const json = await resp.json();
-            const record = json.record || { users: [], clans: [], requests: [], settings: { adminGameId: ADMIN_GAME_ID } };
-            if (record.settings && record.settings.adminGameId) {
-                // синхронизируем
-            }
-            return record;
+            return json.record || { users: [], clans: [], requests: [], settings: { adminGameId: ADMIN_GAME_ID } };
         }
 
         async function saveData(data) {
@@ -570,6 +625,18 @@
             });
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             return await resp.json();
+        }
+
+        // ============================================================
+        // TOAST-УВЕДОМЛЕНИЯ
+        // ============================================================
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         // ============================================================
@@ -631,7 +698,6 @@
                         `;
                         return;
                     }
-                    // Если у пользователя gameId совпадает с админским — даём роль admin
                     if (isAdmin(user) && user.role !== 'admin') {
                         user.role = 'admin';
                         const updateData = await loadData();
@@ -678,10 +744,10 @@
             const gameId = document.getElementById('regGameId').value.trim();
             const role = document.getElementById('regRole').value;
 
-            if (!name) return alert('❌ Введите никнейм');
-            if (!telegram) return alert('❌ Введите Telegram username');
-            if (!gameId) return alert('❌ Введите игровой ID');
-            if (isNaN(gameId)) return alert('❌ Игровой ID должен быть числом');
+            if (!name) return showToast('❌ Введите никнейм', 'error');
+            if (!telegram) return showToast('❌ Введите Telegram username', 'error');
+            if (!gameId) return showToast('❌ Введите игровой ID', 'error');
+            if (isNaN(gameId)) return showToast('❌ Игровой ID должен быть числом', 'error');
 
             const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
             let tgId = tg ? tg.id.toString() : localStorage.getItem('bsc_test_id');
@@ -691,11 +757,9 @@
             }
 
             if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                alert('❌ Этот ник уже занят');
-                return;
+                return showToast('❌ Этот ник уже занят', 'error');
             }
 
-            // Проверка — является ли этот игровой ID админским
             const isAdminUser = gameId === ADMIN_GAME_ID;
 
             const newUser = {
@@ -716,9 +780,59 @@
             localStorage.setItem('bsc_user', JSON.stringify(currentUser));
 
             document.getElementById('registerModal').classList.remove('show');
+            showToast('✅ Добро пожаловать, ' + name + '!', 'success');
             updateUI();
             showTab('clans');
             renderMainActionButton();
+        }
+
+        // ============================================================
+        // РЕДАКТИРОВАНИЕ ПРОФИЛЯ
+        // ============================================================
+        function openEditProfile() {
+            if (!currentUser) return;
+            document.getElementById('editProfName').value = currentUser.name || '';
+            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
+            document.getElementById('editProfGameId').value = currentUser.gameId || '';
+            document.getElementById('editProfileModal').classList.add('show');
+            document.getElementById('profileDropdown').classList.remove('show');
+        }
+
+        async function saveProfile() {
+            const name = document.getElementById('editProfName').value.trim();
+            const telegram = document.getElementById('editProfTelegram').value.trim();
+            const gameId = document.getElementById('editProfGameId').value.trim();
+
+            if (!name) return showToast('❌ Введите никнейм', 'error');
+            if (!telegram) return showToast('❌ Введите Telegram username', 'error');
+            if (!gameId) return showToast('❌ Введите игровой ID', 'error');
+            if (isNaN(gameId)) return showToast('❌ Игровой ID должен быть числом', 'error');
+
+            try {
+                const data = await loadData();
+                const user = data.users.find(u => u.id === currentUser.id);
+                if (!user) return showToast('❌ Пользователь не найден', 'error');
+
+                if (user.name.toLowerCase() !== name.toLowerCase()) {
+                    if (data.users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+                        return showToast('❌ Этот ник уже занят', 'error');
+                    }
+                }
+
+                user.name = name;
+                user.telegramUsername = telegram.startsWith('@') ? telegram : '@' + telegram;
+                user.gameId = gameId;
+
+                await saveData(data);
+                await refreshData();
+                closeModal('editProfileModal');
+                showToast('✅ Профиль обновлён!', 'success');
+                updateUI();
+                showTab(currentTab);
+
+            } catch (error) {
+                showToast(`❌ ${error.message}`, 'error');
+            }
         }
 
         // ============================================================
@@ -794,11 +908,20 @@
 
             const container = document.getElementById('content');
             switch (tab) {
-                case 'clans': renderClans(container); break;
-                case 'requests': renderRequests(container); break;
-                case 'myclan': renderMyClan(container); break;
-                case 'admin': renderAdmin(container); break;
-                default: container.innerHTML = '<div class="empty">Неизвестная вкладка</div>';
+                case 'clans':
+                    renderClans(container);
+                    break;
+                case 'requests':
+                    renderRequests(container);
+                    break;
+                case 'myclan':
+                    renderMyClan(container);
+                    break;
+                case 'admin':
+                    renderAdmin(container);
+                    break;
+                default:
+                    container.innerHTML = '<div class="empty">Неизвестная вкладка</div>';
             }
         }
 
@@ -1002,7 +1125,6 @@
                 </div>
             `;
 
-            // Список пользователей
             if (allUsers.length > 0) {
                 html += `<div style="margin-top:16px;"><h4>Все пользователи:</h4>`;
                 allUsers.forEach(user => {
@@ -1043,10 +1165,10 @@
         // АДМИН: УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ
         // ============================================================
         async function adminDeleteUser(userId) {
-            if (!isAdmin(currentUser)) return alert('⛔ Доступ запрещён');
+            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
             const user = allUsers.find(u => u.id === userId);
-            if (!user) return alert('Пользователь не найден');
-            if (isAdmin(user)) return alert('❌ Нельзя удалить администратора!');
+            if (!user) return showToast('❌ Пользователь не найден', 'error');
+            if (isAdmin(user)) return showToast('❌ Нельзя удалить администратора!', 'error');
             if (!confirm(`❌ Точно удалить пользователя "${user.name}" (${user.id})?\nВсе его данные будут удалены.`)) return;
 
             try {
@@ -1070,18 +1192,18 @@
                 data.requests = data.requests.filter(r => r.userId !== userId);
                 await saveData(data);
                 await refreshData();
-                alert(`✅ Пользователь "${user.name}" удалён`);
+                showToast(`✅ Пользователь "${user.name}" удалён`, 'success');
                 showTab('admin');
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
         async function adminBanUser(userId) {
-            if (!isAdmin(currentUser)) return alert('⛔ Доступ запрещён');
+            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
             const user = allUsers.find(u => u.id === userId);
-            if (!user) return alert('Пользователь не найден');
-            if (isAdmin(user)) return alert('❌ Нельзя забанить администратора!');
+            if (!user) return showToast('❌ Пользователь не найден', 'error');
+            if (isAdmin(user)) return showToast('❌ Нельзя забанить администратора!', 'error');
             if (!confirm(`🔨 Забанить пользователя "${user.name}" (${user.id})?\nОн не сможет войти в систему.`)) return;
 
             try {
@@ -1092,17 +1214,17 @@
                 }
                 await saveData(data);
                 await refreshData();
-                alert(`✅ Пользователь "${user.name}" забанен`);
+                showToast(`✅ Пользователь "${user.name}" забанен`, 'success');
                 showTab('admin');
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
         async function adminUnbanUser(userId) {
-            if (!isAdmin(currentUser)) return alert('⛔ Доступ запрещён');
+            if (!isAdmin(currentUser)) return showToast('⛔ Доступ запрещён', 'error');
             const user = allUsers.find(u => u.id === userId);
-            if (!user) return alert('Пользователь не найден');
+            if (!user) return showToast('❌ Пользователь не найден', 'error');
             if (!confirm(`✅ Разбанить пользователя "${user.name}"?`)) return;
 
             try {
@@ -1113,10 +1235,53 @@
                 }
                 await saveData(data);
                 await refreshData();
-                alert(`✅ Пользователь "${user.name}" разбанен`);
+                showToast(`✅ Пользователь "${user.name}" разбанен`, 'success');
                 showTab('admin');
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
+            }
+        }
+
+        // ============================================================
+        // РЕДАКТИРОВАНИЕ КЛАНА (ДЛЯ ЛИДЕРА/АДМИНА)
+        // ============================================================
+        function openEditClan(clanId) {
+            const clan = allClans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ Клан не найден', 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
+                return showToast('❌ Нет прав', 'error');
+            }
+            editingClanId = clanId;
+            document.getElementById('editClanName').value = clan.name;
+            document.getElementById('editClanTag').value = clan.tag;
+            document.getElementById('editClanDesc').value = clan.description || '';
+            document.getElementById('editClanModal').classList.add('show');
+        }
+
+        async function saveEditClan() {
+            const name = document.getElementById('editClanName').value.trim();
+            const tag = document.getElementById('editClanTag').value.trim().toUpperCase();
+            const desc = document.getElementById('editClanDesc').value.trim();
+
+            if (!name) return showToast('❌ Введите название', 'error');
+            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ Тег 2-6 символов', 'error');
+
+            try {
+                const data = await loadData();
+                const clan = data.clans.find(c => c.id === editingClanId);
+                if (!clan) return showToast('❌ Клан не найден', 'error');
+
+                clan.name = name;
+                clan.tag = tag;
+                clan.description = desc;
+
+                await saveData(data);
+                await refreshData();
+                closeModal('editClanModal');
+                showToast('✅ Клан обновлён', 'success');
+                showTab(currentTab);
+            } catch (error) {
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1126,7 +1291,7 @@
         async function viewClan(clanId) {
             await refreshData();
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return alert('Клан не найден');
+            if (!clan) return showToast('❌ Клан не найден', 'error');
 
             const members = getClanMembers(clan);
             const leader = getClanLeader(clan);
@@ -1189,7 +1354,7 @@
         // ============================================================
         function confirmLeaveFromView(clanId) {
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return alert('Клан не найден');
+            if (!clan) return showToast('❌ Клан не найден', 'error');
             if (confirm(`Вы действительно хотите выйти из клана "${clan.name}"?`)) {
                 leaveClan(clanId);
                 closeModal('clanDetailModal');
@@ -1197,12 +1362,11 @@
         }
 
         // ============================================================
-        // ДЕЙСТВИЯ С КЛАНАМИ (БЕЗ ИЗМЕНЕНИЙ)
+        // ДЕЙСТВИЯ С КЛАНАМИ
         // ============================================================
         function openCreateClan() {
             if (currentUser.clanId) {
-                alert('❌ Вы уже в клане');
-                return;
+                return showToast('❌ Вы уже в клане', 'error');
             }
             document.getElementById('newClanName').value = '';
             document.getElementById('newClanTag').value = '';
@@ -1215,14 +1379,13 @@
             const tag = document.getElementById('newClanTag').value.trim().toUpperCase();
             const desc = document.getElementById('newClanDesc').value.trim();
 
-            if (!name) return alert('❌ Введите название');
-            if (!tag || tag.length < 2 || tag.length > 6) return alert('❌ Тег 2-6 символов');
+            if (!name) return showToast('❌ Введите название', 'error');
+            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ Тег 2-6 символов', 'error');
 
             try {
                 const data = await loadData();
                 if (data.clans.find(c => c.name.toLowerCase() === name.toLowerCase())) {
-                    alert('❌ Клан с таким названием уже существует');
-                    return;
+                    return showToast('❌ Клан с таким названием уже существует', 'error');
                 }
 
                 const newClan = {
@@ -1243,28 +1406,26 @@
 
                 await refreshData();
                 closeModal('createClanModal');
-                alert('✅ Клан создан!');
+                showToast('✅ Клан создан!', 'success');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
         async function applyToClan(clanId) {
             if (currentUser.clanId) {
-                alert('❌ Вы уже в клане');
-                return;
+                return showToast('❌ Вы уже в клане', 'error');
             }
 
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return alert('❌ Клан не найден');
+            if (!clan) return showToast('❌ Клан не найден', 'error');
 
             if (allRequests.find(r => r.clanId === clanId && r.userId === currentUser.id && r.status === 'pending')) {
-                alert('⏳ Вы уже подали заявку в этот клан');
-                return;
+                return showToast('⏳ Вы уже подали заявку в этот клан', 'info');
             }
 
             if (!confirm(`Подать заявку в клан "${clan.name}" [${clan.tag}]?`)) return;
@@ -1283,11 +1444,11 @@
                 await saveData(data);
 
                 await refreshData();
-                alert('✅ Заявка отправлена!');
+                showToast('✅ Заявка отправлена!', 'success');
                 showTab('clans');
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1295,10 +1456,10 @@
             try {
                 const data = await loadData();
                 const req = data.requests.find(r => r.id === requestId);
-                if (!req) return alert('Заявка не найдена');
+                if (!req) return showToast('❌ Заявка не найдена', 'error');
 
                 const clan = data.clans.find(c => c.id === req.clanId);
-                if (!clan) return alert('Клан не найден');
+                if (!clan) return showToast('❌ Клан не найден', 'error');
 
                 if (!clan.members) clan.members = [];
                 if (!clan.members.includes(req.userId)) {
@@ -1314,11 +1475,11 @@
 
                 await saveData(data);
                 await refreshData();
-                alert('✅ Заявка принята!');
+                showToast('✅ Заявка принята!', 'success');
                 showTab('requests');
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1326,24 +1487,24 @@
             try {
                 const data = await loadData();
                 const req = data.requests.find(r => r.id === requestId);
-                if (!req) return alert('Заявка не найдена');
+                if (!req) return showToast('❌ Заявка не найдена', 'error');
                 req.status = 'rejected';
                 await saveData(data);
                 await refreshData();
-                alert('❌ Заявка отклонена');
+                showToast('❌ Заявка отклонена', 'error');
                 showTab('requests');
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
         async function deleteClan(clanId) {
             const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return alert('Клан не найден');
+            if (!clan) return showToast('❌ Клан не найден', 'error');
 
             if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
-                return alert('❌ Только лидер или админ может удалить клан');
+                return showToast('❌ Только лидер или админ может удалить клан', 'error');
             }
 
             if (!confirm(`❌ Точно удалить клан "${clan.name}"?`)) return;
@@ -1361,13 +1522,13 @@
                 }
                 await saveData(data);
                 await refreshData();
-                alert('✅ Клан удалён');
+                showToast('✅ Клан удалён', 'success');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1375,11 +1536,10 @@
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) return alert('Клан не найден');
+                if (!clan) return showToast('❌ Клан не найден', 'error');
 
                 if (clan.leaderId === currentUser.id) {
-                    alert('❌ Вы глава клана. Сначала передайте лидерство или распустите клан.');
-                    return;
+                    return showToast('❌ Вы глава клана. Сначала передайте лидерство или распустите клан.', 'error');
                 }
 
                 clan.members = clan.members.filter(m => m !== currentUser.id);
@@ -1390,13 +1550,13 @@
 
                 await saveData(data);
                 await refreshData();
-                alert('✅ Вы вышли из клана');
+                showToast('✅ Вы вышли из клана', 'success');
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1409,14 +1569,14 @@
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) return alert('Клан не найден');
+                if (!clan) return showToast('❌ Клан не найден', 'error');
 
                 if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
-                    return alert('❌ Нет прав');
+                    return showToast('❌ Нет прав', 'error');
                 }
 
                 if (userId === clan.leaderId) {
-                    return alert('❌ Нельзя кикнуть лидера');
+                    return showToast('❌ Нельзя кикнуть лидера', 'error');
                 }
 
                 clan.members = clan.members.filter(id => id !== userId);
@@ -1428,11 +1588,11 @@
 
                 await saveData(data);
                 await refreshData();
-                alert('✅ Игрок кикнут');
+                showToast('✅ Игрок кикнут', 'success');
                 viewClan(clanId);
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1442,14 +1602,14 @@
             try {
                 const data = await loadData();
                 const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) return alert('Клан не найден');
+                if (!clan) return showToast('❌ Клан не найден', 'error');
 
                 if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
-                    return alert('❌ Нет прав');
+                    return showToast('❌ Нет прав', 'error');
                 }
 
                 const newLeader = data.users.find(u => u.id === newLeaderId);
-                if (!newLeader) return alert('Пользователь не найден');
+                if (!newLeader) return showToast('❌ Пользователь не найден', 'error');
 
                 const oldLeaderId = clan.leaderId;
                 clan.leaderId = newLeaderId;
@@ -1469,12 +1629,12 @@
 
                 await saveData(data);
                 await refreshData();
-                alert(`✅ Лидерство передано игроку ${newLeader.name}`);
+                showToast(`✅ Лидерство передано игроку ${newLeader.name}`, 'success');
                 viewClan(clanId);
                 renderMainActionButton();
 
             } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1492,54 +1652,10 @@
                 data.requests = [];
                 await saveData(data);
                 await refreshData();
-                alert('✅ Все данные очищены');
+                showToast('✅ Все данные очищены', 'success');
                 location.reload();
             } catch (error) {
-                alert(`❌ ${error.message}`);
-            }
-        }
-
-        // ============================================================
-        // РЕДАКТИРОВАНИЕ КЛАНА
-        // ============================================================
-        function openEditClan(clanId) {
-            const clan = allClans.find(c => c.id === clanId);
-            if (!clan) return alert('Клан не найден');
-            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) {
-                return alert('❌ Нет прав');
-            }
-            editingClanId = clanId;
-            document.getElementById('editClanName').value = clan.name;
-            document.getElementById('editClanTag').value = clan.tag;
-            document.getElementById('editClanDesc').value = clan.description || '';
-            document.getElementById('editClanModal').classList.add('show');
-        }
-
-        async function saveEditClan() {
-            const name = document.getElementById('editClanName').value.trim();
-            const tag = document.getElementById('editClanTag').value.trim().toUpperCase();
-            const desc = document.getElementById('editClanDesc').value.trim();
-
-            if (!name) return alert('❌ Введите название');
-            if (!tag || tag.length < 2 || tag.length > 6) return alert('❌ Тег 2-6 символов');
-
-            try {
-                const data = await loadData();
-                const clan = data.clans.find(c => c.id === editingClanId);
-                if (!clan) return alert('Клан не найден');
-
-                clan.name = name;
-                clan.tag = tag;
-                clan.description = desc;
-
-                await saveData(data);
-                await refreshData();
-                closeModal('editClanModal');
-                alert('✅ Клан обновлён');
-                showTab(currentTab);
-
-            } catch (error) {
-                alert(`❌ ${error.message}`);
+                showToast(`❌ ${error.message}`, 'error');
             }
         }
 
@@ -1582,10 +1698,10 @@
                 showTab('clans');
                 renderMainActionButton();
 
-                alert('✅ Вы вышли из аккаунта. Все данные удалены.');
+                showToast('✅ Вы вышли из аккаунта. Все данные удалены.', 'success');
 
             } catch (error) {
-                alert(`❌ Ошибка при выходе: ${error.message}`);
+                showToast(`❌ Ошибка при выходе: ${error.message}`, 'error');
             }
         }
 
