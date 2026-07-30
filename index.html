@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram.min.js"></script>
     <style>
         /* ============================================================
-           СТИЛИ (ТЕ ЖЕ, БЕЗ ИЗМЕНЕНИЙ)
+           СТИЛИ (ТЕ ЖЕ)
            ============================================================ */
         * {
             margin: 0;
@@ -446,7 +446,7 @@
         <footer class="footer">Создатель: @NoisyBoy141</footer>
     </div>
 
-    <!-- МОДАЛКИ (ТЕ ЖЕ) -->
+    <!-- МОДАЛКИ -->
     <div class="modal-overlay" id="registerModal">
         <div class="modal">
             <h2>📝 Добро пожаловать!</h2>
@@ -533,6 +533,8 @@
         // ============================================================
         const JSONBIN_BIN_ID = '6a6b0926da38895dfea333a8';
         const JSONBIN_API_KEY = '$2a$10$ykxy38WFCVMPvywkDdXvPuovLJRzEYFxED2JkFVD6XnyZ3pRERQF.';
+        // 👇 ТВОЙ ИГРОВОЙ ID — АДМИН
+        const ADMIN_GAME_ID = '22887924';
 
         let currentUser = null;
         let allUsers = [];
@@ -540,7 +542,6 @@
         let allRequests = [];
         let currentTab = 'clans';
         let editingClanId = null;
-        let adminGameId = '22887924'; // ТВОЙ ИГРОВОЙ ID
 
         // ============================================================
         // РАБОТА С JSONBin
@@ -551,10 +552,9 @@
             });
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             const json = await resp.json();
-            const record = json.record || { users: [], clans: [], requests: [], settings: { adminGameId: adminGameId } };
-            // Обновляем adminGameId из настроек, если он там есть
+            const record = json.record || { users: [], clans: [], requests: [], settings: { adminGameId: ADMIN_GAME_ID } };
             if (record.settings && record.settings.adminGameId) {
-                adminGameId = record.settings.adminGameId;
+                // синхронизируем
             }
             return record;
         }
@@ -576,7 +576,7 @@
         // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
         function isAdmin(user) {
-            return user && user.gameId === adminGameId;
+            return user && user.gameId === ADMIN_GAME_ID;
         }
 
         function getUserName(id) {
@@ -606,9 +606,6 @@
                 allUsers = data.users || [];
                 allClans = data.clans || [];
                 allRequests = data.requests || [];
-                if (data.settings && data.settings.adminGameId) {
-                    adminGameId = data.settings.adminGameId;
-                }
 
                 const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
                 let tgId = tg ? tg.id.toString() : null;
@@ -625,7 +622,6 @@
                 let user = allUsers.find(u => u.id === tgId);
 
                 if (user) {
-                    // Проверка на бан
                     if (user.banned === true) {
                         document.getElementById('content').innerHTML = `
                             <div class="card" style="border-color:var(--danger);">
@@ -635,10 +631,9 @@
                         `;
                         return;
                     }
-                    // Проверка на админа по gameId
+                    // Если у пользователя gameId совпадает с админским — даём роль admin
                     if (isAdmin(user) && user.role !== 'admin') {
                         user.role = 'admin';
-                        // Обновляем в базе
                         const updateData = await loadData();
                         const target = updateData.users.find(u => u.id === user.id);
                         if (target) {
@@ -701,7 +696,7 @@
             }
 
             // Проверка — является ли этот игровой ID админским
-            const isAdminUser = gameId === adminGameId;
+            const isAdminUser = gameId === ADMIN_GAME_ID;
 
             const newUser = {
                 id: tgId,
@@ -999,7 +994,7 @@
                         <div style="color:var(--muted);">Всего кланов: ${allClans.length}</div>
                         <div style="color:var(--muted);">Всего пользователей: ${allUsers.length}</div>
                         <div style="color:var(--muted);">Заявок в обработке: ${allRequests.filter(r => r.status === 'pending').length}</div>
-                        <div style="color:var(--muted);">Админ Game ID: ${adminGameId}</div>
+                        <div style="color:var(--muted);">Админ Game ID: ${ADMIN_GAME_ID}</div>
                     </div>
                     <div style="margin-top:12px;">
                         <button class="btn btn-danger btn-sm" onclick="clearAllData()">⚠️ Очистить все данные</button>
@@ -1602,9 +1597,6 @@
             allUsers = data.users || [];
             allClans = data.clans || [];
             allRequests = data.requests || [];
-            if (data.settings && data.settings.adminGameId) {
-                adminGameId = data.settings.adminGameId;
-            }
             if (currentUser) {
                 const updated = allUsers.find(u => u.id === currentUser.id);
                 if (updated) {
