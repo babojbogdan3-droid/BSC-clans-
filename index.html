@@ -369,6 +369,29 @@
 
     <script>
         // ============================================================
+        // ЭМУЛЯЦИЯ TELEGRAM WEBAPP ДЛЯ БРАУЗЕРА
+        // ============================================================
+        if (!window.Telegram) {
+            window.Telegram = {};
+        }
+        if (!window.Telegram.WebApp) {
+            window.Telegram.WebApp = {
+                initDataUnsafe: {
+                    user: {
+                        id: Math.floor(Math.random() * 1000000000),
+                        first_name: 'Browser',
+                        last_name: 'User',
+                        username: 'browser_user'
+                    }
+                },
+                ready: function() {},
+                expand: function() {},
+                close: function() {}
+            };
+            console.log('✅ Telegram WebApp эмулирован для браузера');
+        }
+
+        // ============================================================
         // ПЕРЕВОДЫ
         // ============================================================
         const LANG = {
@@ -565,7 +588,6 @@
         let currentLang = 'ru';
         let chatListener = null;
         let chatInitialized = false;
-        let chatContainerContent = null;
 
         // ============================================================
         // ФУНКЦИИ ПЕРЕВОДА
@@ -742,13 +764,19 @@
                     await saveData(updatedData);
                 }
 
-                const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                let tgId = tg ? tg.id.toString() : null;
+                // Получаем ID пользователя (из Telegram или эмулируем)
+                let tgId = null;
+                try {
+                    const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                    if (tg && tg.id) {
+                        tgId = tg.id.toString();
+                    }
+                } catch(e) {}
 
                 if (!tgId) {
                     let savedId = localStorage.getItem('bsc_test_id');
                     if (!savedId) {
-                        savedId = 'test_' + Date.now();
+                        savedId = 'browser_' + Date.now();
                         localStorage.setItem('bsc_test_id', savedId);
                     }
                     tgId = savedId;
@@ -829,11 +857,22 @@
             if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
             if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
-            const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-            let tgId = tg ? tg.id.toString() : localStorage.getItem('bsc_test_id');
+            // Получаем ID из Telegram или эмулируем
+            let tgId = null;
+            try {
+                const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                if (tg && tg.id) {
+                    tgId = tg.id.toString();
+                }
+            } catch(e) {}
+
             if (!tgId) {
-                tgId = 'test_' + Date.now();
-                localStorage.setItem('bsc_test_id', tgId);
+                let savedId = localStorage.getItem('bsc_test_id');
+                if (!savedId) {
+                    savedId = 'browser_' + Date.now();
+                    localStorage.setItem('bsc_test_id', savedId);
+                }
+                tgId = savedId;
             }
 
             if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
@@ -959,7 +998,7 @@
         }
 
         // ============================================================
-        // ВКЛАДКИ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+        // ВКЛАДКИ
         // ============================================================
         function showTab(tab) {
             currentTab = tab;
@@ -981,7 +1020,6 @@
 
             const container = document.getElementById('content');
             
-            // Если переключаемся на чат - сбрасываем флаг, чтобы пересоздать
             if (tab === 'chat') {
                 chatInitialized = false;
             }
@@ -1555,10 +1593,9 @@
         }
 
         // ============================================================
-        // ЧАТ (ПОЛНОСТЬЮ ИСПРАВЛЕННАЯ ВЕРСИЯ)
+        // ЧАТ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
         // ============================================================
         function initChat(container) {
-            // Если чат уже инициализирован и есть контейнер - просто обновляем
             if (chatInitialized && container.innerHTML.includes('chat-container')) {
                 updateChatMessages();
                 const messagesDiv = document.getElementById('chatMessages');
@@ -1566,7 +1603,6 @@
                 return;
             }
 
-            // Если чат уже был инициализирован, но контейнер пустой - пересоздаем
             if (chatInitialized) {
                 chatInitialized = false;
                 if (chatListener) {
@@ -1589,7 +1625,6 @@
 
             chatInitialized = true;
 
-            // Навешиваем обработчики
             const sendBtn = document.getElementById('chatSendBtn');
             const input = document.getElementById('chatInput');
             
@@ -1600,13 +1635,11 @@
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') sendChatMessageHandler();
                 });
-                input.focus();
+                setTimeout(() => input.focus(), 300);
             }
 
-            // Загружаем сообщения
             loadChatMessages();
 
-            // Принудительно обновляем через секунду
             setTimeout(() => {
                 if (chatInitialized) {
                     updateChatMessages();
@@ -1618,10 +1651,7 @@
 
         function updateChatMessages() {
             const messagesDiv = document.getElementById('chatMessages');
-            if (!messagesDiv) {
-                // Если нет элемента - чат не инициализирован
-                return;
-            }
+            if (!messagesDiv) return;
 
             if (!chatMessages || chatMessages.length === 0) {
                 messagesDiv.innerHTML = `<div class="empty" style="padding:20px;"><span class="icon">💬</span><p>${t('chatEmpty')}</p></div>`;
@@ -1652,7 +1682,6 @@
         }
 
         function loadChatMessages() {
-            // Отписываемся от старого слушателя
             if (chatListener) {
                 db.ref('chat').off('value', chatListener);
                 chatListener = null;
@@ -1697,12 +1726,7 @@
 
         function sendChatMessageHandler() {
             const input = document.getElementById('chatInput');
-            if (!input) {
-                // Пытаемся найти input заново
-                const newInput = document.querySelector('#chatInput');
-                if (!newInput) return;
-                input = newInput;
-            }
+            if (!input) return;
             const text = input.value.trim();
             if (!text) return;
             if (!currentUser) {
