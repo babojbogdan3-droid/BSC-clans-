@@ -9,9 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        /* ============================================================
-           СТИЛИ (без изменений)
-           ============================================================ */
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0b0e17;--card-bg:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.06);--text-primary:#f0f4ff;--text-secondary:#8899bb;--accent:#5b8def;--accent-glow:rgba(91,141,239,0.25);--shadow:0 8px 32px rgba(0,0,0,0.6);--radius:16px;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
         body{font-family:var(--font);background:var(--bg);color:var(--text-primary);min-height:100vh;padding:16px;background-image:radial-gradient(circle at 20% 30%,rgba(91,141,239,0.06)0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(91,141,239,0.04)0%,transparent 50%)}
@@ -129,6 +126,270 @@
         .user-card .user-details span{display:inline-block;margin-right:12px}
         .user-card .user-actions{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
         @media (max-width:480px){body{padding:12px}.header h1{font-size:28px}.menu .btn{font-size:11px;padding:8px 2px}.modal{padding:16px}.footer-top{flex-direction:column;align-items:flex-start}.footer-status{text-align:left;width:100%}.user-card .user-header{flex-direction:column;align-items:flex-start}.chat-container{height:65vh}.chat-input-row input{font-size:13px;padding:8px 12px}.chat-input-row .btn{padding:8px 14px;font-size:13px}}
+
+        /* ============================================================
+           НОВЫЕ СТИЛИ ДЛЯ РЕЙТИНГА И МОЙ КЛАН
+           ============================================================ */
+        .rating-table {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .rating-row {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            transition: all .2s;
+            gap: 12px;
+        }
+        .rating-row:hover {
+            border-color: rgba(91,141,239,0.2);
+            transform: translateX(4px);
+        }
+        .rating-row .place {
+            font-weight: 700;
+            font-size: 20px;
+            min-width: 36px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .rating-row .place.gold { color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .rating-row .place.silver { color: #c0c0c0; text-shadow: 0 0 20px rgba(192,192,192,0.3); }
+        .rating-row .place.bronze { color: #cd7f32; text-shadow: 0 0 20px rgba(205,127,50,0.3); }
+        .rating-row .clan-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .rating-row .clan-info .name {
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .rating-row .clan-info .name .tag {
+            color: var(--accent);
+            font-size: 12px;
+            opacity: .7;
+            font-weight: 500;
+        }
+        .rating-row .clan-info .leader-contact {
+            font-size: 12px;
+            color: var(--text-secondary);
+            opacity: .6;
+        }
+        .rating-row .clan-info .clan-stats {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .rating-row .elo {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 18px;
+            background: rgba(91,141,239,0.08);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(91,141,239,0.1);
+            white-space: nowrap;
+        }
+        .rating-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding: 0 4px;
+        }
+        .rating-header .title {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .rating-header .count {
+            color: var(--text-secondary);
+            font-size: 12px;
+            background: var(--card-bg);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* МОЙ КЛАН - новый стиль */
+        .my-clan-card {
+            border: 1px solid rgba(91,141,239,0.2) !important;
+            background: linear-gradient(135deg, rgba(91,141,239,0.05), rgba(91,141,239,0.01)) !important;
+            position: relative;
+            overflow: hidden;
+        }
+        .my-clan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), #2ecc71, var(--accent));
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 0%; }
+        }
+        .my-clan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        .my-clan-name {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .my-clan-tag {
+            font-size: 14px;
+            color: var(--accent);
+            background: rgba(91,141,239,0.1);
+            padding: 2px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(91,141,239,0.15);
+        }
+        .my-clan-elo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            background: rgba(91,141,239,0.08);
+            padding: 4px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(91,141,239,0.1);
+        }
+        .my-clan-stats {
+            display: flex;
+            gap: 20px;
+            margin: 8px 0 12px 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+        .my-clan-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .my-clan-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            margin: 8px 0 12px 0;
+            line-height: 1.5;
+        }
+        .my-clan-contacts {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 8px 0 12px 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        .my-clan-contacts .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.02);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+        .my-clan-contacts .contact-item a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .my-clan-contacts .contact-item a:hover {
+            color: #fff;
+        }
+        .members-title {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            margin: 12px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .members-title .count {
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: var(--card-bg);
+            padding: 2px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            transition: all .2s;
+        }
+        .member-item:hover {
+            border-color: rgba(91,141,239,0.15);
+        }
+        .member-item .member-name {
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .member-item .member-name .role-badge {
+            font-size: 11px;
+            padding: 1px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .member-item .member-name .role-badge.leader {
+            background: rgba(91,141,239,0.15);
+            color: var(--accent);
+        }
+        .member-item .member-name .role-badge.vice {
+            background: rgba(241,196,15,0.15);
+            color: #f1c40f;
+        }
+        .member-item .member-name .role-badge.member {
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+        }
+        .member-item .member-actions {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .my-clan-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--card-border);
+        }
     </style>
 </head>
 <body>
@@ -729,9 +990,9 @@
                         const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
                         document.getElementById('content').innerHTML = `
                             <div class="card" style="border-color:#ff3d71;">
-                                <div style="color:#ff3d71;font-size:18px;">${t('accessDenied')}</div>
-                                <div style="color:var(--text-secondary);">${t('accountBanned')} ${banText}</div>
-                                ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">${t('userBannedReason').replace('{reason}', user.bannedReason)}</div>` : ''}
+                                <div style="color:#ff3d71;font-size:18px;">⛔ Доступ запрещён</div>
+                                <div style="color:var(--text-secondary);">Аккаунт забанен ${banText}</div>
+                                ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">Причина: ${user.bannedReason}</div>` : ''}
                             </div>
                         `;
                         return;
@@ -927,7 +1188,7 @@
         }
 
         // ============================================================
-        // ВКЛАДКИ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+        // ВКЛАДКИ
         // ============================================================
         function showTab(tab) {
             currentTab = tab;
@@ -1046,7 +1307,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР МОЙ КЛАН
+        // РЕНДЕР МОЙ КЛАН (НОВОЕ ОФОРМЛЕНИЕ)
         // ============================================================
         async function renderMyClan(container) {
             await refreshData();
@@ -1065,58 +1326,114 @@
                 }
             }
             if (!clan) {
-                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>${t('notInClan')}</p></div>`;
+                container.innerHTML = `
+                    <div class="empty" style="padding:60px 20px;">
+                        <span class="icon">⭐</span>
+                        <p style="font-size:18px;font-weight:600;color:var(--text-primary);">${t('notInClan')}</p>
+                        <p style="color:var(--text-secondary);font-size:14px;margin-top:4px;">Создайте или вступите в клан, чтобы видеть его здесь</p>
+                        <button class="btn btn-primary" onclick="openCreateClan()" style="margin-top:12px;">➕ ${t('createClan')}</button>
+                    </div>
+                `;
                 return;
             }
+
             const members = clan.members || [];
             const isLeader = clan.leaderId === currentUser.id;
             const leader = getClanLeader(clan);
-            const leaderContact = leader ? getUserTelegram(leader.id) : '';
             const elo = getClanElo(clan.id);
-            let memHtml = '';
-            members.forEach(mid => {
-                const user = allUsers.find(u => u.id === mid);
-                const isLeaderUser = mid === clan.leaderId;
-                const isViceUser = user && user.role === 'vice';
-                const isCurrentUser = mid === currentUser.id;
-                let actions = '';
-                if (isLeader && !isLeaderUser && !isCurrentUser) {
-                    actions = `
-                        <button class="btn btn-gold btn-sm" onclick="setViceLeader('${clan.id}','${mid}')">👑 ${t('roleVice')}</button>
-                        <button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}','${mid}')">${t('kick')}</button>
+
+            // Собираем участников с ролями
+            let membersHtml = '';
+            if (members.length === 0) {
+                membersHtml = `<div style="color:var(--text-secondary);font-size:13px;padding:8px;">${t('noMembers')}</div>`;
+            } else {
+                members.forEach(mid => {
+                    const user = allUsers.find(u => u.id === mid);
+                    const isLeaderUser = mid === clan.leaderId;
+                    const isViceUser = user && user.role === 'vice';
+                    const isCurrentUser = mid === currentUser.id;
+
+                    let roleBadge = '';
+                    let roleClass = 'member';
+                    if (isLeaderUser) {
+                        roleBadge = '👑 Глава';
+                        roleClass = 'leader';
+                    } else if (isViceUser) {
+                        roleBadge = '🛡️ Зам.';
+                        roleClass = 'vice';
+                    } else {
+                        roleBadge = 'Игрок';
+                        roleClass = 'member';
+                    }
+
+                    let actions = '';
+                    if (isLeader && !isLeaderUser && !isCurrentUser) {
+                        actions = `
+                            <button class="btn btn-gold btn-sm" onclick="setViceLeader('${clan.id}','${mid}')">👑 ${t('roleVice')}</button>
+                            <button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}','${mid}')">${t('kick')}</button>
+                        `;
+                    }
+                    if (isLeaderUser && isCurrentUser) {
+                        actions = `<span style="color:var(--accent);font-size:12px;">👑 Вы - глава</span>`;
+                    }
+                    if (!isLeader && isCurrentUser) {
+                        actions = `<button class="btn btn-danger btn-sm" onclick="leaveClan('${clan.id}')">🚪 ${t('leave')}</button>`;
+                    }
+
+                    membersHtml += `
+                        <div class="member-item">
+                            <div class="member-name">
+                                ${user ? user.name : mid}
+                                <span class="role-badge ${roleClass}">${roleBadge}</span>
+                            </div>
+                            <div class="member-actions">${actions}</div>
+                        </div>
                     `;
-                }
-                if (isLeaderUser && isCurrentUser) {
-                    actions = `<span style="color:var(--accent);font-size:12px;">👑 ${t('roleLeader')}</span>`;
-                }
-                memHtml += `
-                    <div class="member-row">
-                        <span>${user ? user.name : mid} ${isLeaderUser ? '👑' : ''} ${isViceUser ? '🛡️' : ''}</span>
-                        <div class="actions">${actions}</div>
-                    </div>
-                `;
-            });
+                });
+            }
 
             let extra = '';
-            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
-            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
+            if (clan.contact) extra += `
+                <div class="contact-item">📱 ${t('leaderContact')}: <a href="https://t.me/${clan.contact}" target="_blank">@${clan.contact}</a></div>
+            `;
+            if (clan.channel) {
+                const channelLink = clan.channel.startsWith('http') ? clan.channel : 'https://t.me/' + clan.channel.replace('@', '');
+                extra += `
+                    <div class="contact-item">📢 ${t('clanChannel')}: <a href="${channelLink}" target="_blank">${clan.channel}</a></div>
+                `;
+            }
 
             container.innerHTML = `
-                <div class="card" style="border-color:var(--accent);">
-                    <div class="card-header">
-                        <div class="card-title">
-                            ${clan.name}
-                            ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
+                <div class="card my-clan-card">
+                    <div class="my-clan-header">
+                        <div>
+                            <div class="my-clan-name">
+                                ${clan.name}
+                                <span class="my-clan-tag">[${clan.tag}]</span>
+                            </div>
+                            <div class="my-clan-stats">
+                                <span>👑 ${leader ? leader.name : 'Неизвестен'}</span>
+                                <span>👥 ${members.length} ${t('membersCount')}</span>
+                                <span>📅 ${new Date(clan.created).toLocaleDateString()}</span>
+                            </div>
                         </div>
-                        <span class="card-tag">[${clan.tag}]</span>
+                        <div class="my-clan-elo">⭐ ${elo}</div>
                     </div>
-                    <div class="card-sub"><span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}</div>
-                    ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
-                    ${extra}
-                    <div style="margin-top:8px;">${memHtml}</div>
-                    <div class="card-actions">
+
+                    ${clan.description ? `<div class="my-clan-description">${clan.description}</div>` : ''}
+
+                    ${extra ? `<div class="my-clan-contacts">${extra}</div>` : ''}
+
+                    <div class="members-title">
+                        👥 ${t('membersList')}
+                        <span class="count">${members.length}</span>
+                    </div>
+                    <div class="member-list">${membersHtml}</div>
+
+                    <div class="my-clan-actions">
                         ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
                         ${(isLeader || isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
+                        ${!isLeader && isLeader ? '' : ''}
                     </div>
                 </div>
             `;
@@ -1151,7 +1468,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР РЕЙТИНГА
+        // РЕНДЕР РЕЙТИНГА (НОВОЕ ОФОРМЛЕНИЕ)
         // ============================================================
         async function renderRating(container) {
             await refreshData();
@@ -1159,11 +1476,17 @@
                 container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
                 return;
             }
+
             const sorted = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
+
             let html = `
-                <div style="margin-bottom:12px;color:var(--text-secondary);font-size:14px;">🏆 ${t('ratingTop')}</div>
+                <div class="rating-header">
+                    <span class="title">🏆 ${t('ratingTop')}</span>
+                    <span class="count">${sorted.length} ${t('clansCount')}</span>
+                </div>
                 <div class="rating-table">
             `;
+
             sorted.forEach((clan, index) => {
                 const place = index + 1;
                 let placeClass = '';
@@ -1172,23 +1495,30 @@
                     medal = '🥇'; } else if (place === 2) { placeClass = 'silver';
                     medal = '🥈'; } else if (place === 3) { placeClass = 'bronze';
                     medal = '🥉'; }
+
                 const leader = getClanLeader(clan);
                 const leaderContact = leader ? getUserTelegram(leader.id) : '';
                 const elo = getClanElo(clan.id);
+                const members = clan.members || [];
+
                 html += `
                     <div class="rating-row">
-                        <span class="place ${placeClass}">${medal || place}</span>
+                        <div class="place ${placeClass}">${medal || place}</div>
                         <div class="clan-info">
                             <div class="name">
                                 ${clan.name}
                                 ${leaderContact ? `<span class="leader-contact">${leaderContact}</span>` : ''}
                                 <span class="tag">[${clan.tag}]</span>
                             </div>
+                            <div class="clan-stats">
+                                👑 ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length}
+                            </div>
                         </div>
-                        <span class="elo">${elo} ${t('eloLabel')}</span>
+                        <div class="elo">${elo}</div>
                     </div>
                 `;
             });
+
             html += `</div>`;
             container.innerHTML = html;
         }
@@ -1217,7 +1547,6 @@
                 </div>
             `;
 
-            // Входящие CW
             const incoming = allCw.filter(cw => cw.toClanId === myClan.id && cw.status === 'pending');
             if (incoming.length > 0) {
                 html += `<div style="color:var(--text-secondary);font-size:13px;margin-bottom:8px;">${t('cwIncoming')}:</div>`;
@@ -1239,7 +1568,6 @@
                 });
             }
 
-            // Исходящие CW
             const outgoing = allCw.filter(cw => cw.fromClanId === myClan.id && cw.status !== 'finished');
             if (outgoing.length > 0) {
                 html += `<div style="color:var(--text-secondary);font-size:13px;margin-top:12px;margin-bottom:8px;">${t('cwOutgoing')}:</div>`;
@@ -1452,7 +1780,7 @@
         }
 
         // ============================================================
-        // ЧАТ (ИСПРАВЛЕННАЯ ВЕРСИЯ — ОТКРЫВАЕТСЯ С ПЕРВОГО РАЗА)
+        // ЧАТ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
         // ============================================================
         function initChat(container) {
             if (chatInitialized) {
@@ -1585,7 +1913,7 @@
         }
 
         // ============================================================
-        // АДМИН-ПАНЕЛЬ (БЕЗ ИЗМЕНЕНИЙ)
+        // АДМИН-ПАНЕЛЬ
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
@@ -1687,7 +2015,7 @@
         }
 
         // ============================================================
-        // ДЕЙСТВИЯ С КЛАНАМИ (БЕЗ ИЗМЕНЕНИЙ)
+        // ДЕЙСТВИЯ С КЛАНАМИ
         // ============================================================
         function openCreateClan() {
             if (currentUser.clanId) return showToast('❌ ' + t('youAreInClan'), 'error');
@@ -2066,7 +2394,7 @@
             if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
             if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
             banTargetUserId = userId;
-            document.getElementById('banUserName').textContent = t('banUser') + ': ' + user.name + ' (' + user.id + ')';
+            document.getElementById('banUserName').textContent = 'Пользователь: ' + user.name + ' (' + user.id + ')';
             document.getElementById('banDays').value = 7;
             document.getElementById('banReason').value = '';
             document.getElementById('banModal').classList.add('show');
@@ -2097,7 +2425,7 @@
                     until.setDate(until.getDate() + days);
                     target.bannedUntil = until.toISOString();
                 }
-                target.bannedReason = reason || t('banReasonPlaceholder');
+                target.bannedReason = reason || 'Нарушение правил';
 
                 await saveData(data);
                 await refreshData();
