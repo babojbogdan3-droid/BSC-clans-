@@ -346,28 +346,218 @@
     <div id="toast" class="toast"></div>
 
     <script>
-        // Конфиг и переводы (сжато)
+        // ============================================
+        // ПЕРЕВОДЫ
+        // ============================================
         const LANG = {
-            ru: { loading: 'Загрузка...', error: 'Ошибка', close: 'Закрыть', save: 'Сохранить', cancel: 'Отмена', confirm: 'Подтвердить', delete: 'Удалить', edit: 'Редактировать', ban: 'Забанить', unban: 'Разбанить', kick: 'Кикнуть', leave: 'Покинуть', view: 'Просмотр', apply: 'Подать заявку', create: 'Создать', join: 'Вступить', leaveClan: 'Покинуть клан', disband: 'Распустить', clans: 'КЛАНЫ', requests: 'ЗАЯВКИ', myclan: 'МОЙ КЛАН', rating: 'РЕЙТИНГ', cw: 'CW', chat: 'ЧАТ', admin: 'АДМИН', profile: 'Профиль', editProfile: 'Редактировать профиль', logout: 'Выйти', changeLang: 'Сменить язык', botActive: 'Бот активен', creator: 'Создатель: @NoisyBoy141', channel: 'Канал', chatPlaceholder: 'Напишите сообщение...', chatSend: 'Отправить', chatEmpty: 'Сообщений пока нет. Будьте первым!', loginRequired: 'Войдите, чтобы участвовать в чате', adminPanel: 'Админ-панель', userManagement: 'Управление пользователями', eloManagement: 'Управление рейтингом (ELO)', noClans: 'Нет кланов', noRequests: 'Нет заявок', notInClan: 'Вы не состоите в клане', clansCount: 'Кланов:', membersCount: 'Участников:', requestsCount: 'Заявок:', leaderLabel: 'Глава', eloLabel: 'ELO', noMembers: 'Нет участников', noData: 'Нет данных', welcome: 'Добро пожаловать', register: 'Зарегистрироваться', nickname: 'Никнейм', telegramUsername: 'Telegram username (без @)', gameId: 'Игровой ID', role: 'Роль', roleMember: 'Игрок', roleLeader: 'Лидер', roleVice: 'Заместитель', enterNickname: 'Введите никнейм', enterTelegram: 'Введите Telegram', enterGameId: 'Введите игровой ID', nicknameTaken: 'Ник занят', idMustBeNumber: 'ID должен быть числом', welcomeUser: 'Добро пожаловать, {name}', profileUpdated: 'Профиль обновлён', clanCreated: 'Клан создан!', clanDeleted: 'Клан удалён', clanDisbanded: 'Клан распущен', youLeftClan: 'Вы вышли из клана', youJoinedClan: 'Вы вступили в клан', requestSent: 'Заявка отправлена', requestAccepted: 'Заявка принята', requestRejected: 'Заявка отклонена', notClanLeader: 'Вы не глава клана', noPendingRequests: 'Нет входящих заявок', pendingRequests: 'Входящие заявки ({count})', memberKicked: 'Игрок кикнут', leaderTransferred: 'Лидерство передано {name}', eloUpdated: 'ELO для "{name}" обновлён до {elo}', enterValidElo: 'Введите корректное число (≥0)', notFound: 'не найден', noRights: 'Нет прав', clearAllData: 'Очистить всё', clearAllConfirm: '⚠️ Очистить все данные?', allCleared: 'Все данные очищены', logoutConfirm: 'Выйти из аккаунта?', youLoggedOut: 'Вы вышли', serverError: 'Ошибка сервера', languageSelected: 'Язык изменён на русский', languageSelectedEn: 'Language changed to English', selectLanguage: '🌐 Выберите язык / Select language', selectLanguageHint: 'Выберите язык, который будет использоваться в приложении.', clansLabel: 'Кланы', requestsLabel: 'Заявки', myClanLabel: 'Мой клан', ratingLabel: 'Рейтинг', adminLabel: 'Админ', cwLabel: 'CW', changeLanguage: 'Сменить язык', closeApp: 'Закрыть', refresh: 'Обновить', usersList: 'Пользователи', userId: 'ID', userGameId: 'Игровой ID', userRole: 'Роль', userStatus: 'Статус', statusActive: 'Активен', statusBanned: 'Забанен', banForever: 'Навсегда', banUntil: 'до {date}', unbanConfirm: 'Разбанить пользователя "{name}"?', userUnbanned: 'Пользователь "{name}" разбанен', userBanned: 'Пользователь "{name}" забанен', userDeleted: 'Пользователь "{name}" удалён', saveElo: 'Сохранить', currentElo: 'Текущий ELO', setElo: 'Установить ELO', eloSaved: 'ELO сохранён', confirmDeleteUser: 'Точно удалить пользователя?', confirmBanUser: 'Точно забанить пользователя?', confirmUnbanUser: 'Точно разбанить пользователя?', confirmClearAll: 'Точно очистить все данные?', noUsers: 'Нет пользователей', noClansForRating: 'Нет кланов для рейтинга', ratingTop: 'Рейтинг кланов (по ELO)', leaderContact: 'Связь', clanChannel: 'Канал клана', noMembersInClan: 'Нет участников', membersList: 'Участники', clanInfo: 'Информация о клане', clanName: 'Название клана', clanTag: 'Тег клана', clanDescription: 'Описание клана', clanLeader: 'Глава клана', clanMembers: 'Участники клана', clanContact: 'Связь с главой', clanChannelLabel: 'Канал клана', editClan: 'Редактировать клан', createClan: 'Создать клан', deleteClan: 'Удалить клан', disbandClan: 'Распустить клан', leaveClanConfirm: 'Выйти из клана "{name}"?', applyToClan: 'Подать заявку в "{name}"?', acceptRequest: 'Принять заявку', rejectRequest: 'Отклонить заявку', memberKickConfirm: 'Кикнуть игрока?', transferLeadershipConfirm: 'Передать лидерство?', leadershipTransferred: 'Лидерство передано {name}', youAreNotLeader: 'Вы не глава клана', youAreNotAdmin: 'Вы не администратор', youAreInClan: 'Вы уже в клане', youAreNotInClan: 'Вы не в клане', clanNotFound: 'Клан не найден', userNotFound: 'Пользователь не найден', requestNotFound: 'Заявка не найдена', invalidInput: 'Некорректный ввод', saveSuccess: 'Сохранено', saveError: 'Ошибка сохранения', loadError: 'Ошибка загрузки', updateSuccess: 'Обновлено', updateError: 'Ошибка обновления', deleteSuccess: 'Удалено', deleteError: 'Ошибка удаления', banSuccess: 'Пользователь забанен', banError: 'Ошибка бана', unbanSuccess: 'Пользователь разбанен', unbanError: 'Ошибка разбана', cwSend: 'Отправить запрос', cwIncoming: 'Входящие CW запросы', cwOutgoing: 'Исходящие CW запросы', cwRequest: '⚔️ Клан {tag} хочет сыграть с вами!', cwAccept: '✅ Принять CW', cwReject: '❌ Отклонить CW', cwAccepted: '✅ Запрос на CW принят!', cwRejected: '❌ Запрос на CW отклонён', cwFinished: 'Матч завершён!', cwContacts: '📱 Контакты для CW', cwYourContacts: 'Ваши контакты:', cwOpponentContacts: 'Контакты соперника:', cwNoContacts: 'Нет контактов', cwFinishMatch: '✅ Завершить матч', cwConfirmFinish: 'Подтвердить завершение', cwFinishConfirm: 'Вы уверены, что матч завершён?', cwAdminContacts: 'Отправьте результаты игры администрации: @NoisyBoy141', cwDeclined: 'Клан {tag} отказался играть с вами', cwNoClans: 'Нет других кланов для CW', cwChooseClan: 'Выберите клан для CW' },
-            en: { loading: 'Loading...', error: 'Error', close: 'Close', save: 'Save', cancel: 'Cancel', confirm: 'Confirm', delete: 'Delete', edit: 'Edit', ban: 'Ban', unban: 'Unban', kick: 'Kick', leave: 'Leave', view: 'View', apply: 'Apply', create: 'Create', join: 'Join', leaveClan: 'Leave clan', disband: 'Disband', clans: 'CLANS', requests: 'REQUESTS', myclan: 'MY CLAN', rating: 'RATING', cw: 'CW', chat: 'CHAT', admin: 'ADMIN', profile: 'Profile', editProfile: 'Edit profile', logout: 'Logout', changeLang: 'Change language', botActive: 'Bot is active', creator: 'Creator: @NoisyBoy141', channel: 'Channel', chatPlaceholder: 'Type a message...', chatSend: 'Send', chatEmpty: 'No messages yet. Be the first!', loginRequired: 'Login to participate in the chat', adminPanel: 'Admin panel', userManagement: 'User management', eloManagement: 'ELO management', noClans: 'No clans', noRequests: 'No requests', notInClan: 'You are not in a clan', clansCount: 'Clans:', membersCount: 'Members:', requestsCount: 'Requests:', leaderLabel: 'Leader', eloLabel: 'ELO', noMembers: 'No members', noData: 'No data', welcome: 'Welcome', register: 'Register', nickname: 'Nickname', telegramUsername: 'Telegram username (without @)', gameId: 'Game ID', role: 'Role', roleMember: 'Member', roleLeader: 'Leader', roleVice: 'Vice Leader', enterNickname: 'Enter nickname', enterTelegram: 'Enter Telegram', enterGameId: 'Enter game ID', nicknameTaken: 'Nickname is taken', idMustBeNumber: 'ID must be a number', welcomeUser: 'Welcome, {name}', profileUpdated: 'Profile updated', clanCreated: 'Clan created!', clanDeleted: 'Clan deleted', clanDisbanded: 'Clan disbanded', youLeftClan: 'You left the clan', youJoinedClan: 'You joined the clan', requestSent: 'Request sent', requestAccepted: 'Request accepted', requestRejected: 'Request rejected', notClanLeader: 'You are not the clan leader', noPendingRequests: 'No incoming requests', pendingRequests: 'Incoming requests ({count})', memberKicked: 'Member kicked', leaderTransferred: 'Leadership transferred to {name}', eloUpdated: 'ELO for "{name}" updated to {elo}', enterValidElo: 'Enter a valid number (≥0)', notFound: 'not found', noRights: 'No rights', clearAllData: 'Clear all data', clearAllConfirm: '⚠️ Clear all data?', allCleared: 'All data cleared', logoutConfirm: 'Logout?', youLoggedOut: 'You logged out', serverError: 'Server error', languageSelected: 'Language changed to English', languageSelectedRu: 'Язык изменён на русский', selectLanguage: '🌐 Select language', selectLanguageHint: 'Select the language to be used in the app.', clansLabel: 'Clans', requestsLabel: 'Requests', myClanLabel: 'My Clan', ratingLabel: 'Rating', adminLabel: 'Admin', cwLabel: 'CW', changeLanguage: 'Change language', closeApp: 'Close', refresh: 'Refresh', usersList: 'Users', userId: 'ID', userGameId: 'Game ID', userRole: 'Role', userStatus: 'Status', statusActive: 'Active', statusBanned: 'Banned', banForever: 'Forever', banUntil: 'until {date}', unbanConfirm: 'Unban user "{name}"?', userUnbanned: 'User "{name}" unbanned', userBanned: 'User "{name}" banned', userDeleted: 'User "{name}" deleted', saveElo: 'Save', currentElo: 'Current ELO', setElo: 'Set ELO', eloSaved: 'ELO saved', confirmDeleteUser: 'Delete user?', confirmBanUser: 'Ban user?', confirmUnbanUser: 'Unban user?', confirmClearAll: 'Clear all data?', noUsers: 'No users', noClansForRating: 'No clans for rating', ratingTop: 'Clan rating (by ELO)', leaderContact: 'Contact', clanChannel: 'Clan channel', noMembersInClan: 'No members', membersList: 'Members', clanInfo: 'Clan info', clanName: 'Clan name', clanTag: 'Clan tag', clanDescription: 'Clan description', clanLeader: 'Clan leader', clanMembers: 'Clan members', clanContact: 'Leader contact', clanChannelLabel: 'Clan channel', editClan: 'Edit clan', createClan: 'Create clan', deleteClan: 'Delete clan', disbandClan: 'Disband clan', leaveClanConfirm: 'Leave clan "{name}"?', applyToClan: 'Apply to "{name}"?', acceptRequest: 'Accept request', rejectRequest: 'Reject request', memberKickConfirm: 'Kick member?', transferLeadershipConfirm: 'Transfer leadership?', leadershipTransferred: 'Leadership transferred to {name}', youAreNotLeader: 'You are not the clan leader', youAreNotAdmin: 'You are not an admin', youAreInClan: 'You are already in a clan', youAreNotInClan: 'You are not in a clan', clanNotFound: 'Clan not found', userNotFound: 'User not found', requestNotFound: 'Request not found', invalidInput: 'Invalid input', saveSuccess: 'Saved', saveError: 'Save error', loadError: 'Load error', updateSuccess: 'Updated', updateError: 'Update error', deleteSuccess: 'Deleted', deleteError: 'Delete error', banSuccess: 'User banned', banError: 'Ban error', unbanSuccess: 'User unbanned', unbanError: 'Unban error', cwSend: 'Send CW request', cwIncoming: 'Incoming CW requests', cwOutgoing: 'Outgoing CW requests', cwRequest: '⚔️ Clan {tag} wants to play with you!', cwAccept: '✅ Accept CW', cwReject: '❌ Reject CW', cwAccepted: '✅ CW request accepted!', cwRejected: '❌ CW request rejected', cwFinished: 'Match finished!', cwContacts: '📱 CW contacts', cwYourContacts: 'Your contacts:', cwOpponentContacts: 'Opponent contacts:', cwNoContacts: 'No contacts', cwFinishMatch: '✅ Finish match', cwConfirmFinish: 'Confirm finish', cwFinishConfirm: 'Are you sure the match is finished?', cwAdminContacts: 'Send match results to admin: @NoisyBoy141', cwDeclined: 'Clan {tag} declined to play with you', cwNoClans: 'No other clans for CW', cwChooseClan: 'Choose a clan for CW' }
+            ru: {
+                loading: 'Загрузка...', error: 'Ошибка', close: 'Закрыть', save: 'Сохранить',
+                cancel: 'Отмена', confirm: 'Подтвердить', delete: 'Удалить', edit: 'Редактировать',
+                ban: 'Забанить', unban: 'Разбанить', kick: 'Кикнуть', leave: 'Покинуть',
+                view: 'Просмотр', apply: 'Подать заявку', create: 'Создать', join: 'Вступить',
+                leaveClan: 'Покинуть клан', disband: 'Распустить', clans: 'КЛАНЫ',
+                requests: 'ЗАЯВКИ', myclan: 'МОЙ КЛАН', rating: 'РЕЙТИНГ', cw: 'CW',
+                chat: 'ЧАТ', admin: 'АДМИН', profile: 'Профиль', editProfile: 'Редактировать профиль',
+                logout: 'Выйти', changeLang: 'Сменить язык', botActive: 'Бот активен',
+                creator: 'Создатель: @NoisyBoy141', channel: 'Канал', chatPlaceholder: 'Напишите сообщение...',
+                chatSend: 'Отправить', chatEmpty: 'Сообщений пока нет. Будьте первым!',
+                loginRequired: 'Войдите, чтобы участвовать в чате', adminPanel: 'Админ-панель',
+                userManagement: 'Управление пользователями', eloManagement: 'Управление рейтингом (ELO)',
+                noClans: 'Нет кланов', noRequests: 'Нет заявок', notInClan: 'Вы не состоите в клане',
+                clansCount: 'Кланов:', membersCount: 'Участников:', requestsCount: 'Заявок:',
+                leaderLabel: 'Глава', eloLabel: 'ELO', noMembers: 'Нет участников', noData: 'Нет данных',
+                welcome: 'Добро пожаловать', register: 'Зарегистрироваться', nickname: 'Никнейм',
+                telegramUsername: 'Telegram username (без @)', gameId: 'Игровой ID', role: 'Роль',
+                roleMember: 'Игрок', roleLeader: 'Лидер', roleVice: 'Заместитель',
+                enterNickname: 'Введите никнейм', enterTelegram: 'Введите Telegram',
+                enterGameId: 'Введите игровой ID', nicknameTaken: 'Ник занят',
+                idMustBeNumber: 'ID должен быть числом', welcomeUser: 'Добро пожаловать, {name}',
+                profileUpdated: 'Профиль обновлён', clanCreated: 'Клан создан!',
+                clanDeleted: 'Клан удалён', clanDisbanded: 'Клан распущен',
+                youLeftClan: 'Вы вышли из клана', youJoinedClan: 'Вы вступили в клан',
+                requestSent: 'Заявка отправлена', requestAccepted: 'Заявка принята',
+                requestRejected: 'Заявка отклонена', notClanLeader: 'Вы не глава клана',
+                noPendingRequests: 'Нет входящих заявок', pendingRequests: 'Входящие заявки ({count})',
+                memberKicked: 'Игрок кикнут', leaderTransferred: 'Лидерство передано {name}',
+                eloUpdated: 'ELO для "{name}" обновлён до {elo}', enterValidElo: 'Введите корректное число (≥0)',
+                notFound: 'не найден', noRights: 'Нет прав', clearAllData: 'Очистить всё',
+                clearAllConfirm: '⚠️ Очистить все данные?', allCleared: 'Все данные очищены',
+                logoutConfirm: 'Выйти из аккаунта?', youLoggedOut: 'Вы вышли',
+                serverError: 'Ошибка сервера', languageSelected: 'Язык изменён на русский',
+                languageSelectedEn: 'Language changed to English', selectLanguage: '🌐 Выберите язык / Select language',
+                selectLanguageHint: 'Выберите язык, который будет использоваться в приложении.',
+                clansLabel: 'Кланы', requestsLabel: 'Заявки', myClanLabel: 'Мой клан',
+                ratingLabel: 'Рейтинг', adminLabel: 'Админ', cwLabel: 'CW',
+                changeLanguage: 'Сменить язык', closeApp: 'Закрыть', refresh: 'Обновить',
+                usersList: 'Пользователи', userId: 'ID', userGameId: 'Игровой ID',
+                userRole: 'Роль', userStatus: 'Статус', statusActive: 'Активен',
+                statusBanned: 'Забанен', banForever: 'Навсегда', banUntil: 'до {date}',
+                unbanConfirm: 'Разбанить пользователя "{name}"?', userUnbanned: 'Пользователь "{name}" разбанен',
+                userBanned: 'Пользователь "{name}" забанен', userDeleted: 'Пользователь "{name}" удалён',
+                saveElo: 'Сохранить', currentElo: 'Текущий ELO', setElo: 'Установить ELO',
+                eloSaved: 'ELO сохранён', confirmDeleteUser: 'Точно удалить пользователя?',
+                confirmBanUser: 'Точно забанить пользователя?', confirmUnbanUser: 'Точно разбанить пользователя?',
+                confirmClearAll: 'Точно очистить все данные?', noUsers: 'Нет пользователей',
+                noClansForRating: 'Нет кланов для рейтинга', ratingTop: 'Рейтинг кланов (по ELO)',
+                leaderContact: 'Связь', clanChannel: 'Канал клана', noMembersInClan: 'Нет участников',
+                membersList: 'Участники', clanInfo: 'Информация о клане', clanName: 'Название клана',
+                clanTag: 'Тег клана', clanDescription: 'Описание клана', clanLeader: 'Глава клана',
+                clanMembers: 'Участники клана', clanContact: 'Связь с главой', clanChannelLabel: 'Канал клана',
+                editClan: 'Редактировать клан', createClan: 'Создать клан', deleteClan: 'Удалить клан',
+                disbandClan: 'Распустить клан', leaveClanConfirm: 'Выйти из клана "{name}"?',
+                applyToClan: 'Подать заявку в "{name}"?', acceptRequest: 'Принять заявку',
+                rejectRequest: 'Отклонить заявку', memberKickConfirm: 'Кикнуть игрока?',
+                transferLeadershipConfirm: 'Передать лидерство?', leadershipTransferred: 'Лидерство передано {name}',
+                youAreNotLeader: 'Вы не глава клана', youAreNotAdmin: 'Вы не администратор',
+                youAreInClan: 'Вы уже в клане', youAreNotInClan: 'Вы не в клане',
+                clanNotFound: 'Клан не найден', userNotFound: 'Пользователь не найден',
+                requestNotFound: 'Заявка не найдена', invalidInput: 'Некорректный ввод',
+                saveSuccess: 'Сохранено', saveError: 'Ошибка сохранения', loadError: 'Ошибка загрузки',
+                updateSuccess: 'Обновлено', updateError: 'Ошибка обновления', deleteSuccess: 'Удалено',
+                deleteError: 'Ошибка удаления', banSuccess: 'Пользователь забанен', banError: 'Ошибка бана',
+                unbanSuccess: 'Пользователь разбанен', unbanError: 'Ошибка разбана',
+                cwSend: 'Отправить запрос', cwIncoming: 'Входящие CW запросы',
+                cwOutgoing: 'Исходящие CW запросы', cwRequest: '⚔️ Клан {tag} хочет сыграть с вами!',
+                cwAccept: '✅ Принять CW', cwReject: '❌ Отклонить CW',
+                cwAccepted: '✅ Запрос на CW принят!', cwRejected: '❌ Запрос на CW отклонён',
+                cwFinished: 'Матч завершён!', cwContacts: '📱 Контакты для CW',
+                cwYourContacts: 'Ваши контакты:', cwOpponentContacts: 'Контакты соперника:',
+                cwNoContacts: 'Нет контактов', cwFinishMatch: '✅ Завершить матч',
+                cwConfirmFinish: 'Подтвердить завершение', cwFinishConfirm: 'Вы уверены, что матч завершён?',
+                cwAdminContacts: 'Отправьте результаты игры администрации: @NoisyBoy141',
+                cwDeclined: 'Клан {tag} отказался играть с вами',
+                cwNoClans: 'Нет других кланов для CW',
+                cwChooseClan: 'Выберите клан для CW'
+            },
+            en: {
+                loading: 'Loading...', error: 'Error', close: 'Close', save: 'Save',
+                cancel: 'Cancel', confirm: 'Confirm', delete: 'Delete', edit: 'Edit',
+                ban: 'Ban', unban: 'Unban', kick: 'Kick', leave: 'Leave',
+                view: 'View', apply: 'Apply', create: 'Create', join: 'Join',
+                leaveClan: 'Leave clan', disband: 'Disband', clans: 'CLANS',
+                requests: 'REQUESTS', myclan: 'MY CLAN', rating: 'RATING', cw: 'CW',
+                chat: 'CHAT', admin: 'ADMIN', profile: 'Profile', editProfile: 'Edit profile',
+                logout: 'Logout', changeLang: 'Change language', botActive: 'Bot is active',
+                creator: 'Creator: @NoisyBoy141', channel: 'Channel', chatPlaceholder: 'Type a message...',
+                chatSend: 'Send', chatEmpty: 'No messages yet. Be the first!',
+                loginRequired: 'Login to participate in the chat', adminPanel: 'Admin panel',
+                userManagement: 'User management', eloManagement: 'ELO management',
+                noClans: 'No clans', noRequests: 'No requests', notInClan: 'You are not in a clan',
+                clansCount: 'Clans:', membersCount: 'Members:', requestsCount: 'Requests:',
+                leaderLabel: 'Leader', eloLabel: 'ELO', noMembers: 'No members', noData: 'No data',
+                welcome: 'Welcome', register: 'Register', nickname: 'Nickname',
+                telegramUsername: 'Telegram username (without @)', gameId: 'Game ID', role: 'Role',
+                roleMember: 'Member', roleLeader: 'Leader', roleVice: 'Vice Leader',
+                enterNickname: 'Enter nickname', enterTelegram: 'Enter Telegram',
+                enterGameId: 'Enter game ID', nicknameTaken: 'Nickname is taken',
+                idMustBeNumber: 'ID must be a number', welcomeUser: 'Welcome, {name}',
+                profileUpdated: 'Profile updated', clanCreated: 'Clan created!',
+                clanDeleted: 'Clan deleted', clanDisbanded: 'Clan disbanded',
+                youLeftClan: 'You left the clan', youJoinedClan: 'You joined the clan',
+                requestSent: 'Request sent', requestAccepted: 'Request accepted',
+                requestRejected: 'Request rejected', notClanLeader: 'You are not the clan leader',
+                noPendingRequests: 'No incoming requests', pendingRequests: 'Incoming requests ({count})',
+                memberKicked: 'Member kicked', leaderTransferred: 'Leadership transferred to {name}',
+                eloUpdated: 'ELO for "{name}" updated to {elo}', enterValidElo: 'Enter a valid number (≥0)',
+                notFound: 'not found', noRights: 'No rights', clearAllData: 'Clear all data',
+                clearAllConfirm: '⚠️ Clear all data?', allCleared: 'All data cleared',
+                logoutConfirm: 'Logout?', youLoggedOut: 'You logged out',
+                serverError: 'Server error', languageSelected: 'Language changed to English',
+                languageSelectedRu: 'Язык изменён на русский', selectLanguage: '🌐 Select language',
+                selectLanguageHint: 'Select the language to be used in the app.',
+                clansLabel: 'Clans', requestsLabel: 'Requests', myClanLabel: 'My Clan',
+                ratingLabel: 'Rating', adminLabel: 'Admin', cwLabel: 'CW',
+                changeLanguage: 'Change language', closeApp: 'Close', refresh: 'Refresh',
+                usersList: 'Users', userId: 'ID', userGameId: 'Game ID',
+                userRole: 'Role', userStatus: 'Status', statusActive: 'Active',
+                statusBanned: 'Banned', banForever: 'Forever', banUntil: 'until {date}',
+                unbanConfirm: 'Unban user "{name}"?', userUnbanned: 'User "{name}" unbanned',
+                userBanned: 'User "{name}" banned', userDeleted: 'User "{name}" deleted',
+                saveElo: 'Save', currentElo: 'Current ELO', setElo: 'Set ELO',
+                eloSaved: 'ELO saved', confirmDeleteUser: 'Delete user?',
+                confirmBanUser: 'Ban user?', confirmUnbanUser: 'Unban user?',
+                confirmClearAll: 'Clear all data?', noUsers: 'No users',
+                noClansForRating: 'No clans for rating', ratingTop: 'Clan rating (by ELO)',
+                leaderContact: 'Contact', clanChannel: 'Clan channel', noMembersInClan: 'No members',
+                membersList: 'Members', clanInfo: 'Clan info', clanName: 'Clan name',
+                clanTag: 'Clan tag', clanDescription: 'Clan description', clanLeader: 'Clan leader',
+                clanMembers: 'Clan members', clanContact: 'Leader contact', clanChannelLabel: 'Clan channel',
+                editClan: 'Edit clan', createClan: 'Create clan', deleteClan: 'Delete clan',
+                disbandClan: 'Disband clan', leaveClanConfirm: 'Leave clan "{name}"?',
+                applyToClan: 'Apply to "{name}"?', acceptRequest: 'Accept request',
+                rejectRequest: 'Reject request', memberKickConfirm: 'Kick member?',
+                transferLeadershipConfirm: 'Transfer leadership?', leadershipTransferred: 'Leadership transferred to {name}',
+                youAreNotLeader: 'You are not the clan leader', youAreNotAdmin: 'You are not an admin',
+                youAreInClan: 'You are already in a clan', youAreNotInClan: 'You are not in a clan',
+                clanNotFound: 'Clan not found', userNotFound: 'User not found',
+                requestNotFound: 'Request not found', invalidInput: 'Invalid input',
+                saveSuccess: 'Saved', saveError: 'Save error', loadError: 'Load error',
+                updateSuccess: 'Updated', updateError: 'Update error', deleteSuccess: 'Deleted',
+                deleteError: 'Delete error', banSuccess: 'User banned', banError: 'Ban error',
+                unbanSuccess: 'User unbanned', unbanError: 'Unban error',
+                cwSend: 'Send CW request', cwIncoming: 'Incoming CW requests',
+                cwOutgoing: 'Outgoing CW requests', cwRequest: '⚔️ Clan {tag} wants to play with you!',
+                cwAccept: '✅ Accept CW', cwReject: '❌ Reject CW',
+                cwAccepted: '✅ CW request accepted!', cwRejected: '❌ CW request rejected',
+                cwFinished: 'Match finished!', cwContacts: '📱 CW contacts',
+                cwYourContacts: 'Your contacts:', cwOpponentContacts: 'Opponent contacts:',
+                cwNoContacts: 'No contacts', cwFinishMatch: '✅ Finish match',
+                cwConfirmFinish: 'Confirm finish', cwFinishConfirm: 'Are you sure the match is finished?',
+                cwAdminContacts: 'Send match results to admin: @NoisyBoy141',
+                cwDeclined: 'Clan {tag} declined to play with you',
+                cwNoClans: 'No other clans for CW',
+                cwChooseClan: 'Choose a clan for CW'
+            }
         };
+
+        // ============================================
+        // КОНФИГ
+        // ============================================
         const ADMIN_GAME_ID = '22887924';
-        const firebaseConfig = { apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs", authDomain: "bsc-chat-7288d.firebaseapp.com", databaseURL: "https://bsc-chat-7288d-default-rtdb.europe-west1.firebasedatabase.app", projectId: "bsc-chat-7288d", storageBucket: "bsc-chat-7288d.firebasestorage.app", messagingSenderId: "272501279718", appId: "1:272501279718:web:4e9fa2ff3d57dcf1ca2427" };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
+            authDomain: "bsc-chat-7288d.firebaseapp.com",
+            databaseURL: "https://bsc-chat-7288d-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bsc-chat-7288d",
+            storageBucket: "bsc-chat-7288d.firebasestorage.app",
+            messagingSenderId: "272501279718",
+            appId: "1:272501279718:web:4e9fa2ff3d57dcf1ca2427"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let currentUser = null, allUsers = [], allClans = [], allRequests = [], allCw = [], chatMessages = [], currentTab = 'clans', editingClanId = null, banTargetUserId = null, currentLang = 'ru', chatListener = null, chatInitialized = false;
+        // ============================================
+        // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+        // ============================================
+        let currentUser = null;
+        let allUsers = [];
+        let allClans = [];
+        let allRequests = [];
+        let allCw = [];
+        let chatMessages = [];
+        let currentTab = 'clans';
+        let editingClanId = null;
+        let banTargetUserId = null;
+        let currentLang = 'ru';
+        let chatListener = null;
+        let chatInitialized = false;
 
-        function t(k){ return LANG[currentLang]?.[k] !== undefined ? LANG[currentLang][k] : k; }
+        // ============================================
+        // ПЕРЕВОД
+        // ============================================
+        function t(key) {
+            return LANG[currentLang]?.[key] !== undefined ? LANG[currentLang][key] : key;
+        }
 
-        function applyLanguage(){
+        function applyLanguage() {
             document.getElementById('tabClans').textContent = t('clans');
             document.getElementById('tabRequests').textContent = t('requests');
             document.getElementById('tabMyClan').textContent = t('myclan');
             document.getElementById('tabRating').textContent = t('rating');
             document.getElementById('tabCw').textContent = t('cw');
             document.getElementById('tabChat').textContent = t('chat');
-            document.getElementById('tabAdmin').textContent = t('admin');
+            const adminTab = document.getElementById('tabAdmin');
+            if (adminTab) adminTab.textContent = t('admin');
             document.getElementById('profileEditBtn').textContent = t('editProfile');
             document.getElementById('profileLangBtn').textContent = t('changeLang');
             document.querySelector('#profileDropdown .btn-danger').textContent = t('logout');
@@ -379,85 +569,173 @@
             document.getElementById('footerChatLink').textContent = '💬 ' + t('chat');
         }
 
-        function setLanguage(l){
-            currentLang = l;
-            localStorage.setItem('bsc_lang', l);
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('bsc_lang', lang);
             applyLanguage();
             closeModal('langModal');
-            showToast(l === 'ru' ? t('languageSelected') : t('languageSelectedEn'), 'success');
+            showToast(lang === 'ru' ? t('languageSelected') : t('languageSelectedEn'), 'success');
         }
-        function toggleLanguage(){ setLanguage(currentLang === 'ru' ? 'en' : 'ru'); document.getElementById('profileDropdown').classList.remove('show'); }
 
-        function isAdmin(u){ return u && u.gameId === ADMIN_GAME_ID; }
-        function isLeader(u){ return u && u.role === 'leader'; }
-        function canManageClan(u,c){ return u && c && (c.leaderId === u.id || u.role === 'vice' || isAdmin(u)); }
-        function getUserName(id){ const u = allUsers.find(x=>x.id===id); return u ? u.name : id; }
-        function getUserTelegram(id){ const u = allUsers.find(x=>x.id===id); return u ? u.telegramUsername || '' : ''; }
-        function getClanLeader(clan){ return allUsers.find(u=>u.id===clan.leaderId); }
-        function getClanElo(clanId){ const c = allClans.find(c=>c.id===clanId); return c && c.elo !== undefined ? c.elo : 0; }
-        function isUserBanned(u){ if(!u.bannedUntil) return false; if(u.bannedUntil==='forever') return true; return new Date(u.bannedUntil).getTime() > Date.now(); }
-        function getBanStatusText(u){ if(!u.bannedUntil) return {text:t('statusActive'),class:'active'}; if(u.bannedUntil==='forever') return {text:t('statusBanned'),class:'banned'}; const d=new Date(u.bannedUntil).getTime(); if(d>Date.now()){ const rem=Math.ceil((d-Date.now())/(86400000)); return {text:t('statusBanned')+' ('+t('banUntil').replace('{date}',rem+' д.')+')',class:'banned'};} else return {text:t('statusActive'),class:'active'}; }
-        function showToast(text,type='info'){ const t=document.getElementById('toast'); t.textContent=text; t.className='toast show '+type; clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),2500); }
-        function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-        function toggleProfile(){ document.getElementById('profileDropdown').classList.toggle('show'); }
+        function toggleLanguage() {
+            setLanguage(currentLang === 'ru' ? 'en' : 'ru');
+            document.getElementById('profileDropdown').classList.remove('show');
+        }
 
-        async function loadData(){ try{ const s=await db.ref('/').once('value'); let d=s.val(); if(!d||typeof d!=='object'){ d={users:[],clans:[],requests:[],cw:[]}; await db.ref('/').set(d); } if(!d.users) d.users=[]; if(!d.clans) d.clans=[]; if(!d.requests) d.requests=[]; if(!d.cw) d.cw=[]; return d; } catch(e){ return {users:[],clans:[],requests:[],cw:[]}; } }
-        async function saveData(d){ await db.ref('/').set(d); }
+        // ============================================
+        // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+        // ============================================
+        function isAdmin(user) { return user && user.gameId === ADMIN_GAME_ID; }
+        function isLeader(user) { return user && user.role === 'leader'; }
+        function canManageClan(user, clan) { return user && clan && (clan.leaderId === user.id || user.role === 'vice' || isAdmin(user)); }
+        function getUserName(id) { const u = allUsers.find(x => x.id === id); return u ? u.name : id; }
+        function getUserTelegram(id) { const u = allUsers.find(x => x.id === id); return u ? u.telegramUsername || '' : ''; }
+        function getClanLeader(clan) { return allUsers.find(u => u.id === clan.leaderId); }
+        function getClanElo(clanId) { const c = allClans.find(c => c.id === clanId); return c && c.elo !== undefined ? c.elo : 0; }
+        function isUserBanned(user) {
+            if (!user.bannedUntil) return false;
+            if (user.bannedUntil === 'forever') return true;
+            return new Date(user.bannedUntil).getTime() > Date.now();
+        }
+        function getBanStatusText(user) {
+            if (!user.bannedUntil) return { text: t('statusActive'), class: 'active' };
+            if (user.bannedUntil === 'forever') return { text: t('statusBanned'), class: 'banned' };
+            const d = new Date(user.bannedUntil).getTime();
+            if (d > Date.now()) {
+                const rem = Math.ceil((d - Date.now()) / 86400000);
+                return { text: t('statusBanned') + ' (' + t('banUntil').replace('{date}', rem + ' д.') + ')', class: 'banned' };
+            } else {
+                return { text: t('statusActive'), class: 'active' };
+            }
+        }
+        function showToast(text, type = 'info') {
+            const t = document.getElementById('toast');
+            t.textContent = text;
+            t.className = 'toast show ' + type;
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+        }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+        function toggleProfile() { document.getElementById('profileDropdown').classList.toggle('show'); }
 
-        function updateUI(){
-            if(!currentUser) return;
+        // ============================================
+        // FIREBASE
+        // ============================================
+        async function loadData() {
+            try {
+                const s = await db.ref('/').once('value');
+                let d = s.val();
+                if (!d || typeof d !== 'object') {
+                    d = { users: [], clans: [], requests: [], cw: [] };
+                    await db.ref('/').set(d);
+                }
+                if (!d.users) d.users = [];
+                if (!d.clans) d.clans = [];
+                if (!d.requests) d.requests = [];
+                if (!d.cw) d.cw = [];
+                return d;
+            } catch (e) {
+                return { users: [], clans: [], requests: [], cw: [] };
+            }
+        }
+        async function saveData(data) { await db.ref('/').set(data); }
+
+        // ============================================
+        // UI ОБНОВЛЕНИЕ
+        // ============================================
+        function updateUI() {
+            if (!currentUser) return;
             document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
             document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
-            const clan = allClans.find(c=>c.id===currentUser.clanId);
+            const clan = allClans.find(c => c.id === currentUser.clanId);
             document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
-            const roleNames={admin:t('adminLabel'), leader:t('roleLeader'), vice:t('roleVice'), member:t('roleMember')};
+            const roleNames = { admin: t('adminLabel'), leader: t('roleLeader'), vice: t('roleVice'), member: t('roleMember') };
             document.getElementById('profRole').textContent = t('role') + ': ' + (roleNames[currentUser.role] || t('roleMember'));
-            document.getElementById('tabAdmin').style.display = isAdmin(currentUser) ? 'inline-block' : 'none';
-            const pending = allRequests.filter(r => { const c=allClans.find(cl=>cl.id===r.clanId); return c && c.leaderId===currentUser.id && r.status==='pending'; });
-            const badge=document.getElementById('notifBadge');
-            if(pending.length>0){ badge.style.display='flex'; badge.textContent=pending.length; } else badge.style.display='none';
+            const adminTab = document.getElementById('tabAdmin');
+            if (isAdmin(currentUser)) {
+                adminTab.style.display = 'inline-block';
+            } else {
+                adminTab.style.display = 'none';
+            }
+            const pending = allRequests.filter(r => {
+                const c = allClans.find(cl => cl.id === r.clanId);
+                return c && c.leaderId === currentUser.id && r.status === 'pending';
+            });
+            const badge = document.getElementById('notifBadge');
+            if (pending.length > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = pending.length;
+            } else {
+                badge.style.display = 'none';
+            }
             renderMainActionButton();
             updateFooterStats();
         }
-        function renderMainActionButton(){
-            const el=document.getElementById('mainActionButton');
-            if(!currentUser){ el.innerHTML=''; return; }
-            if(!currentUser.clanId) el.innerHTML=`<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
-            else el.innerHTML='';
+
+        function renderMainActionButton() {
+            const el = document.getElementById('mainActionButton');
+            if (!currentUser) { el.innerHTML = ''; return; }
+            if (!currentUser.clanId) {
+                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
+            } else {
+                el.innerHTML = '';
+            }
         }
-        function updateFooterStats(){
+
+        function updateFooterStats() {
             document.getElementById('totalClans').textContent = allClans.length;
-            document.getElementById('totalMembers').textContent = allClans.reduce((s,c)=>s+(c.members||[]).length,0);
+            document.getElementById('totalMembers').textContent = allClans.reduce((s, c) => s + (c.members || []).length, 0);
             document.getElementById('footerClansLabel').textContent = t('clansCount');
             document.getElementById('footerMembersLabel').textContent = t('membersCount');
         }
 
-        async function refreshData(){
+        async function refreshData() {
             const d = await loadData();
-            allUsers = d.users||[]; allClans = d.clans||[]; allRequests = d.requests||[]; allCw = d.cw||[];
-            if(currentUser){
-                const upd = allUsers.find(u=>u.id===currentUser.id);
-                if(upd){ currentUser=upd; localStorage.setItem('bsc_user', JSON.stringify(currentUser)); }
+            allUsers = d.users || [];
+            allClans = d.clans || [];
+            allRequests = d.requests || [];
+            allCw = d.cw || [];
+            if (currentUser) {
+                const upd = allUsers.find(u => u.id === currentUser.id);
+                if (upd) {
+                    currentUser = upd;
+                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                }
             }
-            updateUI(); updateFooterStats();
+            updateUI();
+            updateFooterStats();
         }
 
-        // Регистрация
-        async function registerUser(){
+        // ============================================
+        // РЕГИСТРАЦИЯ
+        // ============================================
+        async function registerUser() {
             const name = document.getElementById('regName').value.trim();
             const tgName = document.getElementById('regTelegram').value.trim();
             const gameId = document.getElementById('regGameId').value.trim();
             const role = document.getElementById('regRole').value;
-            if(!name) return showToast('❌ '+t('enterNickname'),'error');
-            if(!tgName) return showToast('❌ '+t('enterTelegram'),'error');
-            if(!gameId) return showToast('❌ '+t('enterGameId'),'error');
-            if(isNaN(gameId)) return showToast('❌ '+t('idMustBeNumber'),'error');
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
+            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
+            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
             const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
             let tgId = tg ? tg.id.toString() : localStorage.getItem('bsc_test_id');
-            if(!tgId){ tgId='test_'+Date.now(); localStorage.setItem('bsc_test_id',tgId); }
-            if(allUsers.find(u=>u.name.toLowerCase()===name.toLowerCase())) return showToast('❌ '+t('nicknameTaken'),'error');
+            if (!tgId) {
+                tgId = 'test_' + Date.now();
+                localStorage.setItem('bsc_test_id', tgId);
+            }
+            if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+                return showToast('❌ ' + t('nicknameTaken'), 'error');
+            }
             const isAdminUser = gameId === ADMIN_GAME_ID;
-            const newUser = { id: tgId, name, telegramUsername: tgName.startsWith('@')?tgName:'@'+tgName, gameId, role: isAdminUser?'admin':role, clanId: null };
+            const newUser = {
+                id: tgId,
+                name: name,
+                telegramUsername: tgName.startsWith('@') ? tgName : '@' + tgName,
+                gameId: gameId,
+                role: isAdminUser ? 'admin' : role,
+                clanId: null
+            };
             allUsers.push(newUser);
             const data = await loadData();
             data.users = allUsers;
@@ -465,79 +743,94 @@
             currentUser = newUser;
             localStorage.setItem('bsc_user', JSON.stringify(currentUser));
             document.getElementById('registerModal').classList.remove('show');
-            showToast('✅ '+t('welcomeUser').replace('{name}',name),'success');
+            showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
             updateUI();
             showTab('clans');
             renderMainActionButton();
             updateFooterStats();
         }
 
-        // Профиль
-        function openEditProfile(){
-            if(!currentUser) return;
+        // ============================================
+        // ПРОФИЛЬ
+        // ============================================
+        function openEditProfile() {
+            if (!currentUser) return;
             document.getElementById('editProfName').value = currentUser.name || '';
-            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername||'').replace('@','');
+            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
             document.getElementById('editProfGameId').value = currentUser.gameId || '';
             document.getElementById('editProfileModal').classList.add('show');
             document.getElementById('profileDropdown').classList.remove('show');
         }
-        async function saveProfile(){
+
+        async function saveProfile() {
             const name = document.getElementById('editProfName').value.trim();
             const tgName = document.getElementById('editProfTelegram').value.trim();
             const gameId = document.getElementById('editProfGameId').value.trim();
-            if(!name) return showToast('❌ '+t('enterNickname'),'error');
-            if(!tgName) return showToast('❌ '+t('enterTelegram'),'error');
-            if(!gameId) return showToast('❌ '+t('enterGameId'),'error');
-            if(isNaN(gameId)) return showToast('❌ '+t('idMustBeNumber'),'error');
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
+            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
+            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
             const data = await loadData();
-            const user = data.users.find(u=>u.id===currentUser.id);
-            if(!user) return showToast('❌ '+t('userNotFound'),'error');
-            if(user.name.toLowerCase()!==name.toLowerCase() && data.users.find(u=>u.name.toLowerCase()===name.toLowerCase())) return showToast('❌ '+t('nicknameTaken'),'error');
-            user.name = name; user.telegramUsername = tgName.startsWith('@')?tgName:'@'+tgName; user.gameId = gameId;
+            const user = data.users.find(u => u.id === currentUser.id);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+                return showToast('❌ ' + t('nicknameTaken'), 'error');
+            }
+            user.name = name;
+            user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
+            user.gameId = gameId;
             await saveData(data);
             await refreshData();
             closeModal('editProfileModal');
-            showToast('✅ '+t('profileUpdated'),'success');
+            showToast('✅ ' + t('profileUpdated'), 'success');
             updateUI();
             showTab(currentTab);
             updateFooterStats();
         }
 
-        // Вкладки
-        function showTab(tab){
+        // ============================================
+        // ВКЛАДКИ
+        // ============================================
+        function showTab(tab) {
             currentTab = tab;
-            ['tabClans','tabRequests','tabMyClan','tabRating','tabCw','tabChat','tabAdmin'].forEach(id=>{
-                const btn=document.getElementById(id); if(btn) btn.className='btn';
+            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabCw', 'tabChat', 'tabAdmin'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.className = 'btn';
             });
-            const map={clans:'tabClans',requests:'tabRequests',myclan:'tabMyClan',rating:'tabRating',cw:'tabCw',chat:'tabChat',admin:'tabAdmin'};
-            const active=document.getElementById(map[tab]);
-            if(active) active.className='btn btn-primary';
-            const container=document.getElementById('content');
-            const funcs={clans:renderClans,requests:renderRequests,myclan:renderMyClan,rating:renderRating,cw:renderCw,chat:initChat,admin:renderAdmin};
-            if(funcs[tab]) funcs[tab](container);
-            else container.innerHTML='<div class="empty">'+t('noData')+'</div>';
+            const map = { clans: 'tabClans', requests: 'tabRequests', myclan: 'tabMyClan', rating: 'tabRating', cw: 'tabCw', chat: 'tabChat', admin: 'tabAdmin' };
+            const active = document.getElementById(map[tab]);
+            if (active) active.className = 'btn btn-primary';
+            const container = document.getElementById('content');
+            const funcs = { clans: renderClans, requests: renderRequests, myclan: renderMyClan, rating: renderRating, cw: renderCw, chat: initChat, admin: renderAdmin };
+            if (funcs[tab]) funcs[tab](container);
+            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
         }
 
-        // Рендер кланов
-        async function renderClans(container){
+        // ============================================
+        // РЕНДЕР КЛАНОВ
+        // ============================================
+        async function renderClans(container) {
             await refreshData();
-            if(!allClans.length){ container.innerHTML='<div class="empty"><span class="icon">📭</span><p>'+t('noClans')+'</p></div>'; return; }
-            let html='';
-            allClans.forEach(clan=>{
-                const members=clan.members||[];
-                const isLeader=clan.leaderId===currentUser.id;
-                const isMember=members.includes(currentUser.id);
-                const isAdminUser=isAdmin(currentUser);
-                const leader=getClanLeader(clan);
-                const leaderContact=leader?getUserTelegram(leader.id):'';
-                const showApply=!isMember&&!isLeader&&!currentUser.clanId;
-                const showDelete=isLeader||isAdminUser;
-                const showEdit=isLeader||isAdminUser;
-                const elo=getClanElo(clan.id);
-                let extra='';
-                if(clan.contact) extra+=`<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
-                if(clan.channel) extra+=`<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
-                html+=`
+            if (!allClans.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">📭</span><p>${t('noClans')}</p></div>`;
+                return;
+            }
+            let html = '';
+            allClans.forEach(clan => {
+                const members = clan.members || [];
+                const isLeader = clan.leaderId === currentUser.id;
+                const isMember = members.includes(currentUser.id);
+                const isAdminUser = isAdmin(currentUser);
+                const leader = getClanLeader(clan);
+                const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                const showApply = !isMember && !isLeader && !currentUser.clanId;
+                const showDelete = isLeader || isAdminUser;
+                const showEdit = isLeader || isAdminUser;
+                const elo = getClanElo(clan.id);
+                let extra = '';
+                if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+                if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
+                html += `
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">
@@ -564,19 +857,27 @@
             updateFooterStats();
         }
 
-        // Заявки
-        async function renderRequests(container){
+        // ============================================
+        // РЕНДЕР ЗАЯВОК
+        // ============================================
+        async function renderRequests(container) {
             await refreshData();
-            const myClan = allClans.find(c=>c.leaderId===currentUser.id);
-            if(!myClan){ container.innerHTML='<div class="empty"><span class="icon">📩</span><p>'+t('notClanLeader')+'</p></div>'; return; }
-            const pending = allRequests.filter(r=>r.clanId===myClan.id&&r.status==='pending');
-            if(!pending.length){ container.innerHTML='<div class="empty"><span class="icon">✅</span><p>'+t('noPendingRequests')+'</p></div>'; return; }
-            let html=`<div style="color:var(--text-secondary);margin-bottom:8px;">${t('pendingRequests').replace('{count}',pending.length)}</div>`;
-            pending.forEach(req=>{
-                const user=allUsers.find(u=>u.id===req.userId);
-                html+=`
+            const myClan = allClans.find(c => c.leaderId === currentUser.id);
+            if (!myClan) {
+                container.innerHTML = `<div class="empty"><span class="icon">📩</span><p>${t('notClanLeader')}</p></div>`;
+                return;
+            }
+            const pending = allRequests.filter(r => r.clanId === myClan.id && r.status === 'pending');
+            if (!pending.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">✅</span><p>${t('noPendingRequests')}</p></div>`;
+                return;
+            }
+            let html = `<div style="color:var(--text-secondary);margin-bottom:8px;">${t('pendingRequests').replace('{count}', pending.length)}</div>`;
+            pending.forEach(req => {
+                const user = allUsers.find(u => u.id === req.userId);
+                html += `
                     <div class="request-item">
-                        <div><div class="req-name">${user?user.name:'Игрок'}</div><div class="req-date">${t('userId')}: ${req.userId}</div></div>
+                        <div><div class="req-name">${user ? user.name : 'Игрок'}</div><div class="req-date">${t('userId')}: ${req.userId}</div></div>
                         <div>
                             <button class="btn btn-success btn-sm" onclick="acceptRequest('${req.id}')">✅</button>
                             <button class="btn btn-danger btn-sm" onclick="rejectRequest('${req.id}')">❌</button>
@@ -587,46 +888,57 @@
             container.innerHTML = html;
         }
 
-        // Мой клан
-        async function renderMyClan(container){
+        // ============================================
+        // РЕНДЕР МОЙ КЛАН
+        // ============================================
+        async function renderMyClan(container) {
             await refreshData();
-            let clan = allClans.find(c=>c.id===currentUser.clanId);
-            if(!clan && currentUser.role==='leader'){
-                clan = allClans.find(c=>c.leaderId===currentUser.id);
-                if(clan){ currentUser.clanId=clan.id; localStorage.setItem('bsc_user',JSON.stringify(currentUser));
-                    const data=await loadData(); const u=data.users.find(x=>x.id===currentUser.id); if(u){ u.clanId=clan.id; await saveData(data); } }
+            let clan = allClans.find(c => c.id === currentUser.clanId);
+            if (!clan && currentUser.role === 'leader') {
+                clan = allClans.find(c => c.leaderId === currentUser.id);
+                if (clan) {
+                    currentUser.clanId = clan.id;
+                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                    const data = await loadData();
+                    const user = data.users.find(u => u.id === currentUser.id);
+                    if (user) { user.clanId = clan.id;
+                        await saveData(data); }
+                }
             }
-            if(!clan){ container.innerHTML='<div class="empty"><span class="icon">⭐</span><p>'+t('notInClan')+'</p></div>'; return; }
-            const members=clan.members||[];
-            const isLeader=clan.leaderId===currentUser.id;
-            const leader=getClanLeader(clan);
-            const leaderContact=leader?getUserTelegram(leader.id):'';
-            const elo=getClanElo(clan.id);
-            let memHtml='';
-            members.forEach(mid=>{
-                const user=allUsers.find(u=>u.id===mid);
-                const isLeaderUser=mid===clan.leaderId;
-                const isViceUser=user&&user.role==='vice';
-                const isCurrentUser=mid===currentUser.id;
-                let actions='';
-                if(isLeader&&!isLeaderUser&&!isCurrentUser){
+            if (!clan) {
+                container.innerHTML = `<div class="empty"><span class="icon">⭐</span><p>${t('notInClan')}</p></div>`;
+                return;
+            }
+            const members = clan.members || [];
+            const isLeader = clan.leaderId === currentUser.id;
+            const leader = getClanLeader(clan);
+            const leaderContact = leader ? getUserTelegram(leader.id) : '';
+            const elo = getClanElo(clan.id);
+            let memHtml = '';
+            members.forEach(mid => {
+                const user = allUsers.find(u => u.id === mid);
+                const isLeaderUser = mid === clan.leaderId;
+                const isViceUser = user && user.role === 'vice';
+                const isCurrentUser = mid === currentUser.id;
+                let actions = '';
+                if (isLeader && !isLeaderUser && !isCurrentUser) {
                     actions = `
                         <button class="btn btn-gold btn-sm" onclick="setViceLeader('${clan.id}','${mid}')">👑 ${t('roleVice')}</button>
                         <button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}','${mid}')">${t('kick')}</button>
                     `;
                 }
-                if(isLeaderUser && isCurrentUser) actions = `<span style="color:var(--accent);font-size:12px;">👑 ${t('roleLeader')}</span>`;
+                if (isLeaderUser && isCurrentUser) actions = `<span style="color:var(--accent);font-size:12px;">👑 ${t('roleLeader')}</span>`;
                 memHtml += `
                     <div class="member-row">
-                        <span>${user?user.name:mid} ${isLeaderUser?'👑':''} ${isViceUser?'🛡️':''}</span>
+                        <span>${user ? user.name : mid} ${isLeaderUser ? '👑' : ''} ${isViceUser ? '🛡️' : ''}</span>
                         <div class="actions">${actions}</div>
                     </div>
                 `;
             });
-            let extra='';
-            if(clan.contact) extra+=`<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
-            if(clan.channel) extra+=`<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
-            container.innerHTML=`
+            let extra = '';
+            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
+            container.innerHTML = `
                 <div class="card" style="border-color:var(--accent);">
                     <div class="card-header">
                         <div class="card-title">
@@ -635,50 +947,58 @@
                         </div>
                         <span class="card-tag">[${clan.tag}]</span>
                     </div>
-                    <div class="card-sub"><span class="badge-online"></span> ${t('leaderLabel')}: ${leader?leader.name:'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}</div>
+                    <div class="card-sub"><span class="badge-online"></span> ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}</div>
                     ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
                     ${extra}
                     <div style="margin-top:8px;">${memHtml}</div>
                     <div class="card-actions">
                         ${isLeader ? `<button class="btn btn-danger btn-sm" onclick="deleteClan('${clan.id}')">🗑 ${t('disband')}</button>` : ''}
-                        ${(isLeader||isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
+                        ${(isLeader || isAdmin(currentUser)) ? `<button class="btn btn-primary btn-sm" onclick="openEditClan('${clan.id}')">✏️ ${t('edit')}</button>` : ''}
                     </div>
                 </div>
             `;
             updateFooterStats();
         }
 
-        async function setViceLeader(clanId,userId){
-            const data=await loadData();
-            const clan=data.clans.find(c=>c.id===clanId);
-            if(!clan) return showToast('❌ '+t('clanNotFound'),'error');
-            if(clan.leaderId!==currentUser.id&&!isAdmin(currentUser)) return showToast('❌ '+t('noRights'),'error');
-            const user=data.users.find(u=>u.id===userId);
-            if(!user) return showToast('❌ '+t('userNotFound'),'error');
-            user.role = user.role==='vice' ? 'member' : 'vice';
+        async function setViceLeader(clanId, userId) {
+            const data = await loadData();
+            const clan = data.clans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
+            const user = data.users.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            user.role = user.role === 'vice' ? 'member' : 'vice';
             await saveData(data);
             await refreshData();
-            showToast('✅ Роль обновлена','success');
+            showToast('✅ Роль обновлена', 'success');
             renderMyClan(document.getElementById('content'));
         }
 
-        // Рейтинг (обновленный дизайн)
-        async function renderRating(container){
+        // ============================================
+        // РЕНДЕР РЕЙТИНГА (обновленный дизайн)
+        // ============================================
+        async function renderRating(container) {
             await refreshData();
-            if(!allClans.length){ container.innerHTML='<div class="empty"><span class="icon">🏆</span><p>'+t('noClansForRating')+'</p></div>'; return; }
-            const sorted = [...allClans].sort((a,b)=>(b.elo||0)-(a.elo||0));
+            if (!allClans.length) {
+                container.innerHTML = `<div class="empty"><span class="icon">🏆</span><p>${t('noClansForRating')}</p></div>`;
+                return;
+            }
+            const sorted = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
             let html = `<div style="margin-bottom:12px;color:var(--text-secondary);font-size:14px;">🏆 ${t('ratingTop')}</div><div class="rating-table">`;
-            sorted.forEach((clan,index)=>{
-                const place = index+1;
+            sorted.forEach((clan, index) => {
+                const place = index + 1;
                 let medal = '';
                 let cls = '';
-                if(place===1){ cls='gold'; medal='🥇'; } else if(place===2){ cls='silver'; medal='🥈'; } else if(place===3){ cls='bronze'; medal='🥉'; }
-                const leader=getClanLeader(clan);
-                const leaderContact=leader?getUserTelegram(leader.id):'';
-                const elo=getClanElo(clan.id);
-                html+=`
+                if (place === 1) { cls = 'gold';
+                    medal = '🥇'; } else if (place === 2) { cls = 'silver';
+                    medal = '🥈'; } else if (place === 3) { cls = 'bronze';
+                    medal = '🥉'; }
+                const leader = getClanLeader(clan);
+                const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                const elo = getClanElo(clan.id);
+                html += `
                     <div class="rating-row">
-                        <span class="place ${cls}">${medal||place}</span>
+                        <span class="place ${cls}">${medal || place}</span>
                         <div class="clan-info">
                             <div class="name">
                                 ${clan.name}
@@ -694,24 +1014,37 @@
             container.innerHTML = html;
         }
 
+        // ============================================
         // CW
-        async function renderCw(container){
+        // ============================================
+        async function renderCw(container) {
             await refreshData();
-            if(!currentUser.clanId){ container.innerHTML='<div class="empty"><span class="icon">⚔️</span><p>'+t('notInClan')+'</p></div>'; return; }
-            const myClan=allClans.find(c=>c.id===currentUser.clanId);
-            if(!myClan) return;
-            const isManager=canManageClan(currentUser,myClan);
-            if(!isManager){ container.innerHTML='<div class="empty"><span class="icon">⚔️</span><p>'+t('youAreNotLeader')+'</p></div>'; return; }
-            let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><span style="color:var(--text-secondary);font-size:14px;">⚔️ ${t('cwLabel')}</span><button class="btn btn-primary btn-sm" onclick="openCwModal()">📩 ${t('cwSend')}</button></div>`;
-            const incoming=allCw.filter(cw=>cw.toClanId===myClan.id&&cw.status==='pending');
-            if(incoming.length){
-                html+=`<div style="color:var(--text-secondary);font-size:13px;margin-bottom:8px;">${t('cwIncoming')}:</div>`;
-                incoming.forEach(cw=>{
-                    const fromClan=allClans.find(c=>c.id===cw.fromClanId);
-                    html+=`
+            if (!currentUser.clanId) {
+                container.innerHTML = `<div class="empty"><span class="icon">⚔️</span><p>${t('notInClan')}</p></div>`;
+                return;
+            }
+            const myClan = allClans.find(c => c.id === currentUser.clanId);
+            if (!myClan) return;
+            const isManager = canManageClan(currentUser, myClan);
+            if (!isManager) {
+                container.innerHTML = `<div class="empty"><span class="icon">⚔️</span><p>${t('youAreNotLeader')}</p></div>`;
+                return;
+            }
+            let html = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span style="color:var(--text-secondary);font-size:14px;">⚔️ ${t('cwLabel')}</span>
+                    <button class="btn btn-primary btn-sm" onclick="openCwModal()">📩 ${t('cwSend')}</button>
+                </div>
+            `;
+            const incoming = allCw.filter(cw => cw.toClanId === myClan.id && cw.status === 'pending');
+            if (incoming.length) {
+                html += `<div style="color:var(--text-secondary);font-size:13px;margin-bottom:8px;">${t('cwIncoming')}:</div>`;
+                incoming.forEach(cw => {
+                    const fromClan = allClans.find(c => c.id === cw.fromClanId);
+                    html += `
                         <div class="cw-item">
                             <div class="cw-header">
-                                <span class="cw-clan">${fromClan?fromClan.name:'Unknown'} [${fromClan?fromClan.tag:'??'}]</span>
+                                <span class="cw-clan">${fromClan ? fromClan.name : 'Unknown'} [${fromClan ? fromClan.tag : '??'}]</span>
                                 <span class="cw-status pending">⏳ ${t('pendingRequests')}</span>
                             </div>
                             <div class="cw-details">${new Date(cw.created).toLocaleString()}</div>
@@ -723,96 +1056,169 @@
                     `;
                 });
             }
-            const outgoing=allCw.filter(cw=>cw.fromClanId===myClan.id&&cw.status!=='finished');
-            if(outgoing.length){
-                html+=`<div style="color:var(--text-secondary);font-size:13px;margin-top:12px;margin-bottom:8px;">${t('cwOutgoing')}:</div>`;
-                outgoing.forEach(cw=>{
-                    const toClan=allClans.find(c=>c.id===cw.toClanId);
-                    const statusText={'pending':'⏳ Ожидание','accepted':'✅ Принят','rejected':'❌ Отклонён','finished':'🏁 Завершён'};
-                    html+=`
+            const outgoing = allCw.filter(cw => cw.fromClanId === myClan.id && cw.status !== 'finished');
+            if (outgoing.length) {
+                html += `<div style="color:var(--text-secondary);font-size:13px;margin-top:12px;margin-bottom:8px;">${t('cwOutgoing')}:</div>`;
+                outgoing.forEach(cw => {
+                    const toClan = allClans.find(c => c.id === cw.toClanId);
+                    const statusText = { pending: '⏳ Ожидание', accepted: '✅ Принят', rejected: '❌ Отклонён', finished: '🏁 Завершён' };
+                    html += `
                         <div class="cw-item">
                             <div class="cw-header">
-                                <span class="cw-clan">${toClan?toClan.name:'Unknown'} [${toClan?toClan.tag:'??'}]</span>
-                                <span class="cw-status ${cw.status}">${statusText[cw.status]||cw.status}</span>
+                                <span class="cw-clan">${toClan ? toClan.name : 'Unknown'} [${toClan ? toClan.tag : '??'}]</span>
+                                <span class="cw-status ${cw.status}">${statusText[cw.status] || cw.status}</span>
                             </div>
                             <div class="cw-details">${new Date(cw.created).toLocaleString()}</div>
-                            ${cw.status==='accepted' ? `<div class="cw-actions"><button class="btn btn-gold btn-sm" onclick="showCwContacts('${cw.id}')">📱 ${t('cwContacts')}</button><button class="btn btn-success btn-sm" onclick="finishCw('${cw.id}')">🏁 ${t('cwFinishMatch')}</button></div>` : ''}
-                            ${cw.status==='finished' ? `<div style="color:var(--text-secondary);font-size:13px;">✅ Матч завершён</div>` : ''}
+                            ${cw.status === 'accepted' ? `
+                                <div class="cw-actions">
+                                    <button class="btn btn-gold btn-sm" onclick="showCwContacts('${cw.id}')">📱 ${t('cwContacts')}</button>
+                                    <button class="btn btn-success btn-sm" onclick="finishCw('${cw.id}')">🏁 ${t('cwFinishMatch')}</button>
+                                </div>
+                            ` : ''}
+                            ${cw.status === 'finished' ? `<div style="color:var(--text-secondary);font-size:13px;">✅ Матч завершён</div>` : ''}
                         </div>
                     `;
                 });
             }
-            if(!incoming.length&&!outgoing.length) html+=`<div class="empty" style="padding:20px;"><span class="icon">⚔️</span><p>Нет активных CW запросов</p></div>`;
-            container.innerHTML=html;
+            if (!incoming.length && !outgoing.length) html += `<div class="empty" style="padding:20px;"><span class="icon">⚔️</span><p>Нет активных CW запросов</p></div>`;
+            container.innerHTML = html;
         }
 
-        function openCwModal(){
-            const myClan=allClans.find(c=>c.id===currentUser.clanId);
-            if(!myClan) return showToast('❌ '+t('notInClan'),'error');
-            const otherClans=allClans.filter(c=>c.id!==myClan.id);
-            if(!otherClans.length){ showToast('❌ '+t('cwNoClans'),'error'); return; }
-            let html='';
-            otherClans.forEach(clan=>{
-                html+=`<div class="cw-item" style="cursor:pointer;" onclick="sendCwRequest('${clan.id}')"><div class="cw-header"><span class="cw-clan">${clan.name} [${clan.tag}]</span><span style="color:var(--text-secondary);font-size:12px;">👥 ${clan.members?clan.members.length:0}</span></div></div>`;
+        function openCwModal() {
+            const myClan = allClans.find(c => c.id === currentUser.clanId);
+            if (!myClan) return showToast('❌ ' + t('notInClan'), 'error');
+            const otherClans = allClans.filter(c => c.id !== myClan.id);
+            if (!otherClans.length) { showToast('❌ ' + t('cwNoClans'), 'error'); return; }
+            let html = '';
+            otherClans.forEach(clan => {
+                html += `
+                    <div class="cw-item" style="cursor:pointer;" onclick="sendCwRequest('${clan.id}')">
+                        <div class="cw-header">
+                            <span class="cw-clan">${clan.name} [${clan.tag}]</span>
+                            <span style="color:var(--text-secondary);font-size:12px;">👥 ${clan.members ? clan.members.length : 0}</span>
+                        </div>
+                    </div>
+                `;
             });
-            document.getElementById('cwClanList').innerHTML=html;
+            document.getElementById('cwClanList').innerHTML = html;
             document.getElementById('cwModal').classList.add('show');
         }
-        async function sendCwRequest(toClanId){
-            const myClan=allClans.find(c=>c.id===currentUser.clanId);
-            if(!myClan) return showToast('❌ '+t('notInClan'),'error');
-            const existing=allCw.find(cw=>(cw.fromClanId===myClan.id&&cw.toClanId===toClanId&&cw.status==='pending')||(cw.fromClanId===toClanId&&cw.toClanId===myClan.id&&cw.status==='pending'));
-            if(existing){ showToast('⏳ Запрос уже отправлен','info'); closeModal('cwModal'); return; }
-            const data=await loadData();
-            data.cw.push({ id:'cw_'+Date.now(), fromClanId:myClan.id, toClanId, status:'pending', created:Date.now() });
+
+        async function sendCwRequest(toClanId) {
+            const myClan = allClans.find(c => c.id === currentUser.clanId);
+            if (!myClan) return showToast('❌ ' + t('notInClan'), 'error');
+            const existing = allCw.find(cw =>
+                (cw.fromClanId === myClan.id && cw.toClanId === toClanId && cw.status === 'pending') ||
+                (cw.fromClanId === toClanId && cw.toClanId === myClan.id && cw.status === 'pending')
+            );
+            if (existing) { showToast('⏳ Запрос уже отправлен', 'info');
+                closeModal('cwModal'); return; }
+            const data = await loadData();
+            data.cw.push({
+                id: 'cw_' + Date.now(),
+                fromClanId: myClan.id,
+                toClanId: toClanId,
+                status: 'pending',
+                created: Date.now()
+            });
             await saveData(data);
             await refreshData();
             closeModal('cwModal');
-            showToast('✅ Запрос на CW отправлен!','success');
+            showToast('✅ Запрос на CW отправлен!', 'success');
             showTab('cw');
-            const toClan=allClans.find(c=>c.id===toClanId);
-            if(toClan) showToast(`⚔️ ${t('cwRequest').replace('{tag}',toClan.tag)}`,'info');
+            const toClan = allClans.find(c => c.id === toClanId);
+            if (toClan) showToast(`⚔️ ${t('cwRequest').replace('{tag}', toClan.tag)}`, 'info');
         }
-        async function respondCw(cwId,action){
-            const data=await loadData();
-            const cw=data.cw.find(c=>c.id===cwId);
-            if(!cw) return showToast('❌ Запрос не найден','error');
-            if(action==='accept'){ cw.status='accepted'; await saveData(data); await refreshData(); showToast('✅ '+t('cwAccepted'),'success'); showTab('cw'); }
-            else if(action==='reject'){ cw.status='rejected'; const fromClan=allClans.find(c=>c.id===cw.fromClanId); await saveData(data); await refreshData(); if(fromClan) showToast(`❌ ${t('cwDeclined').replace('{tag}',fromClan.tag)}`,'error'); else showToast('❌ '+t('cwRejected'),'error'); showTab('cw'); }
-        }
-        async function showCwContacts(cwId){
-            const cw=allCw.find(c=>c.id===cwId);
-            if(!cw) return showToast('❌ Запрос не найден','error');
-            const fromClan=allClans.find(c=>c.id===cw.fromClanId), toClan=allClans.find(c=>c.id===cw.toClanId);
-            if(!fromClan||!toClan) return showToast('❌ Клан не найден','error');
-            const fromLeader=allUsers.find(u=>u.id===fromClan.leaderId), toLeader=allUsers.find(u=>u.id===toClan.leaderId);
-            const fromVice=allUsers.find(u=>u.clanId===fromClan.id&&u.role==='vice'), toVice=allUsers.find(u=>u.clanId===toClan.id&&u.role==='vice');
-            const myClan=allClans.find(c=>c.id===currentUser.clanId);
-            let content='';
-            if(myClan.id===fromClan.id){
-                content+=`<div style="margin-bottom:12px;"><div style="color:var(--text-secondary);font-size:13px;">${t('cwYourContacts')}</div><div>👑 ${fromLeader?fromLeader.name+' ('+fromLeader.telegramUsername+')':'Неизвестен'}</div>${fromVice?`<div>🛡️ ${fromVice.name} (${fromVice.telegramUsername})</div>`:''}</div><div><div style="color:var(--text-secondary);font-size:13px;">${t('cwOpponentContacts')}</div><div>👑 ${toLeader?toLeader.name+' ('+toLeader.telegramUsername+')':'Неизвестен'}</div>${toVice?`<div>🛡️ ${toVice.name} (${toVice.telegramUsername})</div>`:''}</div>`;
-            } else {
-                content+=`<div style="margin-bottom:12px;"><div style="color:var(--text-secondary);font-size:13px;">${t('cwYourContacts')}</div><div>👑 ${toLeader?toLeader.name+' ('+toLeader.telegramUsername+')':'Неизвестен'}</div>${toVice?`<div>🛡️ ${toVice.name} (${toVice.telegramUsername})</div>`:''}</div><div><div style="color:var(--text-secondary);font-size:13px;">${t('cwOpponentContacts')}</div><div>👑 ${fromLeader?fromLeader.name+' ('+fromLeader.telegramUsername+')':'Неизвестен'}</div>${fromVice?`<div>🛡️ ${fromVice.name} (${fromVice.telegramUsername})</div>`:''}</div>`;
+
+        async function respondCw(cwId, action) {
+            const data = await loadData();
+            const cw = data.cw.find(c => c.id === cwId);
+            if (!cw) return showToast('❌ Запрос не найден', 'error');
+            if (action === 'accept') {
+                cw.status = 'accepted';
+                await saveData(data);
+                await refreshData();
+                showToast('✅ ' + t('cwAccepted'), 'success');
+                showTab('cw');
+            } else if (action === 'reject') {
+                cw.status = 'rejected';
+                const fromClan = allClans.find(c => c.id === cw.fromClanId);
+                await saveData(data);
+                await refreshData();
+                if (fromClan) showToast(`❌ ${t('cwDeclined').replace('{tag}', fromClan.tag)}`, 'error');
+                else showToast('❌ ' + t('cwRejected'), 'error');
+                showTab('cw');
             }
-            document.getElementById('cwContactsContent').innerHTML=content;
+        }
+
+        async function showCwContacts(cwId) {
+            const cw = allCw.find(c => c.id === cwId);
+            if (!cw) return showToast('❌ Запрос не найден', 'error');
+            const fromClan = allClans.find(c => c.id === cw.fromClanId);
+            const toClan = allClans.find(c => c.id === cw.toClanId);
+            if (!fromClan || !toClan) return showToast('❌ Клан не найден', 'error');
+            const fromLeader = allUsers.find(u => u.id === fromClan.leaderId);
+            const toLeader = allUsers.find(u => u.id === toClan.leaderId);
+            const fromVice = allUsers.find(u => u.clanId === fromClan.id && u.role === 'vice');
+            const toVice = allUsers.find(u => u.clanId === toClan.id && u.role === 'vice');
+            const myClan = allClans.find(c => c.id === currentUser.clanId);
+            let content = '';
+            if (myClan.id === fromClan.id) {
+                content += `
+                    <div style="margin-bottom:12px;">
+                        <div style="color:var(--text-secondary);font-size:13px;">${t('cwYourContacts')}</div>
+                        <div>👑 ${fromLeader ? fromLeader.name + ' (' + fromLeader.telegramUsername + ')' : 'Неизвестен'}</div>
+                        ${fromVice ? `<div>🛡️ ${fromVice.name} (${fromVice.telegramUsername})</div>` : ''}
+                    </div>
+                    <div>
+                        <div style="color:var(--text-secondary);font-size:13px;">${t('cwOpponentContacts')}</div>
+                        <div>👑 ${toLeader ? toLeader.name + ' (' + toLeader.telegramUsername + ')' : 'Неизвестен'}</div>
+                        ${toVice ? `<div>🛡️ ${toVice.name} (${toVice.telegramUsername})</div>` : ''}
+                    </div>
+                `;
+            } else {
+                content += `
+                    <div style="margin-bottom:12px;">
+                        <div style="color:var(--text-secondary);font-size:13px;">${t('cwYourContacts')}</div>
+                        <div>👑 ${toLeader ? toLeader.name + ' (' + toLeader.telegramUsername + ')' : 'Неизвестен'}</div>
+                        ${toVice ? `<div>🛡️ ${toVice.name} (${toVice.telegramUsername})</div>` : ''}
+                    </div>
+                    <div>
+                        <div style="color:var(--text-secondary);font-size:13px;">${t('cwOpponentContacts')}</div>
+                        <div>👑 ${fromLeader ? fromLeader.name + ' (' + fromLeader.telegramUsername + ')' : 'Неизвестен'}</div>
+                        ${fromVice ? `<div>🛡️ ${fromVice.name} (${fromVice.telegramUsername})</div>` : ''}
+                    </div>
+                `;
+            }
+            document.getElementById('cwContactsContent').innerHTML = content;
             document.getElementById('cwContactsModal').classList.add('show');
         }
-        async function finishCw(cwId){
-            if(!confirm(t('cwFinishConfirm'))) return;
-            const data=await loadData();
-            const cw=data.cw.find(c=>c.id===cwId);
-            if(!cw) return showToast('❌ Запрос не найден','error');
-            cw.status='finished';
+
+        async function finishCw(cwId) {
+            if (!confirm(t('cwFinishConfirm'))) return;
+            const data = await loadData();
+            const cw = data.cw.find(c => c.id === cwId);
+            if (!cw) return showToast('❌ Запрос не найден', 'error');
+            cw.status = 'finished';
             await saveData(data);
             await refreshData();
-            document.getElementById('cwContactsContent').innerHTML = `<div style="text-align:center;padding:10px;"><div style="font-size:18px;margin-bottom:8px;">🏁 ${t('cwFinished')}</div><div style="color:var(--text-secondary);font-size:14px;margin-bottom:12px;">${t('cwAdminContacts')}</div><div style="font-size:16px;color:var(--accent);">@NoisyBoy141</div><div style="color:var(--text-secondary);font-size:12px;margin-top:8px;">Отправьте результаты игры для начисления ELO</div></div>`;
+            document.getElementById('cwContactsContent').innerHTML = `
+                <div style="text-align:center;padding:10px;">
+                    <div style="font-size:18px;margin-bottom:8px;">🏁 ${t('cwFinished')}</div>
+                    <div style="color:var(--text-secondary);font-size:14px;margin-bottom:12px;">${t('cwAdminContacts')}</div>
+                    <div style="font-size:16px;color:var(--accent);">@NoisyBoy141</div>
+                    <div style="color:var(--text-secondary);font-size:12px;margin-top:8px;">Отправьте результаты игры для начисления ELO</div>
+                </div>
+            `;
             document.getElementById('cwContactsModal').classList.add('show');
             showTab('cw');
         }
 
-        // Чат (исправлен)
-        function initChat(container){
-            if(chatInitialized){
+        // ============================================
+        // ЧАТ (FIX)
+        // ============================================
+        function initChat(container) {
+            if (chatInitialized) {
                 updateChatMessages();
                 return;
             }
@@ -827,60 +1233,91 @@
             `;
             chatInitialized = true;
             document.getElementById('chatSendBtn').addEventListener('click', sendChatMessageHandler);
-            document.getElementById('chatInput').addEventListener('keydown', (e) => { if(e.key==='Enter') sendChatMessageHandler(); });
+            document.getElementById('chatInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') sendChatMessageHandler();
+            });
             loadChatMessages();
-            const msgDiv=document.getElementById('chatMessages');
-            if(msgDiv) msgDiv.scrollTop = msgDiv.scrollHeight;
+            const msgDiv = document.getElementById('chatMessages');
+            if (msgDiv) msgDiv.scrollTop = msgDiv.scrollHeight;
         }
 
-        function updateChatMessages(){
-            const msgDiv=document.getElementById('chatMessages');
-            if(!msgDiv) return;
-            if(!chatMessages.length){ msgDiv.innerHTML='<div class="empty" style="padding:20px;"><span class="icon">💬</span><p>'+t('chatEmpty')+'</p></div>'; return; }
-            const sorted=[...chatMessages].sort((a,b)=>a.timestamp-b.timestamp);
-            let html='';
-            sorted.forEach(msg=>{
-                const user=allUsers.find(u=>u.id===msg.userId);
-                const userName=user?user.name:msg.userName||'Unknown';
-                const clan=user?allClans.find(c=>c.id===user.clanId):null;
-                const clanName=clan?`[${clan.tag}]`:'';
-                const time=new Date(msg.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-                html+=`<div class="chat-message"><div class="msg-header"><span class="msg-user">${userName}</span>${clanName?`<span class="msg-clan">${clanName}</span>`:''}<span class="msg-time">${time}</span></div><div class="msg-text">${msg.text}</div></div>`;
+        function updateChatMessages() {
+            const msgDiv = document.getElementById('chatMessages');
+            if (!msgDiv) return;
+            if (!chatMessages.length) {
+                msgDiv.innerHTML = `<div class="empty" style="padding:20px;"><span class="icon">💬</span><p>${t('chatEmpty')}</p></div>`;
+                return;
+            }
+            const sorted = [...chatMessages].sort((a, b) => a.timestamp - b.timestamp);
+            let html = '';
+            sorted.forEach(msg => {
+                const user = allUsers.find(u => u.id === msg.userId);
+                const userName = user ? user.name : msg.userName || 'Unknown';
+                const clan = user ? allClans.find(c => c.id === user.clanId) : null;
+                const clanName = clan ? `[${clan.tag}]` : '';
+                const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                html += `
+                    <div class="chat-message">
+                        <div class="msg-header">
+                            <span class="msg-user">${userName}</span>
+                            ${clanName ? `<span class="msg-clan">${clanName}</span>` : ''}
+                            <span class="msg-time">${time}</span>
+                        </div>
+                        <div class="msg-text">${msg.text}</div>
+                    </div>
+                `;
             });
-            msgDiv.innerHTML=html;
-            msgDiv.scrollTop=msgDiv.scrollHeight;
+            msgDiv.innerHTML = html;
+            msgDiv.scrollTop = msgDiv.scrollHeight;
         }
 
-        function loadChatMessages(){
-            if(chatListener){ db.ref('chat').off('value', chatListener); chatListener=null; }
-            const now=Date.now();
-            chatListener = db.ref('chat').orderByChild('timestamp').limitToLast(100).on('value', (snapshot)=>{
-                const data=snapshot.val();
-                let msgs=[];
-                if(data){
-                    const keys=Object.keys(data);
-                    const filtered=keys.filter(key=>(now - data[key].timestamp) < 86400000);
-                    if(filtered.length<keys.length){ const updates={}; keys.forEach(k=>{ if((now-data[k].timestamp)>=86400000) updates[k]=null; }); db.ref('chat').update(updates); }
-                    msgs=filtered.map(key=>({id:key,...data[key]}));
+        function loadChatMessages() {
+            if (chatListener) {
+                db.ref('chat').off('value', chatListener);
+                chatListener = null;
+            }
+            const now = Date.now();
+            chatListener = db.ref('chat').orderByChild('timestamp').limitToLast(100).on('value', (snapshot) => {
+                const data = snapshot.val();
+                let msgs = [];
+                if (data) {
+                    const keys = Object.keys(data);
+                    const filtered = keys.filter(key => (now - data[key].timestamp) < 86400000);
+                    if (filtered.length < keys.length) {
+                        const updates = {};
+                        keys.forEach(k => { if ((now - data[k].timestamp) >= 86400000) updates[k] = null; });
+                        db.ref('chat').update(updates);
+                    }
+                    msgs = filtered.map(key => ({ id: key, ...data[key] }));
                 }
-                chatMessages=msgs;
-                if(chatInitialized) updateChatMessages();
+                chatMessages = msgs;
+                if (chatInitialized) updateChatMessages();
             });
         }
 
-        function sendChatMessageHandler(){
-            const input=document.getElementById('chatInput');
-            if(!input) return;
-            const text=input.value.trim();
-            if(!text) return;
-            if(!currentUser){ showToast('❌ '+t('loginRequired'),'error'); return; }
-            db.ref('chat').push({ userId:currentUser.id, userName:currentUser.name, text, timestamp:Date.now() });
-            input.value='';
+        function sendChatMessageHandler() {
+            const input = document.getElementById('chatInput');
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+            if (!currentUser) { showToast('❌ ' + t('loginRequired'), 'error'); return; }
+            db.ref('chat').push({
+                userId: currentUser.id,
+                userName: currentUser.name,
+                text: text,
+                timestamp: Date.now()
+            });
+            input.value = '';
         }
 
-        // Админ
-        async function renderAdmin(container){
-            if(!isAdmin(currentUser)){ container.innerHTML='<div class="empty">⛔ '+t('youAreNotAdmin')+'</div>'; return; }
+        // ============================================
+        // АДМИН
+        // ============================================
+        async function renderAdmin(container) {
+            if (!isAdmin(currentUser)) {
+                container.innerHTML = `<div class="empty">⛔ ${t('youAreNotAdmin')}</div>`;
+                return;
+            }
             await refreshData();
             let html = `
                 <div class="admin-panel">
@@ -889,38 +1326,41 @@
                         <div class="stats-row">
                             <span>${t('clansCount')} ${allClans.length}</span>
                             <span>${t('usersList')}: ${allUsers.length}</span>
-                            <span>${t('requestsCount')} ${allRequests.filter(r=>r.status==='pending').length}</span>
+                            <span>${t('requestsCount')} ${allRequests.filter(r => r.status === 'pending').length}</span>
                         </div>
                         <button class="btn btn-danger btn-sm" onclick="clearAllData()" style="margin-top:8px;">⚠️ ${t('clearAllData')}</button>
                     </div>
                     <div class="admin-section">
                         <div class="section-title">👥 ${t('userManagement')}</div>
             `;
-            if(!allUsers.length) html += `<div class="empty" style="padding:20px;">${t('noUsers')}</div>`;
+            if (!allUsers.length) html += `<div class="empty" style="padding:20px;">${t('noUsers')}</div>`;
             else {
-                allUsers.forEach(user=>{
-                    const status=getBanStatusText(user);
-                    const isAdminUser=isAdmin(user);
-                    const isBanned=status.class==='banned';
-                    html+=`
+                allUsers.forEach(user => {
+                    const status = getBanStatusText(user);
+                    const isAdminUser = isAdmin(user);
+                    const isBanned = status.class === 'banned';
+                    html += `
                         <div class="user-card">
                             <div class="user-header">
                                 <div class="user-name">
                                     ${user.name}
-                                    ${isAdminUser?'👑':''}
+                                    ${isAdminUser ? '👑' : ''}
                                     <span class="user-status ${status.class}">${status.text}</span>
                                 </div>
                             </div>
                             <div class="user-details">
                                 <span>🆔 ${user.id}</span>
-                                <span>📱 ${user.telegramUsername||'—'}</span>
-                                <span>🎮 ${user.gameId||'—'}</span>
-                                <span>🎭 ${user.role||'member'}</span>
+                                <span>📱 ${user.telegramUsername || '—'}</span>
+                                <span>🎮 ${user.gameId || '—'}</span>
+                                <span>🎭 ${user.role || 'member'}</span>
                             </div>
                             <div class="user-actions">
                                 ${!isAdminUser ? `
                                     <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌ ${t('delete')}</button>
-                                    ${isBanned ? `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅ ${t('unban')}</button>` : `<button class="btn btn-danger btn-sm" onclick="openBanModal('${user.id}')">🔨 ${t('ban')}</button>`}
+                                    ${isBanned ? 
+                                        `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅ ${t('unban')}</button>` :
+                                        `<button class="btn btn-danger btn-sm" onclick="openBanModal('${user.id}')">🔨 ${t('ban')}</button>`
+                                    }
                                 ` : `<span style="color:var(--accent);font-size:12px;">👑 ${t('adminLabel')}</span>`}
                             </div>
                         </div>
@@ -928,19 +1368,19 @@
                 });
             }
             html += `</div><div class="admin-section"><div class="section-title">⚡ ${t('eloManagement')}</div>`;
-            if(!allClans.length) html += `<div class="empty" style="padding:20px;">${t('noClans')}</div>`;
+            if (!allClans.length) html += `<div class="empty" style="padding:20px;">${t('noClans')}</div>`;
             else {
-                const sortedClans=[...allClans].sort((a,b)=>(b.elo||0)-(a.elo||0));
-                sortedClans.forEach(clan=>{
-                    const elo=getClanElo(clan.id);
-                    const leader=getClanLeader(clan);
-                    const leaderContact=leader?getUserTelegram(leader.id):'';
-                    html+=`
+                const sortedClans = [...allClans].sort((a, b) => (b.elo || 0) - (a.elo || 0));
+                sortedClans.forEach(clan => {
+                    const elo = getClanElo(clan.id);
+                    const leader = getClanLeader(clan);
+                    const leaderContact = leader ? getUserTelegram(leader.id) : '';
+                    html += `
                         <div class="admin-card" style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:12px;margin-bottom:10px;">
                             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
                                 <div>
                                     <span style="font-weight:600;">${clan.name}</span>
-                                    ${leaderContact?`<span style="font-size:12px;color:var(--text-secondary);">${leaderContact}</span>`:''}
+                                    ${leaderContact ? `<span style="font-size:12px;color:var(--text-secondary);">${leaderContact}</span>` : ''}
                                     <span style="font-size:13px;color:var(--accent);margin-left:6px;">[${clan.tag}]</span>
                                 </div>
                                 <span style="color:var(--accent);font-weight:600;">⭐ ${elo} ${t('eloLabel')}</span>
@@ -957,151 +1397,499 @@
             container.innerHTML = html;
         }
 
-        // Действия с кланами
-        function openCreateClan(){
-            if(currentUser.clanId) return showToast('❌ '+t('youAreInClan'),'error');
-            document.getElementById('newClanName').value=''; document.getElementById('newClanTag').value=''; document.getElementById('newClanDesc').value='';
+        // ============================================
+        // ДЕЙСТВИЯ С КЛАНАМИ
+        // ============================================
+        function openCreateClan() {
+            if (currentUser.clanId) return showToast('❌ ' + t('youAreInClan'), 'error');
+            document.getElementById('newClanName').value = '';
+            document.getElementById('newClanTag').value = '';
+            document.getElementById('newClanDesc').value = '';
             document.getElementById('createClanModal').classList.add('show');
         }
-        async function createClan(){
+
+        async function createClan() {
             const name = document.getElementById('newClanName').value.trim();
             const tag = document.getElementById('newClanTag').value.trim().toUpperCase();
             const desc = document.getElementById('newClanDesc').value.trim();
-            if(!name) return showToast('❌ '+t('enterNickname'),'error');
-            if(!tag||tag.length<2||tag.length>6) return showToast('❌ '+t('invalidInput'),'error');
-            const data=await loadData();
-            if(data.clans.find(c=>c.name.toLowerCase()===name.toLowerCase())) return showToast('❌ '+t('clanNotFound'),'error');
-            const newClan={ id:'clan_'+Date.now(), name, tag, leaderId:currentUser.id, members:[currentUser.id], description:desc, contact:'', channel:'', elo:0, created:new Date().toISOString() };
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ ' + t('invalidInput'), 'error');
+            const data = await loadData();
+            if (data.clans.find(c => c.name.toLowerCase() === name.toLowerCase())) return showToast('❌ ' + t('clanNotFound'), 'error');
+            const newClan = {
+                id: 'clan_' + Date.now(),
+                name: name,
+                tag: tag,
+                leaderId: currentUser.id,
+                members: [currentUser.id],
+                description: desc,
+                contact: '',
+                channel: '',
+                elo: 0,
+                created: new Date().toISOString()
+            };
             data.clans.push(newClan);
             await saveData(data);
-            currentUser.clanId=newClan.id; currentUser.role='leader'; localStorage.setItem('bsc_user',JSON.stringify(currentUser));
-            const u=data.users.find(x=>x.id===currentUser.id); if(u){ u.clanId=newClan.id; u.role='leader'; await saveData(data); }
+            currentUser.clanId = newClan.id;
+            currentUser.role = 'leader';
+            localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+            const u = data.users.find(x => x.id === currentUser.id);
+            if (u) { u.clanId = newClan.id;
+                u.role = 'leader';
+                await saveData(data); }
             await refreshData();
             closeModal('createClanModal');
-            showToast('✅ '+t('clanCreated'),'success');
-            updateUI(); showTab('clans'); renderMainActionButton(); updateFooterStats();
+            showToast('✅ ' + t('clanCreated'), 'success');
+            updateUI();
+            showTab('clans');
+            renderMainActionButton();
+            updateFooterStats();
         }
-        function openEditClan(clanId){
-            const clan=allClans.find(c=>c.id===clanId);
-            if(!clan) return showToast('❌ '+t('clanNotFound'),'error');
-            if(clan.leaderId!==currentUser.id&&!isAdmin(currentUser)) return showToast('❌ '+t('noRights'),'error');
-            editingClanId=clanId;
-            document.getElementById('editClanName').value=clan.name;
-            document.getElementById('editClanTag').value=clan.tag;
-            document.getElementById('editClanDesc').value=clan.description||'';
-            document.getElementById('editClanContact').value=clan.contact||'';
-            document.getElementById('editClanChannel').value=clan.channel||'';
+
+        function openEditClan(clanId) {
+            const clan = allClans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
+            editingClanId = clanId;
+            document.getElementById('editClanName').value = clan.name;
+            document.getElementById('editClanTag').value = clan.tag;
+            document.getElementById('editClanDesc').value = clan.description || '';
+            document.getElementById('editClanContact').value = clan.contact || '';
+            document.getElementById('editClanChannel').value = clan.channel || '';
             document.getElementById('editClanModal').classList.add('show');
         }
-        async function saveEditClan(){
-            const name=document.getElementById('editClanName').value.trim();
-            const tag=document.getElementById('editClanTag').value.trim().toUpperCase();
-            const desc=document.getElementById('editClanDesc').value.trim();
-            const contact=document.getElementById('editClanContact').value.trim();
-            const channel=document.getElementById('editClanChannel').value.trim();
-            if(!name) return showToast('❌ '+t('enterNickname'),'error');
-            if(!tag||tag.length<2||tag.length>6) return showToast('❌ '+t('invalidInput'),'error');
-            const data=await loadData();
-            const clan=data.clans.find(c=>c.id===editingClanId);
-            if(!clan) return showToast('❌ '+t('clanNotFound'),'error');
-            clan.name=name; clan.tag=tag; clan.description=desc; clan.contact=contact; clan.channel=channel;
+
+        async function saveEditClan() {
+            const name = document.getElementById('editClanName').value.trim();
+            const tag = document.getElementById('editClanTag').value.trim().toUpperCase();
+            const desc = document.getElementById('editClanDesc').value.trim();
+            const contact = document.getElementById('editClanContact').value.trim();
+            const channel = document.getElementById('editClanChannel').value.trim();
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tag || tag.length < 2 || tag.length > 6) return showToast('❌ ' + t('invalidInput'), 'error');
+            const data = await loadData();
+            const clan = data.clans.find(c => c.id === editingClanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            clan.name = name;
+            clan.tag = tag;
+            clan.description = desc;
+            clan.contact = contact;
+            clan.channel = channel;
             await saveData(data);
             await refreshData();
             closeModal('editClanModal');
-            showToast('✅ '+t('profileUpdated'),'success');
+            showToast('✅ ' + t('profileUpdated'), 'success');
             showTab(currentTab);
             updateFooterStats();
         }
-        async function viewClan(clanId){
+
+        async function viewClan(clanId) {
             await refreshData();
-            const clan=allClans.find(c=>c.id===clanId);
-            if(!clan) return showToast('❌ '+t('clanNotFound'),'error');
-            const members=clan.members||[];
-            const leader=getClanLeader(clan);
-            const leaderContact=leader?getUserTelegram(leader.id):'';
-            const isLeader=clan.leaderId===currentUser.id;
-            const isAdminUser=isAdmin(currentUser);
-            const canManage=isLeader||isAdminUser;
-            const elo=getClanElo(clan.id);
-            let extra='';
-            if(clan.contact) extra+=`<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
-            if(clan.channel) extra+=`<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
-            document.getElementById('detailClanName').textContent=`🏰 ${clan.name} [${clan.tag}]`;
-            document.getElementById('detailClanInfo').innerHTML=`
+            const clan = allClans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            const members = clan.members || [];
+            const leader = getClanLeader(clan);
+            const leaderContact = leader ? getUserTelegram(leader.id) : '';
+            const isLeader = clan.leaderId === currentUser.id;
+            const isAdminUser = isAdmin(currentUser);
+            const canManage = isLeader || isAdminUser;
+            const elo = getClanElo(clan.id);
+            let extra = '';
+            if (clan.contact) extra += `<div style="color:var(--text-secondary);font-size:13px;">📱 ${t('leaderContact')}: @${clan.contact}</div>`;
+            if (clan.channel) extra += `<div style="color:var(--text-secondary);font-size:13px;">📢 ${t('clanChannel')}: ${clan.channel}</div>`;
+            document.getElementById('detailClanName').textContent = `🏰 ${clan.name} [${clan.tag}]`;
+            document.getElementById('detailClanInfo').innerHTML = `
                 <div style="color:var(--text-secondary);font-size:14px;">
-                    ${t('leaderLabel')}: ${leader?leader.name:'Неизвестен'} 
-                    ${leaderContact?`(${leaderContact})`:''} 
+                    ${t('leaderLabel')}: ${leader ? leader.name : 'Неизвестен'} 
+                    ${leaderContact ? `(${leaderContact})` : ''} 
                     • 👥 ${members.length} • ⭐ ${elo} ${t('eloLabel')}
                 </div>
-                ${clan.description?`<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>`:''}
+                ${clan.description ? `<div style="color:var(--text-secondary);font-size:13px;">${clan.description}</div>` : ''}
                 ${extra}
             `;
-            let memHtml='';
-            members.forEach(mid=>{
-                const user=allUsers.find(u=>u.id===mid);
-                const isLeaderUser=mid===clan.leaderId;
-                const isVice=user&&user.role==='vice';
-                const isCurrentUser=mid===currentUser.id;
-                let actions='';
-                if(canManage&&!isLeaderUser&&mid!==currentUser.id){
-                    actions=`<button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}','${mid}')">${t('kick')}</button>
-                             <button class="btn btn-gold btn-sm" onclick="transferLeadership('${clan.id}','${mid}')">👑 ${t('leaderLabel')}</button>`;
+            let memHtml = '';
+            members.forEach(mid => {
+                const user = allUsers.find(u => u.id === mid);
+                const isLeaderUser = mid === clan.leaderId;
+                const isVice = user && user.role === 'vice';
+                const isCurrentUser = mid === currentUser.id;
+                let actions = '';
+                if (canManage && !isLeaderUser && mid !== currentUser.id) {
+                    actions = `
+                        <button class="btn btn-danger btn-sm" onclick="kickMember('${clan.id}','${mid}')">${t('kick')}</button>
+                        <button class="btn btn-gold btn-sm" onclick="transferLeadership('${clan.id}','${mid}')">👑 ${t('leaderLabel')}</button>
+                    `;
                 }
-                if(isCurrentUser&&!isLeaderUser) actions+=`<button class="btn btn-danger btn-sm" onclick="confirmLeaveFromView('${clan.id}')">🚪 ${t('leave')}</button>`;
-                const roleLabel = isLeaderUser ? '👑 '+t('roleLeader') : (isVice ? '🛡️ '+t('roleVice') : '');
-                memHtml+=`<div class="member-row"><span>${user?user.name:mid} ${roleLabel}</span><div class="actions">${actions}</div></div>`;
+                if (isCurrentUser && !isLeaderUser) actions += `<button class="btn btn-danger btn-sm" onclick="confirmLeaveFromView('${clan.id}')">🚪 ${t('leave')}</button>`;
+                const roleLabel = isLeaderUser ? '👑 ' + t('roleLeader') : (isVice ? '🛡️ ' + t('roleVice') : '');
+                memHtml += `
+                    <div class="member-row">
+                        <span>${user ? user.name : mid} ${roleLabel}</span>
+                        <div class="actions">${actions}</div>
+                    </div>
+                `;
             });
-            document.getElementById('detailMembers').innerHTML = memHtml || '<div style="color:var(--text-secondary);">'+t('noMembers')+'</div>';
+            document.getElementById('detailMembers').innerHTML = memHtml || '<div style="color:var(--text-secondary);">' + t('noMembers') + '</div>';
             document.getElementById('clanDetailModal').classList.add('show');
         }
-        function confirmLeaveFromView(clanId){ const clan=allClans.find(c=>c.id===clanId); if(!clan) return; if(confirm(t('leaveClanConfirm').replace('{name}',clan.name))){ leaveClan(clanId); closeModal('clanDetailModal'); } }
-        async function applyToClan(clanId){ if(currentUser.clanId) return showToast('❌ '+t('youAreInClan'),'error'); const clan=allClans.find(c=>c.id===clanId); if(!clan) return showToast('❌ '+t('clanNotFound'),'error'); if(allRequests.find(r=>r.clanId===clanId&&r.userId===currentUser.id&&r.status==='pending')) return showToast('⏳ '+t('requestSent'),'info'); if(!confirm(t('applyToClan').replace('{name}',clan.name))) return; const data=await loadData(); data.requests.push({ id:'req_'+Date.now(), clanId, userId:currentUser.id, userName:currentUser.name, status:'pending', created:new Date().toISOString() }); await saveData(data); await refreshData(); showToast('✅ '+t('requestSent'),'success'); showTab('clans'); updateFooterStats(); }
-        async function acceptRequest(reqId){ const data=await loadData(); const req=data.requests.find(r=>r.id===reqId); if(!req) return showToast('❌ '+t('requestNotFound'),'error'); const clan=data.clans.find(c=>c.id===req.clanId); if(!clan) return showToast('❌ '+t('clanNotFound'),'error'); if(!clan.members) clan.members=[]; if(!clan.members.includes(req.userId)) clan.members.push(req.userId); req.status='accepted'; const user=data.users.find(u=>u.id===req.userId); if(user) user.clanId=clan.id; await saveData(data); await refreshData(); showToast('✅ '+t('requestAccepted'),'success'); showTab('requests'); updateFooterStats(); }
-        async function rejectRequest(reqId){ const data=await loadData(); const req=data.requests.find(r=>r.id===reqId); if(!req) return showToast('❌ '+t('requestNotFound'),'error'); req.status='rejected'; await saveData(data); await refreshData(); showToast('❌ '+t('requestRejected'),'error'); showTab('requests'); }
-        async function deleteClan(clanId){ const clan=allClans.find(c=>c.id===clanId); if(!clan) return showToast('❌ '+t('clanNotFound'),'error'); if(clan.leaderId!==currentUser.id&&!isAdmin(currentUser)) return showToast('❌ '+t('noRights'),'error'); if(!confirm(t('disbandClan'))) return; const data=await loadData(); data.clans=data.clans.filter(c=>c.id!==clanId); data.requests=data.requests.filter(r=>r.clanId!==clanId); data.users.forEach(u=>{ if(u.clanId===clanId) u.clanId=null; }); if(currentUser.clanId===clanId){ currentUser.clanId=null; localStorage.setItem('bsc_user',JSON.stringify(currentUser)); } await saveData(data); await refreshData(); showToast('✅ '+t('clanDeleted'),'success'); updateUI(); showTab('clans'); renderMainActionButton(); updateFooterStats(); }
-        async function leaveClan(clanId){ const data=await loadData(); const clan=data.clans.find(c=>c.id===clanId); if(!clan) return showToast('❌ '+t('clanNotFound'),'error'); if(clan.leaderId===currentUser.id) return showToast('❌ '+t('youAreNotLeader'),'error'); clan.members=clan.members.filter(m=>m!==currentUser.id); currentUser.clanId=null; localStorage.setItem('bsc_user',JSON.stringify(currentUser)); const u=data.users.find(x=>x.id===currentUser.id); if(u) u.clanId=null; await saveData(data); await refreshData(); showToast('✅ '+t('youLeftClan'),'success'); updateUI(); showTab('clans'); renderMainActionButton(); updateFooterStats(); }
-        async function kickMember(clanId,userId){ if(!confirm(t('memberKickConfirm'))) return; const data=await loadData(); const clan=data.clans.find(c=>c.id===clanId); if(!clan) return showToast('❌ '+t('clanNotFound'),'error'); if(clan.leaderId!==currentUser.id&&!isAdmin(currentUser)) return showToast('❌ '+t('noRights'),'error'); if(userId===clan.leaderId) return showToast('❌ '+t('noRights'),'error'); clan.members=clan.members.filter(id=>id!==userId); const u=data.users.find(x=>x.id===userId); if(u) u.clanId=null; await saveData(data); await refreshData(); showToast('✅ '+t('memberKicked'),'success'); viewClan(clanId); updateFooterStats(); }
-        async function transferLeadership(clanId,newLeaderId){ if(!confirm(t('transferLeadershipConfirm'))) return; const data=await loadData(); const clan=data.clans.find(c=>c.id===clanId); if(!clan) return showToast('❌ '+t('clanNotFound'),'error'); if(clan.leaderId!==currentUser.id&&!isAdmin(currentUser)) return showToast('❌ '+t('noRights'),'error'); const newLeader=data.users.find(u=>u.id===newLeaderId); if(!newLeader) return showToast('❌ '+t('userNotFound'),'error'); const oldLeaderId=clan.leaderId; clan.leaderId=newLeaderId; newLeader.clanId=clan.id; newLeader.role='leader'; const oldLeader=data.users.find(u=>u.id===oldLeaderId); if(oldLeader) oldLeader.role='member'; await saveData(data); await refreshData(); if(currentUser.id===newLeaderId){ currentUser.role='leader'; currentUser.clanId=clan.id; localStorage.setItem('bsc_user',JSON.stringify(currentUser)); } showToast('✅ '+t('leadershipTransferred').replace('{name}',newLeader.name),'success'); viewClan(clanId); renderMainActionButton(); updateFooterStats(); }
 
-        // Админ-функции
-        async function adminDeleteUser(userId){ if(!isAdmin(currentUser)) return showToast('⛔ '+t('youAreNotAdmin'),'error'); const user=allUsers.find(u=>u.id===userId); if(!user) return showToast('❌ '+t('userNotFound'),'error'); if(isAdmin(user)) return showToast('❌ '+t('noRights'),'error'); if(!confirm(t('confirmDeleteUser'))) return; const data=await loadData(); data.users=data.users.filter(u=>u.id!==userId); data.clans.forEach(c=>{ if(c.members) c.members=c.members.filter(m=>m!==userId); if(c.leaderId===userId){ const nl=c.members&&c.members.length?c.members[0]:null; if(nl){ const lu=data.users.find(u=>u.id===nl); c.leaderId=nl; c.leaderName=lu?lu.name:'Неизвестен'; } else data.clans=data.clans.filter(cl=>cl.id!==c.id); } }); data.requests=data.requests.filter(r=>r.userId!==userId); await saveData(data); await refreshData(); showToast('✅ '+t('userDeleted').replace('{name}',user.name),'success'); showTab('admin'); updateFooterStats(); }
-        function openBanModal(userId){ if(!isAdmin(currentUser)) return showToast('⛔ '+t('youAreNotAdmin'),'error'); const user=allUsers.find(u=>u.id===userId); if(!user) return showToast('❌ '+t('userNotFound'),'error'); if(isAdmin(user)) return showToast('❌ '+t('noRights'),'error'); banTargetUserId=userId; document.getElementById('banUserName').textContent='Пользователь: '+user.name+' ('+user.id+')'; document.getElementById('banDays').value=7; document.getElementById('banReason').value=''; document.getElementById('banModal').classList.add('show'); }
-        async function confirmBan(){ const days=parseInt(document.getElementById('banDays').value); const reason=document.getElementById('banReason').value.trim(); if(isNaN(days)||days<0) return showToast('❌ '+t('enterValidElo'),'error'); if(!banTargetUserId) return; const user=allUsers.find(u=>u.id===banTargetUserId); if(!user) return showToast('❌ '+t('userNotFound'),'error'); const data=await loadData(); const target=data.users.find(u=>u.id===banTargetUserId); if(!target) return showToast('❌ '+t('userNotFound'),'error'); if(days===0) target.bannedUntil='forever'; else { const until=new Date(); until.setDate(until.getDate()+days); target.bannedUntil=until.toISOString(); } target.bannedReason=reason||'Нарушение правил'; await saveData(data); await refreshData(); closeModal('banModal'); showToast('✅ '+t('userBanned').replace('{name}',user.name),'success'); showTab('admin'); }
-        async function adminUnbanUser(userId){ if(!isAdmin(currentUser)) return showToast('⛔ '+t('youAreNotAdmin'),'error'); const user=allUsers.find(u=>u.id===userId); if(!user) return showToast('❌ '+t('userNotFound'),'error'); if(!confirm(t('unbanConfirm').replace('{name}',user.name))) return; const data=await loadData(); const target=data.users.find(u=>u.id===userId); if(target){ delete target.bannedUntil; delete target.bannedReason; } await saveData(data); await refreshData(); showToast('✅ '+t('userUnbanned').replace('{name}',user.name),'success'); showTab('admin'); }
-        async function adminSetElo(clanId){ const input=document.getElementById(`elo_input_${clanId}`); if(!input) return; const val=parseInt(input.value); if(isNaN(val)||val<0) return showToast('❌ '+t('enterValidElo'),'error'); const data=await loadData(); const clan=data.clans.find(c=>c.id===clanId); if(!clan) return showToast('❌ '+t('clanNotFound'),'error'); clan.elo=val; await saveData(data); await refreshData(); showToast('✅ '+t('eloUpdated').replace('{name}',clan.name).replace('{elo}',val),'success'); renderAdmin(document.getElementById('content')); showTab('clans'); }
-        async function clearAllData(){ if(!isAdmin(currentUser)) return; if(!confirm(t('clearAllConfirm'))) return; await saveData({users:[],clans:[],requests:[],cw:[]}); await refreshData(); showToast('✅ '+t('allCleared'),'success'); location.reload(); }
+        function confirmLeaveFromView(clanId) {
+            const clan = allClans.find(c => c.id === clanId);
+            if (!clan) return;
+            if (confirm(t('leaveClanConfirm').replace('{name}', clan.name))) {
+                leaveClan(clanId);
+                closeModal('clanDetailModal');
+            }
+        }
 
-        // Инициализация
-        async function initApp(){
-            const savedLang=localStorage.getItem('bsc_lang');
-            if(savedLang==='en'||savedLang==='ru') currentLang=savedLang;
-            else { document.getElementById('langModal').classList.add('show'); return; }
-            applyLanguage();
-            const data=await loadData();
-            allUsers=data.users||[]; allClans=data.clans||[]; allRequests=data.requests||[]; allCw=data.cw||[];
+        async function applyToClan(clanId) {
+            if (currentUser.clanId) return showToast('❌ ' + t('youAreInClan'), 'error');
+            const clan = allClans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (allRequests.find(r => r.clanId === clanId && r.userId === currentUser.id && r.status === 'pending')) {
+                return showToast('⏳ ' + t('requestSent'), 'info');
+            }
+            if (!confirm(t('applyToClan').replace('{name}', clan.name))) return;
+            const data = await loadData();
+            data.requests.push({
+                id: 'req_' + Date.now(),
+                clanId,
+                userId: currentUser.id,
+                userName: currentUser.name,
+                status: 'pending',
+                created: new Date().toISOString()
+            });
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('requestSent'), 'success');
+            showTab('clans');
             updateFooterStats();
-            let changed=false;
-            allUsers.forEach(u=>{
-                if(u.bannedUntil&&u.bannedUntil!=='forever'){
-                    if(new Date(u.bannedUntil).getTime()<=Date.now()){ delete u.bannedUntil; delete u.bannedReason; changed=true; }
+        }
+
+        async function acceptRequest(reqId) {
+            const data = await loadData();
+            const req = data.requests.find(r => r.id === reqId);
+            if (!req) return showToast('❌ ' + t('requestNotFound'), 'error');
+            const clan = data.clans.find(c => c.id === req.clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (!clan.members) clan.members = [];
+            if (!clan.members.includes(req.userId)) clan.members.push(req.userId);
+            req.status = 'accepted';
+            const user = data.users.find(u => u.id === req.userId);
+            if (user) user.clanId = clan.id;
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('requestAccepted'), 'success');
+            showTab('requests');
+            updateFooterStats();
+        }
+
+        async function rejectRequest(reqId) {
+            const data = await loadData();
+            const req = data.requests.find(r => r.id === reqId);
+            if (!req) return showToast('❌ ' + t('requestNotFound'), 'error');
+            req.status = 'rejected';
+            await saveData(data);
+            await refreshData();
+            showToast('❌ ' + t('requestRejected'), 'error');
+            showTab('requests');
+        }
+
+        async function deleteClan(clanId) {
+            const clan = allClans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
+            if (!confirm(t('disbandClan'))) return;
+            const data = await loadData();
+            data.clans = data.clans.filter(c => c.id !== clanId);
+            data.requests = data.requests.filter(r => r.clanId !== clanId);
+            data.users.forEach(u => { if (u.clanId === clanId) u.clanId = null; });
+            if (currentUser.clanId === clanId) {
+                currentUser.clanId = null;
+                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+            }
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('clanDeleted'), 'success');
+            updateUI();
+            showTab('clans');
+            renderMainActionButton();
+            updateFooterStats();
+        }
+
+        async function leaveClan(clanId) {
+            const data = await loadData();
+            const clan = data.clans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId === currentUser.id) return showToast('❌ ' + t('youAreNotLeader'), 'error');
+            clan.members = clan.members.filter(m => m !== currentUser.id);
+            currentUser.clanId = null;
+            localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+            const u = data.users.find(x => x.id === currentUser.id);
+            if (u) u.clanId = null;
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('youLeftClan'), 'success');
+            updateUI();
+            showTab('clans');
+            renderMainActionButton();
+            updateFooterStats();
+        }
+
+        async function kickMember(clanId, userId) {
+            if (!confirm(t('memberKickConfirm'))) return;
+            const data = await loadData();
+            const clan = data.clans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
+            if (userId === clan.leaderId) return showToast('❌ ' + t('noRights'), 'error');
+            clan.members = clan.members.filter(id => id !== userId);
+            const u = data.users.find(x => x.id === userId);
+            if (u) u.clanId = null;
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('memberKicked'), 'success');
+            viewClan(clanId);
+            updateFooterStats();
+        }
+
+        async function transferLeadership(clanId, newLeaderId) {
+            if (!confirm(t('transferLeadershipConfirm'))) return;
+            const data = await loadData();
+            const clan = data.clans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            if (clan.leaderId !== currentUser.id && !isAdmin(currentUser)) return showToast('❌ ' + t('noRights'), 'error');
+            const newLeader = data.users.find(u => u.id === newLeaderId);
+            if (!newLeader) return showToast('❌ ' + t('userNotFound'), 'error');
+            const oldLeaderId = clan.leaderId;
+            clan.leaderId = newLeaderId;
+            newLeader.clanId = clan.id;
+            newLeader.role = 'leader';
+            const oldLeader = data.users.find(u => u.id === oldLeaderId);
+            if (oldLeader) oldLeader.role = 'member';
+            await saveData(data);
+            await refreshData();
+            if (currentUser.id === newLeaderId) {
+                currentUser.role = 'leader';
+                currentUser.clanId = clan.id;
+                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+            }
+            showToast('✅ ' + t('leadershipTransferred').replace('{name}', newLeader.name), 'success');
+            viewClan(clanId);
+            renderMainActionButton();
+            updateFooterStats();
+        }
+
+        // ============================================
+        // АДМИН ФУНКЦИИ
+        // ============================================
+        async function adminDeleteUser(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
+            if (!confirm(t('confirmDeleteUser'))) return;
+            const data = await loadData();
+            data.users = data.users.filter(u => u.id !== userId);
+            data.clans.forEach(c => {
+                if (c.members) c.members = c.members.filter(m => m !== userId);
+                if (c.leaderId === userId) {
+                    const nl = c.members && c.members.length ? c.members[0] : null;
+                    if (nl) {
+                        const lu = data.users.find(u => u.id === nl);
+                        c.leaderId = nl;
+                        c.leaderName = lu ? lu.name : 'Неизвестен';
+                    } else data.clans = data.clans.filter(cl => cl.id !== c.id);
                 }
             });
-            if(changed){ const d=await loadData(); d.users=allUsers; await saveData(d); }
-            const tg=window.Telegram?.WebApp?.initDataUnsafe?.user;
-            let tgId=tg?tg.id.toString():localStorage.getItem('bsc_test_id');
-            if(!tgId){ tgId='test_'+Date.now(); localStorage.setItem('bsc_test_id',tgId); }
-            let user=allUsers.find(u=>u.id===tgId);
-            if(user){
-                if(isUserBanned(user)){ const banText=user.bannedUntil==='forever'?t('banForever'):t('banUntil').replace('{date}',new Date(user.bannedUntil).toLocaleDateString()); document.getElementById('content').innerHTML=`<div class="card" style="border-color:#ff3d71;"><div style="color:#ff3d71;font-size:18px;">${t('accessDenied')}</div><div style="color:var(--text-secondary);">${t('accountBanned')} ${banText}</div>${user.bannedReason?`<div style="color:var(--text-secondary);font-size:13px;">${t('userBannedReason').replace('{reason}',user.bannedReason)}</div>`:''}</div>`; return; }
-                if(isAdmin(user)&&user.role!=='admin'){ user.role='admin'; const d=await loadData(); const t=d.users.find(u=>u.id===user.id); if(t){ t.role='admin'; await saveData(d); } allUsers=d.users||[]; updateFooterStats(); }
-                if(user.role==='leader'&&!user.clanId){ const myClan=allClans.find(c=>c.leaderId===user.id); if(myClan){ user.clanId=myClan.id; const d=await loadData(); const uu=d.users.find(u=>u.id===user.id); if(uu){ uu.clanId=myClan.id; await saveData(d); } allUsers=d.users||[]; updateFooterStats(); } }
-                currentUser=user; localStorage.setItem('bsc_user',JSON.stringify(currentUser));
+            data.requests = data.requests.filter(r => r.userId !== userId);
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('userDeleted').replace('{name}', user.name), 'success');
+            showTab('admin');
+            updateFooterStats();
+        }
+
+        function openBanModal(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
+            banTargetUserId = userId;
+            document.getElementById('banUserName').textContent = 'Пользователь: ' + user.name + ' (' + user.id + ')';
+            document.getElementById('banDays').value = 7;
+            document.getElementById('banReason').value = '';
+            document.getElementById('banModal').classList.add('show');
+        }
+
+        async function confirmBan() {
+            const days = parseInt(document.getElementById('banDays').value);
+            const reason = document.getElementById('banReason').value.trim();
+            if (isNaN(days) || days < 0) return showToast('❌ ' + t('enterValidElo'), 'error');
+            if (!banTargetUserId) return;
+            const user = allUsers.find(u => u.id === banTargetUserId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            const data = await loadData();
+            const target = data.users.find(u => u.id === banTargetUserId);
+            if (!target) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (days === 0) target.bannedUntil = 'forever';
+            else { const until = new Date();
+                until.setDate(until.getDate() + days);
+                target.bannedUntil = until.toISOString(); }
+            target.bannedReason = reason || 'Нарушение правил';
+            await saveData(data);
+            await refreshData();
+            closeModal('banModal');
+            showToast('✅ ' + t('userBanned').replace('{name}', user.name), 'success');
+            showTab('admin');
+        }
+
+        async function adminUnbanUser(userId) {
+            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (!confirm(t('unbanConfirm').replace('{name}', user.name))) return;
+            const data = await loadData();
+            const target = data.users.find(u => u.id === userId);
+            if (target) { delete target.bannedUntil;
+                delete target.bannedReason; }
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('userUnbanned').replace('{name}', user.name), 'success');
+            showTab('admin');
+        }
+
+        async function adminSetElo(clanId) {
+            const input = document.getElementById(`elo_input_${clanId}`);
+            if (!input) return;
+            const val = parseInt(input.value);
+            if (isNaN(val) || val < 0) return showToast('❌ ' + t('enterValidElo'), 'error');
+            const data = await loadData();
+            const clan = data.clans.find(c => c.id === clanId);
+            if (!clan) return showToast('❌ ' + t('clanNotFound'), 'error');
+            clan.elo = val;
+            await saveData(data);
+            await refreshData();
+            showToast('✅ ' + t('eloUpdated').replace('{name}', clan.name).replace('{elo}', val), 'success');
+            renderAdmin(document.getElementById('content'));
+            showTab('clans');
+        }
+
+        async function clearAllData() {
+            if (!isAdmin(currentUser)) return;
+            if (!confirm(t('clearAllConfirm'))) return;
+            await saveData({ users: [], clans: [], requests: [], cw: [] });
+            await refreshData();
+            showToast('✅ ' + t('allCleared'), 'success');
+            location.reload();
+        }
+
+        async function logoutUser() {
+            if (!confirm(t('logoutConfirm'))) return;
+            const data = await loadData();
+            data.users = data.users.filter(u => u.id !== currentUser.id);
+            data.clans.forEach(c => {
+                if (c.members) c.members = c.members.filter(m => m !== currentUser.id);
+                if (c.leaderId === currentUser.id) {
+                    const nl = c.members && c.members.length ? c.members[0] : null;
+                    if (nl) {
+                        const lu = data.users.find(u => u.id === nl);
+                        c.leaderId = nl;
+                        c.leaderName = lu ? lu.name : 'Неизвестен';
+                    } else data.clans = data.clans.filter(cl => cl.id !== c.id);
+                }
+            });
+            await saveData(data);
+            localStorage.removeItem('bsc_user');
+            localStorage.removeItem('bsc_test_id');
+            currentUser = null;
+            allUsers = data.users;
+            allClans = data.clans;
+            allRequests = data.requests;
+            allCw = data.cw;
+            document.getElementById('registerModal').classList.add('show');
+            updateUI();
+            showTab('clans');
+            renderMainActionButton();
+            showToast('✅ ' + t('youLoggedOut'), 'success');
+            updateFooterStats();
+        }
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        async function initApp() {
+            const savedLang = localStorage.getItem('bsc_lang');
+            if (savedLang === 'en' || savedLang === 'ru') currentLang = savedLang;
+            else { document.getElementById('langModal').classList.add('show'); return; }
+            applyLanguage();
+            const data = await loadData();
+            allUsers = data.users || [];
+            allClans = data.clans || [];
+            allRequests = data.requests || [];
+            allCw = data.cw || [];
+            updateFooterStats();
+            let changed = false;
+            allUsers.forEach(u => {
+                if (u.bannedUntil && u.bannedUntil !== 'forever') {
+                    if (new Date(u.bannedUntil).getTime() <= Date.now()) { delete u.bannedUntil;
+                        delete u.bannedReason;
+                        changed = true; }
+                }
+            });
+            if (changed) { const d = await loadData();
+                d.users = allUsers;
+                await saveData(d); }
+            const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
+            let tgId = tg ? tg.id.toString() : localStorage.getItem('bsc_test_id');
+            if (!tgId) {
+                tgId = 'test_' + Date.now();
+                localStorage.setItem('bsc_test_id', tgId);
+            }
+            let user = allUsers.find(u => u.id === tgId);
+            if (user) {
+                if (isUserBanned(user)) {
+                    const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
+                    document.getElementById('content').innerHTML = `
+                        <div class="card" style="border-color:#ff3d71;">
+                            <div style="color:#ff3d71;font-size:18px;">${t('accessDenied')}</div>
+                            <div style="color:var(--text-secondary);">${t('accountBanned')} ${banText}</div>
+                            ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">${t('userBannedReason').replace('{reason}', user.bannedReason)}</div>` : ''}
+                        </div>
+                    `;
+                    return;
+                }
+                if (isAdmin(user) && user.role !== 'admin') {
+                    user.role = 'admin';
+                    const d = await loadData();
+                    const t = d.users.find(u => u.id === user.id);
+                    if (t) { t.role = 'admin';
+                        await saveData(d); }
+                    allUsers = d.users || [];
+                    updateFooterStats();
+                }
+                if (user.role === 'leader' && !user.clanId) {
+                    const myClan = allClans.find(c => c.leaderId === user.id);
+                    if (myClan) {
+                        user.clanId = myClan.id;
+                        const d = await loadData();
+                        const uu = d.users.find(u => u.id === user.id);
+                        if (uu) { uu.clanId = myClan.id;
+                            await saveData(d); }
+                        allUsers = d.users || [];
+                        updateFooterStats();
+                    }
+                }
+                currentUser = user;
+                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
             } else {
                 document.getElementById('registerModal').classList.add('show');
                 return;
             }
-            updateUI(); showTab('clans'); renderMainActionButton(); updateFooterStats();
-            // загружаем чат в фоне, чтобы listener был готов
+            updateUI();
+            showTab('clans');
+            renderMainActionButton();
+            updateFooterStats();
             loadChatMessages();
         }
 
