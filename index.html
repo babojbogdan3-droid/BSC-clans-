@@ -780,24 +780,23 @@
                 let user = allUsers.find(u => u.id === tgId);
 
                 // ЕСЛИ НЕ НАЙДЕН — ПЫТАЕМСЯ ВОССТАНОВИТЬ ПО СОХРАНЁННОМУ GAME ID
-                if (!user) {
-                    const savedGameId = localStorage.getItem('bsc_last_gameId');
-                    if (savedGameId) {
-                        const found = allUsers.find(u => u.gameId === savedGameId);
-                        if (found) {
-                            if (confirm(`Найден профиль "${found.name}" (${found.gameId}). Восстановить?`)) {
-                                allUsers = allUsers.filter(u => u.id !== tgId);
-                                found.id = tgId;
-                                await saveData({ users: allUsers, clans: allClans, requests: allRequests, cw: allCw });
-                                user = found;
-                                localStorage.setItem('bsc_test_id', tgId);
-                                localStorage.setItem('bsc_user', JSON.stringify(found));
-                                showToast('✅ Профиль восстановлен!', 'success');
-                            }
-                        }
-                    }
-                }
-
+               if (!user) {
+    const savedGameId = localStorage.getItem('bsc_last_gameId');
+    if (savedGameId) {
+        const found = allUsers.find(u => u.gameId === savedGameId);
+        if (found) {
+            // Автоматическое восстановление БЕЗ ВОПРОСОВ
+            allUsers = allUsers.filter(u => u.id !== tgId);
+            found.id = tgId;
+            await saveData({ users: allUsers, clans: allClans, requests: allRequests, cw: allCw });
+            user = found;
+            localStorage.setItem('bsc_test_id', tgId);
+            localStorage.setItem('bsc_user', JSON.stringify(found));
+            // Показываем тихое уведомление (можно вообще убрать)
+            showToast('✅ Профиль восстановлен', 'success');
+        }
+    }
+}
                 if (user) {
                     if (isUserBanned(user)) {
                         const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
