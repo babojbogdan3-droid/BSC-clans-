@@ -369,7 +369,7 @@
 
     <script>
         // ============================================================
-        // ЭМУЛЯЦИЯ TELEGRAM WEBAPP ДЛЯ БРАУЗЕРА
+        // ЭМУЛЯЦИЯ TELEGRAM ДЛЯ БРАУЗЕРА
         // ============================================================
         if (!window.Telegram) {
             window.Telegram = {};
@@ -553,9 +553,7 @@
                 'cwNoClans': 'No other clans for CW',
                 'cwChooseClan': 'Choose a clan for CW'
             }
-        };
-
-        // ============================================================
+        };        // ============================================================
         // НАСТРОЙКИ
         // ============================================================
         const ADMIN_GAME_ID = '22887924';
@@ -727,7 +725,7 @@
         }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ
+        // ИНИЦИАЛИЗАЦИЯ (С ВОССТАНОВЛЕНИЕМ)
         // ============================================================
         async function initApp() {
             try {
@@ -764,13 +762,10 @@
                     await saveData(updatedData);
                 }
 
-                // Получаем ID пользователя (из Telegram или эмулируем)
                 let tgId = null;
                 try {
                     const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                    if (tg && tg.id) {
-                        tgId = tg.id.toString();
-                    }
+                    if (tg && tg.id) tgId = tg.id.toString();
                 } catch(e) {}
 
                 if (!tgId) {
@@ -783,6 +778,25 @@
                 }
 
                 let user = allUsers.find(u => u.id === tgId);
+
+                // ЕСЛИ НЕ НАЙДЕН — ПЫТАЕМСЯ ВОССТАНОВИТЬ ПО СОХРАНЁННОМУ GAME ID
+                if (!user) {
+                    const savedGameId = localStorage.getItem('bsc_last_gameId');
+                    if (savedGameId) {
+                        const found = allUsers.find(u => u.gameId === savedGameId);
+                        if (found) {
+                            if (confirm(`Найден профиль "${found.name}" (${found.gameId}). Восстановить?`)) {
+                                allUsers = allUsers.filter(u => u.id !== tgId);
+                                found.id = tgId;
+                                await saveData({ users: allUsers, clans: allClans, requests: allRequests, cw: allCw });
+                                user = found;
+                                localStorage.setItem('bsc_test_id', tgId);
+                                localStorage.setItem('bsc_user', JSON.stringify(found));
+                                showToast('✅ Профиль восстановлен!', 'success');
+                            }
+                        }
+                    }
+                }
 
                 if (user) {
                     if (isUserBanned(user)) {
@@ -821,6 +835,9 @@
 
                     currentUser = user;
                     localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                    if (currentUser.gameId) {
+                        localStorage.setItem('bsc_last_gameId', currentUser.gameId);
+                    }
                 } else {
                     document.getElementById('registerModal').classList.add('show');
                     return;
@@ -844,7 +861,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ
+        // РЕГИСТРАЦИЯ (С СОХРАНЕНИЕМ GAME ID)
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -857,13 +874,10 @@
             if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
             if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
-            // Получаем ID из Telegram или эмулируем
             let tgId = null;
             try {
                 const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                if (tg && tg.id) {
-                    tgId = tg.id.toString();
-                }
+                if (tg && tg.id) tgId = tg.id.toString();
             } catch(e) {}
 
             if (!tgId) {
@@ -897,6 +911,7 @@
 
             currentUser = newUser;
             localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+            localStorage.setItem('bsc_last_gameId', gameId);
             document.getElementById('registerModal').classList.remove('show');
             showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
             updateUI();
@@ -904,6 +919,67 @@
             renderMainActionButton();
             updateFooterStats();
         }
+
+        // ============================================================
+        // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ (КНОПКА В МЕНЮ)
+        // ============================================================
+        window.recoverProfile = async function() {
+            const gameId = prompt('🔑 Введите ваш игровой ID (число):');
+            if (!gameId || isNaN(gameId) || gameId.trim() === '') {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+            const data = await loadData();
+            const user = data.users.find(u => u.gameId === gameId.trim());
+            if (!user) {
+                showToast('❌ Пользователь с таким ID не найден', 'error');
+                return;
+            }
+            if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
+
+            let newId = null;
+            try {
+                const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                if (tg && tg.id) newId = tg.id.toString();
+            } catch(e) {}
+            if (!newId) {
+                let savedId = localStorage.getItem('bsc_test_id');
+                if (!savedId) {
+                    savedId = 'device_' + Date.now();
+                    localStorage.setItem('bsc_test_id', savedId);
+                }
+                newId = savedId;
+            }
+
+            data.users = data.users.filter(u => u.id !== newId);
+            user.id = newId;
+            await saveData(data);
+
+            currentUser = user;
+            localStorage.setItem('bsc_user', JSON.stringify(user));
+            localStorage.setItem('bsc_test_id', newId);
+            localStorage.setItem('bsc_last_gameId', user.gameId);
+            showToast('✅ Профиль восстановлен! Перезагружаем...', 'success');
+            setTimeout(() => location.reload(), 1000);
+        };
+
+        // Добавляем кнопку в меню профиля
+        (function() {
+            const dropdown = document.querySelector('.profile-dropdown .info');
+            if (!dropdown) return;
+            const parent = dropdown.parentNode;
+            const editBtn = parent.querySelector('.btn-secondary:first-of-type');
+            if (!editBtn) return;
+            const recoverBtn = document.createElement('button');
+            recoverBtn.className = 'btn btn-secondary btn-block btn-sm';
+            recoverBtn.textContent = '🔄 Восстановить профиль';
+            recoverBtn.onclick = function(e) {
+                e.preventDefault();
+                window.recoverProfile();
+                document.getElementById('profileDropdown').classList.remove('show');
+            };
+            editBtn.after(recoverBtn);
+        })();
 
         // ============================================================
         // ПРОФИЛЬ
@@ -1593,7 +1669,7 @@
         }
 
         // ============================================================
-        // ЧАТ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+        // ЧАТ
         // ============================================================
         function initChat(container) {
             if (chatInitialized && container.innerHTML.includes('chat-container')) {
