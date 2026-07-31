@@ -9,7 +9,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
-        /* Стили (те же, без изменений) */
+        /* ============================================================
+           СТИЛИ (без изменений)
+           ============================================================ */
         *{margin:0;padding:0;box-sizing:border-box}
         :root{--bg:#0b0e17;--card-bg:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.06);--text-primary:#f0f4ff;--text-secondary:#8899bb;--accent:#5b8def;--accent-glow:rgba(91,141,239,0.25);--shadow:0 8px 32px rgba(0,0,0,0.6);--radius:16px;--font:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
         body{font-family:var(--font);background:var(--bg);color:var(--text-primary);min-height:100vh;padding:16px;background-image:radial-gradient(circle at 20% 30%,rgba(91,141,239,0.06)0%,transparent 50%),radial-gradient(circle at 80% 70%,rgba(91,141,239,0.04)0%,transparent 50%)}
@@ -303,7 +305,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ДЛЯ CW ЗАПРОСА -->
     <div class="modal-overlay" id="cwModal">
         <div class="modal">
             <h2 id="cwModalTitle">⚔️ Запрос на битву (CW)</h2>
@@ -315,7 +316,6 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ДЛЯ ОТОБРАЖЕНИЯ КОНТАКТОВ -->
     <div class="modal-overlay" id="cwContactsModal">
         <div class="modal">
             <h2 id="cwContactsTitle">📱 Контакты для CW</h2>
@@ -330,7 +330,7 @@
 
     <script>
         // ============================================================
-        // ПЕРЕВОДЫ (ОСНОВНЫЕ)
+        // ПЕРЕВОДЫ
         // ============================================================
         const LANG = {
             ru: {
@@ -413,7 +413,6 @@
                 'cwChooseClan': 'Выберите клан для CW'
             },
             en: {
-                // Английские переводы (аналогично русским, но на английском)
                 'loading': 'Loading...', 'error': 'Error', 'close': 'Close', 'save': 'Save',
                 'cancel': 'Cancel', 'confirm': 'Confirm', 'delete': 'Delete', 'edit': 'Edit',
                 'ban': 'Ban', 'unban': 'Unban', 'kick': 'Kick', 'leave': 'Leave',
@@ -554,12 +553,6 @@
             document.getElementById('footerChannelLink').textContent = '📢 ' + t('channel');
             document.getElementById('footerChatLink').textContent = '💬 ' + t('chat');
             document.getElementById('headerLangBtn').title = t('changeLanguage');
-            // Обновляем модалки
-            updateAllTexts();
-        }
-
-        function updateAllTexts() {
-            // Модалки (обновляются при открытии)
         }
 
         function setLanguage(lang) {
@@ -934,7 +927,7 @@
         }
 
         // ============================================================
-        // ВКЛАДКИ
+        // ВКЛАДКИ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
         // ============================================================
         function showTab(tab) {
             currentTab = tab;
@@ -1053,7 +1046,7 @@
         }
 
         // ============================================================
-        // РЕНДЕР МОЙ КЛАН (С НАЗНАЧЕНИЕМ ЗАМА)
+        // РЕНДЕР МОЙ КЛАН
         // ============================================================
         async function renderMyClan(container) {
             await refreshData();
@@ -1317,7 +1310,6 @@
             const myClan = allClans.find(c => c.id === currentUser.clanId);
             if (!myClan) return showToast('❌ ' + t('notInClan'), 'error');
 
-            // Проверяем, нет ли уже активного запроса
             const existing = allCw.find(cw =>
                 (cw.fromClanId === myClan.id && cw.toClanId === toClanId && cw.status === 'pending') ||
                 (cw.fromClanId === toClanId && cw.toClanId === myClan.id && cw.status === 'pending')
@@ -1344,7 +1336,6 @@
                 showToast('✅ Запрос на CW отправлен!', 'success');
                 showTab('cw');
 
-                // Уведомление (toast)
                 const toClan = allClans.find(c => c.id === toClanId);
                 if (toClan) {
                     showToast(`⚔️ ${t('cwRequest').replace('{tag}', toClan.tag)}`, 'info');
@@ -1444,7 +1435,6 @@
                 await saveData(data);
                 await refreshData();
 
-                // Показываем контакты админа
                 document.getElementById('cwContactsContent').innerHTML = `
                     <div style="text-align:center;padding:10px;">
                         <div style="font-size:18px;margin-bottom:8px;">🏁 ${t('cwFinished')}</div>
@@ -1462,28 +1452,39 @@
         }
 
         // ============================================================
-        // ЧАТ (БЕЗ ИЗМЕНЕНИЙ, ОН УЖЕ РАБОТАЕТ)
+        // ЧАТ (ИСПРАВЛЕННАЯ ВЕРСИЯ — ОТКРЫВАЕТСЯ С ПЕРВОГО РАЗА)
         // ============================================================
         function initChat(container) {
             if (chatInitialized) {
-                updateChatMessages();
+                const messagesDiv = document.getElementById('chatMessages');
+                if (messagesDiv) {
+                    updateChatMessages();
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                }
                 return;
             }
+
             container.innerHTML = `
                 <div class="chat-container">
-                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="empty" style="padding:20px;"><span class="icon">💬</span><p>${t('chatEmpty')}</p></div>
+                    </div>
                     <div class="chat-input-row" id="chatInputRow">
                         <input type="text" id="chatInput" placeholder="${t('chatPlaceholder')}" maxlength="200">
                         <button class="btn btn-primary" id="chatSendBtn">${t('chatSend')}</button>
                     </div>
                 </div>
             `;
+
             chatInitialized = true;
+
             document.getElementById('chatSendBtn').addEventListener('click', sendChatMessageHandler);
             document.getElementById('chatInput').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') sendChatMessageHandler();
             });
+
             loadChatMessages();
+
             const messagesDiv = document.getElementById('chatMessages');
             if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
@@ -1491,10 +1492,12 @@
         function updateChatMessages() {
             const messagesDiv = document.getElementById('chatMessages');
             if (!messagesDiv) return;
-            if (chatMessages.length === 0) {
+
+            if (!chatMessages || chatMessages.length === 0) {
                 messagesDiv.innerHTML = `<div class="empty" style="padding:20px;"><span class="icon">💬</span><p>${t('chatEmpty')}</p></div>`;
                 return;
             }
+
             const sorted = [...chatMessages].sort((a, b) => a.timestamp - b.timestamp);
             let html = '';
             sorted.forEach(msg => {
@@ -1523,7 +1526,9 @@
                 db.ref('chat').off('value', chatListener);
                 chatListener = null;
             }
+
             const now = Date.now();
+
             chatListener = db.ref('chat').orderByChild('timestamp').limitToLast(100).on('value', (snapshot) => {
                 const data = snapshot.val();
                 let messages = [];
@@ -1550,6 +1555,8 @@
                 chatMessages = messages;
                 if (chatInitialized) {
                     updateChatMessages();
+                    const messagesDiv = document.getElementById('chatMessages');
+                    if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 }
             });
         }
