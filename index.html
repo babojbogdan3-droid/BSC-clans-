@@ -375,7 +375,7 @@
 
     <script>
         // ============================================================
-        // ЭМУЛЯЦИЯ TELEGRAM
+        // ЭМУЛЯЦИЯ TELEGRAM (ТОЛЬКО ДЛЯ БРАУЗЕРА)
         // ============================================================
         if (!window.Telegram) { window.Telegram = {}; }
         if (!window.Telegram.WebApp) {
@@ -554,8 +554,6 @@
         // ============================================================
         const ADMIN_CODE = '88005553535';
         const MY_NAME = 's1m1';
-        const MY_GAME_ID = '22887924';
-        const MY_TELEGRAM_ID = '180927119';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
@@ -631,9 +629,7 @@
         // ============================================================
         function isAdmin(user) {
             if (!user) return false;
-            if (user.name === MY_NAME && user.gameId === MY_GAME_ID) return true;
-            if (user.id === MY_TELEGRAM_ID) return true;
-            if (user.role === 'admin' && user.name !== MY_NAME) return false;
+            if (user.name === MY_NAME) return true;
             return user.role === 'admin';
         }
 
@@ -710,7 +706,7 @@
         async function saveData(data) { await db.ref('/').set(data); }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ - ТЫ ВСЕГДА НАХОДИШЬСЯ
+        // ИНИЦИАЛИЗАЦИЯ (БЕЗ ПРИВЯЗКИ К TELEGRAM)
         // ============================================================
         async function initApp() {
             try {
@@ -747,58 +743,61 @@
                 }
 
                 let userId = localStorage.getItem('bsc_test_id');
-                let user = null;
-
-                if (userId) {
-                    user = allUsers.find(u => u.id === userId);
+                if (!userId) {
+                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                    localStorage.setItem('bsc_test_id', userId);
                 }
 
-                if (!user) {
-                    user = allUsers.find(u => u.name === MY_NAME);
-                }
+                let user = allUsers.find(u => u.id === userId);
 
                 if (!user) {
-                    user = allUsers.find(u => u.id === MY_TELEGRAM_ID);
+                    document.getElementById('registerModal').classList.add('show');
+                    return;
                 }
 
-                if (!user) {
-                    user = {
-                        id: MY_TELEGRAM_ID,
-                        name: MY_NAME,
-                        telegramUsername: '@NoisyBoy141',
-                        gameId: MY_GAME_ID,
-                        role: 'admin',
-                        clanId: null
-                    };
-                    allUsers.push(user);
+                if (isUserBanned(user)) {
+                    const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
+                    document.getElementById('content').innerHTML = `
+                        <div class="card" style="border-color:#ff3d71;">
+                            <div style="color:#ff3d71;font-size:18px;">⛔ Доступ запрещён</div>
+                            <div style="color:var(--text-secondary);">Аккаунт забанен ${banText}</div>
+                            ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">Причина: ${user.bannedReason}</div>` : ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (user.role === 'admin' && user.name !== MY_NAME) {
+                    user.role = 'member';
                     const updData = await loadData();
                     updData.users = allUsers;
                     await saveData(updData);
                 }
 
-                user.role = 'admin';
-                user.gameId = MY_GAME_ID;
-                user.name = MY_NAME;
-                user.telegramUsername = '@NoisyBoy141';
-
-                const navi = allClans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
-                if (navi) {
-                    navi.leaderId = user.id;
-                    if (!navi.members) navi.members = [];
-                    if (!navi.members.includes(user.id)) navi.members.push(user.id);
-                    user.clanId = navi.id;
+                if (user.name === MY_NAME) {
+                    user.role = 'admin';
+                    const navi = allClans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
+                    if (navi) {
+                        navi.leaderId = user.id;
+                        if (!navi.members) navi.members = [];
+                        if (!navi.members.includes(user.id)) navi.members.push(user.id);
+                        user.clanId = navi.id;
+                        user.role = 'leader';
+                    }
+                    user.role = 'admin';
+                    
+                    const updData = await loadData();
+                    updData.users = allUsers;
+                    updData.clans = allClans;
+                    await saveData(updData);
                 }
 
-                const updData = await loadData();
-                updData.users = allUsers;
-                updData.clans = allClans;
-                await saveData(updData);
-
-                localStorage.setItem('bsc_user', JSON.stringify(user));
-                localStorage.setItem('bsc_test_id', user.id);
-                localStorage.setItem('bsc_last_gameId', MY_GAME_ID);
-
                 currentUser = user;
+                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                if (currentUser.gameId) {
+                    localStorage.setItem('bsc_last_gameId', currentUser.gameId);
+                }
+
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
@@ -817,7 +816,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ
+        // РЕГИСТРАЦИЯ (КАЖДЫЙ ПОЛУЧАЕТ СВОЙ ID)
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -831,6 +830,18 @@
             if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
             if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
+            let userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            localStorage.setItem('bsc_test_id', userId);
+
+            if (name === MY_NAME) {
+                showToast('❌ Ник s1m1 зарезервирован главным админом', 'error');
+                return;
+            }
+
+            if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+                return showToast('❌ ' + t('nicknameTaken'), 'error');
+            }
+
             let isAdminUser = false;
             
             if (adminCode) {
@@ -841,13 +852,6 @@
                     showToast('❌ Неверный секретный код! Регистрация отклонена.', 'error');
                     return;
                 }
-            }
-
-            let userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-            localStorage.setItem('bsc_test_id', userId);
-
-            if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
             const newUser = {
@@ -877,7 +881,7 @@
         }
 
         // ============================================================
-        // ВЫХОД - КЛАН ОСТАЁТСЯ
+        // ВЫХОД - ПРОСТО ВЫХОД (НЕ УДАЛЯЕТ ПОЛЬЗОВАТЕЛЯ)
         // ============================================================
         async function logoutUser() {
             if (!confirm(t('logoutConfirm'))) return;
