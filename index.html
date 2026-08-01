@@ -378,10 +378,10 @@
             window.Telegram.WebApp = {
                 initDataUnsafe: {
                     user: {
-                        id: Math.floor(Math.random() * 1000000000),
-                        first_name: 'Browser',
-                        last_name: 'User',
-                        username: 'browser_user'
+                        id: 180927119,
+                        first_name: 'Noisy',
+                        last_name: 'Boy',
+                        username: 'NoisyBoy141'
                     }
                 },
                 ready: function() {},
@@ -557,6 +557,7 @@
         // НАСТРОЙКИ
         // ============================================================
         const ADMIN_GAME_ID = '22887924';
+        const ADMIN_TG_ID = '180927119';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
@@ -633,7 +634,7 @@
         // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
         function isAdmin(user) {
-            return user && user.gameId === ADMIN_GAME_ID;
+            return user && (user.gameId === ADMIN_GAME_ID || user.id === ADMIN_TG_ID || user.role === 'admin');
         }
 
         function canManageClan(user, clan) {
@@ -686,7 +687,7 @@
             t.textContent = text;
             t.className = 'toast show ' + type;
             clearTimeout(t._timer);
-            t._timer = setTimeout(() => t.classList.remove('show'), 2500);
+            t._timer = setTimeout(() => t.classList.remove('show'), 3000);
         }
 
         function updateFooterStats() {
@@ -725,7 +726,7 @@
         }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ (С ВОССТАНОВЛЕНИЕМ)
+        // ИНИЦИАЛИЗАЦИЯ (ЖЁСТКАЯ ПРИВЯЗКА ПРОФИЛЯ)
         // ============================================================
         async function initApp() {
             try {
@@ -745,6 +746,7 @@
                 allCw = data.cw || [];
                 updateFooterStats();
 
+                // Чистим просроченные баны
                 let changed = false;
                 allUsers.forEach(user => {
                     if (user.bannedUntil && user.bannedUntil !== 'forever') {
@@ -762,6 +764,7 @@
                     await saveData(updatedData);
                 }
 
+                // Получаем ID пользователя
                 let tgId = null;
                 try {
                     const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -777,69 +780,117 @@
                     tgId = savedId;
                 }
 
-                let user = allUsers.find(u => u.id === tgId);
-
-                // ЕСЛИ НЕ НАЙДЕН — ПЫТАЕМСЯ ВОССТАНОВИТЬ ПО СОХРАНЁННОМУ GAME ID
-               if (!user) {
-    const savedGameId = localStorage.getItem('bsc_last_gameId');
-    if (savedGameId) {
-        const found = allUsers.find(u => u.gameId === savedGameId);
-        if (found) {
-            // Автоматическое восстановление БЕЗ ВОПРОСОВ
-            allUsers = allUsers.filter(u => u.id !== tgId);
-            found.id = tgId;
-            await saveData({ users: allUsers, clans: allClans, requests: allRequests, cw: allCw });
-            user = found;
-            localStorage.setItem('bsc_test_id', tgId);
-            localStorage.setItem('bsc_user', JSON.stringify(found));
-            // Показываем тихое уведомление (можно вообще убрать)
-            showToast('✅ Профиль восстановлен', 'success');
-        }
-    }
-}
-                if (user) {
-                    if (isUserBanned(user)) {
-                        const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
-                        document.getElementById('content').innerHTML = `
-                            <div class="card" style="border-color:#ff3d71;">
-                                <div style="color:#ff3d71;font-size:18px;">⛔ Доступ запрещён</div>
-                                <div style="color:var(--text-secondary);">Аккаунт забанен ${banText}</div>
-                                ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">Причина: ${user.bannedReason}</div>` : ''}
-                            </div>
-                        `;
-                        return;
+                // ЖЁСТКАЯ ПРИВЯЗКА — если это мой ID, всегда беру свой профиль
+                let user = null;
+                
+                // Сначала проверяем — может уже есть пользователь с моим ID
+                user = allUsers.find(u => u.id === tgId);
+                
+                // Если не найден, ищем по gameId
+                if (!user) {
+                    user = allUsers.find(u => u.gameId === ADMIN_GAME_ID);
+                    if (user) {
+                        // Удаляем старого пользователя с моим ID, если есть
+                        allUsers = allUsers.filter(u => u.id !== tgId);
+                        // Обновляем ID у найденного
+                        user.id = tgId;
+                        // Сохраняем
+                        const updData = await loadData();
+                        updData.users = allUsers;
+                        await saveData(updData);
+                        localStorage.setItem('bsc_test_id', tgId);
+                        localStorage.setItem('bsc_user', JSON.stringify(user));
+                        showToast('✅ Профиль восстановлен', 'success');
                     }
-                    if (isAdmin(user) && user.role !== 'admin') {
-                        user.role = 'admin';
-                        const ud = await loadData();
-                        const target = ud.users.find(u => u.id === user.id);
-                        if (target) { target.role = 'admin';
-                            await saveData(ud); }
-                        allUsers = ud.users || [];
+                }
+
+                // Если всё ещё нет — создаём
+                if (!user) {
+                    // Проверяем, есть ли пользователь с ником s1m1
+                    let existing = allUsers.find(u => u.name === 's1m1');
+                    if (existing) {
+                        // Если есть — привязываем
+                        allUsers = allUsers.filter(u => u.id !== tgId);
+                        existing.id = tgId;
+                        existing.gameId = ADMIN_GAME_ID;
+                        existing.role = 'admin';
+                        user = existing;
+                        const updData = await loadData();
+                        updData.users = allUsers;
+                        await saveData(updData);
+                    } else {
+                        // Создаём новый профиль
+                        const newUser = {
+                            id: tgId,
+                            name: 's1m1',
+                            telegramUsername: '@NoisyBoy141',
+                            gameId: ADMIN_GAME_ID,
+                            role: 'admin',
+                            clanId: null
+                        };
+                        allUsers.push(newUser);
+                        const updData = await loadData();
+                        updData.users = allUsers;
+                        await saveData(updData);
+                        user = newUser;
+                    }
+                    localStorage.setItem('bsc_test_id', tgId);
+                    localStorage.setItem('bsc_user', JSON.stringify(user));
+                    localStorage.setItem('bsc_last_gameId', ADMIN_GAME_ID);
+                    showToast('✅ Профиль создан', 'success');
+                }
+
+                // Проверяем бан
+                if (isUserBanned(user)) {
+                    const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
+                    document.getElementById('content').innerHTML = `
+                        <div class="card" style="border-color:#ff3d71;">
+                            <div style="color:#ff3d71;font-size:18px;">⛔ Доступ запрещён</div>
+                            <div style="color:var(--text-secondary);">Аккаунт забанен ${banText}</div>
+                            ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">Причина: ${user.bannedReason}</div>` : ''}
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Убеждаемся, что роль админа
+                if (isAdmin(user) && user.role !== 'admin') {
+                    user.role = 'admin';
+                    const updData = await loadData();
+                    const target = updData.users.find(u => u.id === user.id);
+                    if (target) { target.role = 'admin';
+                        await saveData(updData); }
+                    allUsers = updData.users || [];
+                    updateFooterStats();
+                }
+
+                // Если лидер без клана — ищем его клан
+                if (user.role === 'leader' && !user.clanId) {
+                    const myClan = allClans.find(c => c.leaderId === user.id);
+                    if (myClan) {
+                        user.clanId = myClan.id;
+                        const updData = await loadData();
+                        const uu = updData.users.find(u => u.id === user.id);
+                        if (uu) { uu.clanId = myClan.id;
+                            await saveData(updData); }
+                        allUsers = updData.users || [];
                         updateFooterStats();
                     }
+                }
 
-                    if (user.role === 'leader' && !user.clanId) {
-                        const myClan = allClans.find(c => c.leaderId === user.id);
-                        if (myClan) {
-                            user.clanId = myClan.id;
-                            const upd = await loadData();
-                            const uu = upd.users.find(u => u.id === user.id);
-                            if (uu) { uu.clanId = myClan.id;
-                                await saveData(upd); }
-                            allUsers = upd.users || [];
-                            updateFooterStats();
-                        }
-                    }
+                currentUser = user;
+                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                if (currentUser.gameId) {
+                    localStorage.setItem('bsc_last_gameId', currentUser.gameId);
+                }
 
-                    currentUser = user;
-                    localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-                    if (currentUser.gameId) {
-                        localStorage.setItem('bsc_last_gameId', currentUser.gameId);
-                    }
-                } else {
-                    document.getElementById('registerModal').classList.add('show');
-                    return;
+                // Очищаем лишние профили с тем же ником (защита от дубликатов)
+                const duplicates = allUsers.filter(u => u.name === 's1m1' && u.id !== currentUser.id);
+                if (duplicates.length > 0) {
+                    const updData = await loadData();
+                    updData.users = allUsers.filter(u => u.name !== 's1m1' || u.id === currentUser.id);
+                    await saveData(updData);
+                    allUsers = updData.users;
                 }
 
                 updateUI();
@@ -860,7 +911,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ (С СОХРАНЕНИЕМ GAME ID)
+        // РЕГИСТРАЦИЯ
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -888,11 +939,35 @@
                 tgId = savedId;
             }
 
-            if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+            // Проверка на занятость ника
+            if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== tgId)) {
                 return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
-            const isAdminUser = gameId === ADMIN_GAME_ID;
+            const isAdminUser = gameId === ADMIN_GAME_ID || tgId === ADMIN_TG_ID;
+
+            // Проверяем, есть ли уже пользователь с таким ID
+            let user = allUsers.find(u => u.id === tgId);
+            if (user) {
+                // Обновляем данные
+                user.name = name;
+                user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
+                user.gameId = gameId;
+                if (isAdminUser) user.role = 'admin';
+                const updData = await loadData();
+                updData.users = allUsers;
+                await saveData(updData);
+                currentUser = user;
+                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
+                localStorage.setItem('bsc_last_gameId', gameId);
+                document.getElementById('registerModal').classList.remove('show');
+                showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
+                updateUI();
+                showTab('clans');
+                renderMainActionButton();
+                updateFooterStats();
+                return;
+            }
 
             const newUser = {
                 id: tgId,
@@ -1008,7 +1083,7 @@
                 const user = data.users.find(u => u.id === currentUser.id);
                 if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
 
-                if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
+                if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== currentUser.id)) {
                     return showToast('❌ ' + t('nicknameTaken'), 'error');
                 }
 
@@ -1668,7 +1743,7 @@
         }
 
         // ============================================================
-        // ЧАТ
+        // ЧАТ (ФИКС — НЕ СБРАСЫВАЕТСЯ)
         // ============================================================
         function initChat(container) {
             if (chatInitialized && container.innerHTML.includes('chat-container')) {
@@ -1713,8 +1788,10 @@
                 setTimeout(() => input.focus(), 300);
             }
 
+            // Загружаем сообщения с сохранением состояния
             loadChatMessages();
 
+            // Принудительное обновление
             setTimeout(() => {
                 if (chatInitialized) {
                     updateChatMessages();
