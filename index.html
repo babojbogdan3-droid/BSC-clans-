@@ -22,17 +22,18 @@
         .profile-btn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:var(--text-primary);font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;position:relative}
         .profile-btn:hover{border-color:var(--accent);box-shadow:0 0 24px var(--accent-glow)}
         .profile-btn .badge{position:absolute;top:-4px;right:-4px;background:#ff3d71;color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
-        .profile-dropdown{position:absolute;top:54px;right:0;background:rgba(18,24,40,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:16px;min-width:200px;box-shadow:var(--shadow);display:none;z-index:1000;animation:fadeSlide .2s ease}
+        .profile-dropdown{position:absolute;top:54px;right:0;background:rgba(18,24,40,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:16px;min-width:210px;box-shadow:var(--shadow);display:none;z-index:1000;animation:fadeSlide .2s ease}
         .profile-dropdown.show{display:block}
         @keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
         .profile-dropdown .info{margin-bottom:12px}
         .profile-dropdown .info .name{font-weight:600;font-size:15px}
         .profile-dropdown .info .detail{color:var(--text-secondary);font-size:13px;margin-top:2px}
-        .menu{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-        .menu .btn{flex:1;padding:10px 4px;border-radius:10px;font-weight:600;font-size:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);color:var(--text-secondary);cursor:pointer;transition:all .2s;text-align:center}
+        .menu{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+        .menu .btn{flex:1;min-width:45px;padding:10px 4px;border-radius:10px;font-weight:600;font-size:11px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);color:var(--text-secondary);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap}
         .menu .btn:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12)}
         .menu .btn-primary{background:rgba(91,141,239,0.12);border-color:var(--accent);color:var(--text-primary);box-shadow:0 0 20px var(--accent-glow)}
         .menu .btn-primary:hover{background:rgba(91,141,239,0.2)}
+        @media (max-width:420px){.menu .btn{font-size:10px;padding:8px 2px;min-width:40px}}
         .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow);transition:all .25s;animation:fadeUp .3s ease}
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
         .card:hover{border-color:rgba(91,141,239,0.2);transform:translateY(-2px)}
@@ -42,8 +43,8 @@
         .card-tag{font-weight:700;font-size:13px;color:var(--accent);background:rgba(91,141,239,0.1);padding:2px 14px;border-radius:20px;border:1px solid rgba(91,141,239,0.15)}
         .card-sub{color:var(--text-secondary);font-size:14px;margin:4px 0 8px 0}
         .card-sub .badge-online{display:inline-block;width:8px;height:8px;background:#2ecc71;border-radius:50%;margin-right:6px}
-        .card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-        .btn{padding:8px 18px;border:none;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);color:var(--text-primary);border:1px solid rgba(255,255,255,0.06)}
+        .card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+        .btn{padding:8px 16px;border:none;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);color:var(--text-primary);border:1px solid rgba(255,255,255,0.06)}
         .btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.3)}
         .btn-primary{background:var(--accent);color:#fff;border:none;box-shadow:0 4px 16px var(--accent-glow)}
         .btn-primary:hover{box-shadow:0 6px 28px var(--accent-glow)}
@@ -55,7 +56,7 @@
         .btn-secondary:hover{background:rgba(255,255,255,0.08)}
         .btn-gold{background:#f1c40f;color:#0b0e17;border:none}
         .btn-gold:hover{background:#f39c12}
-        .btn-sm{padding:4px 14px;font-size:12px}
+        .btn-sm{padding:4px 12px;font-size:12px}
         .btn-block{width:100%;justify-content:center;padding:12px;font-size:15px}
         .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);display:none;justify-content:center;align-items:center;padding:20px;z-index:1001;animation:fadeIn .2s ease}
         .modal-overlay.show{display:flex}
@@ -167,7 +168,7 @@
         .member-item .member-name .role-badge.member{background:rgba(255,255,255,0.04);color:var(--text-secondary)}
         .member-item .member-actions{display:flex;gap:4px;flex-wrap:wrap}
         .my-clan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--card-border)}
-        @media (max-width:480px){body{padding:12px}.header h1{font-size:28px}.menu .btn{font-size:11px;padding:8px 2px}.modal{padding:16px}.footer-top{flex-direction:column;align-items:flex-start}.footer-status{text-align:left;width:100%}.user-card .user-header{flex-direction:column;align-items:flex-start}.chat-container{height:65vh}.chat-input-row input{font-size:13px;padding:8px 12px}.chat-input-row .btn{padding:8px 14px;font-size:13px}}
+        @media (max-width:480px){body{padding:12px}.header h1{font-size:28px}.menu .btn{font-size:10px;padding:6px 2px}.modal{padding:16px}.footer-top{flex-direction:column;align-items:flex-start}.footer-status{text-align:left;width:100%}.user-card .user-header{flex-direction:column;align-items:flex-start}.chat-container{height:65vh}.chat-input-row input{font-size:13px;padding:8px 12px}.chat-input-row .btn{padding:8px 14px;font-size:13px}}
     </style>
 </head>
 <body>
@@ -188,8 +189,8 @@
                             <div class="detail" id="profClan">Клан: —</div>
                             <div class="detail" id="profRole">Роль: —</div>
                         </div>
-                        <button class="btn btn-secondary btn-block btn-sm" id="profileEditBtn" onclick="openEditProfile()">✏️ Редактировать профиль</button>
-                        <button class="btn btn-secondary btn-block btn-sm" id="profileLangBtn" onclick="toggleLanguage()">🌐 Сменить язык</button>
+                        <button class="btn btn-secondary btn-block btn-sm" id="profileEditBtn" onclick="openEditProfile()">✏️ Редактировать</button>
+                        <button class="btn btn-secondary btn-block btn-sm" id="profileLangBtn" onclick="toggleLanguage()">🌐 Язык</button>
                         <button class="btn btn-danger btn-block btn-sm" onclick="logoutUser()" style="margin-top:8px;">🚪 Выйти</button>
                     </div>
                 </div>
@@ -197,9 +198,9 @@
         </header>
 
         <div class="menu">
-            <button class="btn btn-primary" onclick="showTab('clans')" id="tabClans">🔴 КЛАНЫ</button>
+            <button class="btn btn-primary" onclick="showTab('clans')" id="tabClans">🏰 КЛАНЫ</button>
             <button class="btn" onclick="showTab('requests')" id="tabRequests">📩 ЗАЯВКИ</button>
-            <button class="btn" onclick="showTab('myclan')" id="tabMyClan">⭐ МОЙ КЛАН</button>
+            <button class="btn" onclick="showTab('myclan')" id="tabMyClan">⭐ МОЙ</button>
             <button class="btn" onclick="showTab('rating')" id="tabRating">🏆 РЕЙТИНГ</button>
             <button class="btn" onclick="showTab('cw')" id="tabCw">⚔️ CW</button>
             <button class="btn" onclick="showTab('chat')" id="tabChat">💬 ЧАТ</button>
@@ -268,10 +269,10 @@
 
     <div class="modal-overlay" id="editProfileModal">
         <div class="modal">
-            <h2 id="editProfileTitle">✏️ Редактировать профиль</h2>
+            <h2 id="editProfileTitle">✏️ Редактировать</h2>
             <label id="editProfileNameLabel">Никнейм</label>
             <input type="text" id="editProfName" maxlength="20">
-            <label id="editProfileTelegramLabel">Telegram username (без @)</label>
+            <label id="editProfileTelegramLabel">Telegram (без @)</label>
             <input type="text" id="editProfTelegram" maxlength="32">
             <label id="editProfileGameIdLabel">Игровой ID</label>
             <input type="text" id="editProfGameId" maxlength="15">
@@ -307,10 +308,10 @@
             <input type="text" id="editClanTag" style="text-transform:uppercase;">
             <label id="editClanDescLabel">Описание</label>
             <textarea id="editClanDesc"></textarea>
-            <label id="editClanContactLabel">Связь (Telegram владельца, без @)</label>
+            <label id="editClanContactLabel">Связь (Telegram)</label>
             <input type="text" id="editClanContact" placeholder="noisyboy141">
-            <label id="editClanChannelLabel">Канал (ссылка или юзернейм)</label>
-            <input type="text" id="editClanChannel" placeholder="@bsc_channel или https://t.me/...">
+            <label id="editClanChannelLabel">Канал</label>
+            <input type="text" id="editClanChannel" placeholder="@bsc_channel">
             <div class="modal-actions">
                 <button class="btn btn-secondary" id="editClanCancel" onclick="closeModal('editClanModal')">Отмена</button>
                 <button class="btn btn-primary" id="editClanSave" onclick="saveEditClan()">Сохранить</button>
@@ -322,7 +323,7 @@
         <div class="modal">
             <h2 id="detailClanName">🏰 Клан</h2>
             <div id="detailClanInfo"></div>
-            <div id="detailMembers"></div>
+            <div id="detailMembers" class="member-list"></div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" id="detailClanClose" onclick="closeModal('clanDetailModal')">Закрыть</button>
             </div>
@@ -331,11 +332,11 @@
 
     <div class="modal-overlay" id="banModal">
         <div class="modal">
-            <h2 id="banTitle">🔨 Забанить пользователя</h2>
+            <h2 id="banTitle">🔨 Забанить</h2>
             <p id="banUserName" style="color:var(--text-secondary); margin-bottom:12px;">Пользователь: </p>
-            <label id="banDaysLabel">Срок бана (в днях, 0 = навсегда)</label>
+            <label id="banDaysLabel">Срок (дней, 0 = навсегда)</label>
             <input type="number" id="banDays" value="7" min="0">
-            <label id="banReasonLabel">Причина (необязательно)</label>
+            <label id="banReasonLabel">Причина</label>
             <input type="text" id="banReason" placeholder="Нарушение правил" maxlength="100">
             <div class="modal-actions">
                 <button class="btn btn-secondary" id="banCancel" onclick="closeModal('banModal')">Отмена</button>
@@ -346,8 +347,8 @@
 
     <div class="modal-overlay" id="cwModal">
         <div class="modal">
-            <h2 id="cwModalTitle">⚔️ Запрос на битву (CW)</h2>
-            <p style="color:var(--text-secondary);margin-bottom:12px;" id="cwModalDesc">Выберите клан, с которым хотите сыграть:</p>
+            <h2 id="cwModalTitle">⚔️ Запрос на битву</h2>
+            <p style="color:var(--text-secondary);margin-bottom:12px;" id="cwModalDesc">Выберите клан:</p>
             <div id="cwClanList"></div>
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModal('cwModal')">Отмена</button>
@@ -392,7 +393,7 @@
                 'view': 'Просмотр', 'apply': 'Подать заявку', 'create': 'Создать', 'join': 'Вступить',
                 'leaveClan': 'Покинуть клан', 'disband': 'Распустить', 'clans': 'КЛАНЫ',
                 'requests': 'ЗАЯВКИ', 'myclan': 'МОЙ КЛАН', 'rating': 'РЕЙТИНГ', 'cw': 'CW',
-                'chat': 'ЧАТ', 'admin': 'АДМИН', 'profile': 'Профиль', 'editProfile': 'Редактировать профиль',
+                'chat': 'ЧАТ', 'admin': 'АДМИН', 'profile': 'Профиль', 'editProfile': 'Редактировать',
                 'logout': 'Выйти', 'changeLang': 'Сменить язык', 'botActive': 'Бот активен',
                 'creator': 'Создатель: @NoisyBoy141', 'channel': 'Канал', 'chatPlaceholder': 'Напишите сообщение...',
                 'chatSend': 'Отправить', 'chatEmpty': 'Сообщений пока нет. Будьте первым!',
@@ -402,7 +403,7 @@
                 'clansCount': 'Кланов:', 'membersCount': 'Участников:', 'requestsCount': 'Заявок:',
                 'leaderLabel': 'Глава', 'eloLabel': 'ELO', 'noMembers': 'Нет участников', 'noData': 'Нет данных',
                 'welcome': 'Добро пожаловать', 'register': 'Зарегистрироваться', 'nickname': 'Никнейм',
-                'telegramUsername': 'Telegram username (без @)', 'gameId': 'Игровой ID', 'role': 'Роль',
+                'telegramUsername': 'Telegram (без @)', 'gameId': 'Игровой ID', 'role': 'Роль',
                 'roleMember': 'Игрок', 'roleLeader': 'Лидер', 'roleVice': 'Заместитель',
                 'enterNickname': 'Введите никнейм', 'enterTelegram': 'Введите Telegram',
                 'enterGameId': 'Введите игровой ID', 'nicknameTaken': 'Ник занят',
@@ -427,21 +428,21 @@
                 'usersList': 'Пользователи', 'userId': 'ID', 'userGameId': 'Игровой ID',
                 'userRole': 'Роль', 'userStatus': 'Статус', 'statusActive': 'Активен',
                 'statusBanned': 'Забанен', 'banForever': 'Навсегда', 'banUntil': 'до {date}',
-                'unbanConfirm': 'Разбанить пользователя "{name}"?', 'userUnbanned': 'Пользователь "{name}" разбанен',
+                'unbanConfirm': 'Разбанить "{name}"?', 'userUnbanned': 'Пользователь "{name}" разбанен',
                 'userBanned': 'Пользователь "{name}" забанен', 'userDeleted': 'Пользователь "{name}" удалён',
                 'saveElo': 'Сохранить', 'currentElo': 'Текущий ELO', 'setElo': 'Установить ELO',
                 'eloSaved': 'ELO сохранён', 'confirmDeleteUser': 'Точно удалить пользователя?',
-                'confirmBanUser': 'Точно забанить пользователя?', 'confirmUnbanUser': 'Точно разбанить пользователя?',
+                'confirmBanUser': 'Точно забанить?', 'confirmUnbanUser': 'Точно разбанить?',
                 'confirmClearAll': 'Точно очистить все данные?', 'noUsers': 'Нет пользователей',
                 'noClansForRating': 'Нет кланов для рейтинга', 'ratingTop': 'Рейтинг кланов (по ELO)',
                 'leaderContact': 'Связь', 'clanChannel': 'Канал клана', 'noMembersInClan': 'Нет участников',
-                'membersList': 'Участники', 'clanInfo': 'Информация о клане', 'clanName': 'Название клана',
-                'clanTag': 'Тег клана', 'clanDescription': 'Описание клана', 'clanLeader': 'Глава клана',
-                'clanMembers': 'Участники клана', 'clanContact': 'Связь с главой', 'clanChannelLabel': 'Канал клана',
-                'editClan': 'Редактировать клан', 'createClan': 'Создать клан', 'deleteClan': 'Удалить клан',
-                'disbandClan': 'Распустить клан', 'leaveClanConfirm': 'Выйти из клана "{name}"?',
-                'applyToClan': 'Подать заявку в "{name}"?', 'acceptRequest': 'Принять заявку',
-                'rejectRequest': 'Отклонить заявку', 'memberKickConfirm': 'Кикнуть игрока?',
+                'membersList': 'Участники', 'clanInfo': 'Информация о клане', 'clanName': 'Название',
+                'clanTag': 'Тег', 'clanDescription': 'Описание', 'clanLeader': 'Глава',
+                'clanMembers': 'Участники', 'clanContact': 'Связь с главой', 'clanChannelLabel': 'Канал',
+                'editClan': 'Редактировать', 'createClan': 'Создать', 'deleteClan': 'Удалить',
+                'disbandClan': 'Распустить', 'leaveClanConfirm': 'Выйти из клана "{name}"?',
+                'applyToClan': 'Подать заявку в "{name}"?', 'acceptRequest': 'Принять',
+                'rejectRequest': 'Отклонить', 'memberKickConfirm': 'Кикнуть игрока?',
                 'transferLeadershipConfirm': 'Передать лидерство?', 'leadershipTransferred': 'Лидерство передано {name}',
                 'youAreNotLeader': 'Вы не глава клана', 'youAreNotAdmin': 'Вы не администратор',
                 'youAreInClan': 'Вы уже в клане', 'youAreNotInClan': 'Вы не в клане',
@@ -459,7 +460,7 @@
                 'cwYourContacts': 'Ваши контакты:', 'cwOpponentContacts': 'Контакты соперника:',
                 'cwNoContacts': 'Нет контактов', 'cwFinishMatch': '✅ Завершить матч',
                 'cwConfirmFinish': 'Подтвердить завершение', 'cwFinishConfirm': 'Вы уверены, что матч завершён?',
-                'cwAdminContacts': 'Отправьте результаты игры администрации: @NoisyBoy141',
+                'cwAdminContacts': 'Отправьте результаты администрации: @NoisyBoy141',
                 'cwDeclined': 'Клан {tag} отказался играть с вами',
                 'cwNoClans': 'Нет других кланов для CW',
                 'cwChooseClan': 'Выберите клан для CW'
@@ -481,7 +482,7 @@
                 'clansCount': 'Clans:', 'membersCount': 'Members:', 'requestsCount': 'Requests:',
                 'leaderLabel': 'Leader', 'eloLabel': 'ELO', 'noMembers': 'No members', 'noData': 'No data',
                 'welcome': 'Welcome', 'register': 'Register', 'nickname': 'Nickname',
-                'telegramUsername': 'Telegram username (without @)', 'gameId': 'Game ID', 'role': 'Role',
+                'telegramUsername': 'Telegram (without @)', 'gameId': 'Game ID', 'role': 'Role',
                 'roleMember': 'Member', 'roleLeader': 'Leader', 'roleVice': 'Vice Leader',
                 'enterNickname': 'Enter nickname', 'enterTelegram': 'Enter Telegram',
                 'enterGameId': 'Enter game ID', 'nicknameTaken': 'Nickname is taken',
@@ -506,7 +507,7 @@
                 'usersList': 'Users', 'userId': 'ID', 'userGameId': 'Game ID',
                 'userRole': 'Role', 'userStatus': 'Status', 'statusActive': 'Active',
                 'statusBanned': 'Banned', 'banForever': 'Forever', 'banUntil': 'until {date}',
-                'unbanConfirm': 'Unban user "{name}"?', 'userUnbanned': 'User "{name}" unbanned',
+                'unbanConfirm': 'Unban "{name}"?', 'userUnbanned': 'User "{name}" unbanned',
                 'userBanned': 'User "{name}" banned', 'userDeleted': 'User "{name}" deleted',
                 'saveElo': 'Save', 'currentElo': 'Current ELO', 'setElo': 'Set ELO',
                 'eloSaved': 'ELO saved', 'confirmDeleteUser': 'Delete user?',
@@ -627,7 +628,7 @@
         function isAdmin(user) {
             if (!user) return false;
             const username = user.telegramUsername ? user.telegramUsername.replace('@', '') : '';
-            return username === ADMIN_USERNAME;
+            return user.name === MY_NAME && username === ADMIN_USERNAME;
         }
 
         function canManageClan(user, clan) {
@@ -703,25 +704,6 @@
         async function saveData(data) { await db.ref('/').set(data); }
 
         // ============================================================
-        // ОЧИСТКА БАЗЫ ПРИ ПЕРВОМ ЗАПУСКЕ
-        // ============================================================
-        async function clearDatabase() {
-            try {
-                const data = await loadData();
-                data.users = [];
-                data.clans = [];
-                data.requests = [];
-                data.cw = [];
-                await saveData(data);
-                console.log('✅ База данных очищена');
-                return true;
-            } catch (e) {
-                console.error('Ошибка очистки:', e);
-                return false;
-            }
-        }
-
-        // ============================================================
         // ИНИЦИАЛИЗАЦИЯ
         // ============================================================
         async function initApp() {
@@ -742,7 +724,6 @@
                 allCw = data.cw || [];
                 updateFooterStats();
 
-                // Чистим просроченные баны
                 let changed = false;
                 allUsers.forEach(user => {
                     if (user.bannedUntil && user.bannedUntil !== 'forever') {
@@ -759,24 +740,19 @@
                     await saveData(updatedData);
                 }
 
-                // ⭐ ПОЛУЧАЕМ ID ИЗ LOCALSTORAGE
                 let userId = localStorage.getItem('bsc_test_id');
                 if (!userId) {
                     userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
                     localStorage.setItem('bsc_test_id', userId);
                 }
 
-                // ⭐ ИЩЕМ ПОЛЬЗОВАТЕЛЯ ПО ID
                 let user = allUsers.find(u => u.id === userId);
 
-                // ⭐ ЕСЛИ НЕ НАЙДЕН — ПОКАЗЫВАЕМ РЕГИСТРАЦИЮ
                 if (!user) {
-                    console.log('ℹ️ Пользователь не найден, показываем регистрацию');
                     document.getElementById('registerModal').classList.add('show');
                     return;
                 }
 
-                // Проверяем бан
                 if (isUserBanned(user)) {
                     const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
                     document.getElementById('content').innerHTML = `
@@ -838,7 +814,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ
+        // РЕГИСТРАЦИЯ (С ЗАЩИТОЙ)
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -855,27 +831,30 @@
             let userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
             localStorage.setItem('bsc_test_id', userId);
 
-            // ⭐ ПРОВЕРКА: ник s1m1 занят
-            if (name === MY_NAME && tgName !== ADMIN_USERNAME) {
-                showToast('❌ Ник s1m1 занят главным админом', 'error');
+            // ⭐ ПРОВЕРКА: ник s1m1 занят НАВСЕГДА
+            if (name === MY_NAME) {
+                showToast('❌ Ник s1m1 зарезервирован главным админом', 'error');
                 return;
             }
 
-            // Проверка на занятость ника
+            // ⭐ ПРОВЕРКА НА ЗАНЯТОСТЬ НИКА
             if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
                 return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
-            // ⭐ АДМИН ТОЛЬКО ПО ЮЗЕРНЕЙМУ
-            const isAdminUser = tgName === ADMIN_USERNAME || '@' + tgName === '@' + ADMIN_USERNAME;
+            // ⭐ БЛОКИРУЕМ ПОПЫТКУ СТАТЬ АДМИНОМ ЧЕРЕЗ ID
+            if (gameId === MY_GAME_ID) {
+                showToast('❌ Этот ID принадлежит главному админу', 'error');
+                return;
+            }
 
-            // Создаём пользователя
+            // ⭐ ВСЕГДА MEMBER ПРИ РЕГИСТРАЦИИ
             const newUser = {
                 id: userId,
                 name: name,
                 telegramUsername: tgName.startsWith('@') ? tgName : '@' + tgName,
                 gameId: gameId,
-                role: isAdminUser ? 'admin' : 'member',
+                role: 'member',
                 clanId: null
             };
 
@@ -924,7 +903,7 @@
                 const user = data.users.find(u => u.id === currentUser.id);
                 if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
 
-                if (name === MY_NAME && currentUser.telegramUsername !== '@' + ADMIN_USERNAME) {
+                if (name === MY_NAME && user.telegramUsername !== '@' + ADMIN_USERNAME) {
                     return showToast('❌ Ник s1m1 занят главным админом', 'error');
                 }
 
