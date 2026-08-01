@@ -369,195 +369,186 @@
 
     <script>
         // ============================================================
-        // ЭМУЛЯЦИЯ TELEGRAM ДЛЯ БРАУЗЕРА
+        // ЭМУЛЯЦИЯ TELEGRAM
         // ============================================================
-        if (!window.Telegram) {
-            window.Telegram = {};
-        }
+        if (!window.Telegram) { window.Telegram = {}; }
         if (!window.Telegram.WebApp) {
             window.Telegram.WebApp = {
-                initDataUnsafe: {
-                    user: {
-                        id: 180927119,
-                        first_name: 'Noisy',
-                        last_name: 'Boy',
-                        username: 'NoisyBoy141'
-                    }
-                },
-                ready: function() {},
-                expand: function() {},
-                close: function() {}
+                initDataUnsafe: { user: { id: 180927119, first_name: 'Noisy', last_name: 'Boy', username: 'NoisyBoy141' } },
+                ready: function() {}, expand: function() {}, close: function() {}
             };
-            console.log('✅ Telegram WebApp эмулирован для браузера');
         }
 
         // ============================================================
-        // ПЕРЕВОДЫ
+        // ПЕРЕВОДЫ (СОКРАЩЕННЫЕ)
         // ============================================================
         const LANG = {
             ru: {
-                'loading': 'Загрузка...', 'error': 'Ошибка', 'close': 'Закрыть', 'save': 'Сохранить',
-                'cancel': 'Отмена', 'confirm': 'Подтвердить', 'delete': 'Удалить', 'edit': 'Редактировать',
-                'ban': 'Забанить', 'unban': 'Разбанить', 'kick': 'Кикнуть', 'leave': 'Покинуть',
-                'view': 'Просмотр', 'apply': 'Подать заявку', 'create': 'Создать', 'join': 'Вступить',
-                'leaveClan': 'Покинуть клан', 'disband': 'Распустить', 'clans': 'КЛАНЫ',
-                'requests': 'ЗАЯВКИ', 'myclan': 'МОЙ КЛАН', 'rating': 'РЕЙТИНГ', 'cw': 'CW',
-                'chat': 'ЧАТ', 'admin': 'АДМИН', 'profile': 'Профиль', 'editProfile': 'Редактировать профиль',
-                'logout': 'Выйти', 'changeLang': 'Сменить язык', 'botActive': 'Бот активен',
-                'creator': 'Создатель: @NoisyBoy141', 'channel': 'Канал', 'chatPlaceholder': 'Напишите сообщение...',
-                'chatSend': 'Отправить', 'chatEmpty': 'Сообщений пока нет. Будьте первым!',
-                'loginRequired': 'Войдите, чтобы участвовать в чате', 'adminPanel': 'Админ-панель',
-                'userManagement': 'Управление пользователями', 'eloManagement': 'Управление рейтингом (ELO)',
-                'noClans': 'Нет кланов', 'noRequests': 'Нет заявок', 'notInClan': 'Вы не состоите в клане',
-                'clansCount': 'Кланов:', 'membersCount': 'Участников:', 'requestsCount': 'Заявок:',
-                'leaderLabel': 'Глава', 'eloLabel': 'ELO', 'noMembers': 'Нет участников', 'noData': 'Нет данных',
-                'welcome': 'Добро пожаловать', 'register': 'Зарегистрироваться', 'nickname': 'Никнейм',
-                'telegramUsername': 'Telegram username (без @)', 'gameId': 'Игровой ID', 'role': 'Роль',
-                'roleMember': 'Игрок', 'roleLeader': 'Лидер', 'roleVice': 'Заместитель',
-                'enterNickname': 'Введите никнейм', 'enterTelegram': 'Введите Telegram',
-                'enterGameId': 'Введите игровой ID', 'nicknameTaken': 'Ник занят',
-                'idMustBeNumber': 'ID должен быть числом', 'welcomeUser': 'Добро пожаловать, {name}',
-                'profileUpdated': 'Профиль обновлён', 'clanCreated': 'Клан создан!',
-                'clanDeleted': 'Клан удалён', 'clanDisbanded': 'Клан распущен',
-                'youLeftClan': 'Вы вышли из клана', 'youJoinedClan': 'Вы вступили в клан',
-                'requestSent': 'Заявка отправлена', 'requestAccepted': 'Заявка принята',
-                'requestRejected': 'Заявка отклонена', 'notClanLeader': 'Вы не глава клана',
-                'noPendingRequests': 'Нет входящих заявок', 'pendingRequests': 'Входящие заявки ({count})',
-                'memberKicked': 'Игрок кикнут', 'leaderTransferred': 'Лидерство передано {name}',
-                'eloUpdated': 'ELO для "{name}" обновлён до {elo}', 'enterValidElo': 'Введите корректное число (≥0)',
-                'notFound': 'не найден', 'noRights': 'Нет прав', 'clearAllData': 'Очистить всё',
-                'clearAllConfirm': '⚠️ Очистить все данные?', 'allCleared': 'Все данные очищены',
-                'logoutConfirm': 'Выйти из аккаунта?', 'youLoggedOut': 'Вы вышли',
-                'serverError': 'Ошибка сервера', 'languageSelected': 'Язык изменён на русский',
-                'languageSelectedEn': 'Language changed to English', 'selectLanguage': '🌐 Выберите язык / Select language',
-                'selectLanguageHint': 'Выберите язык, который будет использоваться в приложении.',
-                'clansLabel': 'Кланы', 'requestsLabel': 'Заявки', 'myClanLabel': 'Мой клан',
-                'ratingLabel': 'Рейтинг', 'adminLabel': 'Админ', 'cwLabel': 'CW',
-                'changeLanguage': 'Сменить язык', 'closeApp': 'Закрыть', 'refresh': 'Обновить',
-                'usersList': 'Пользователи', 'userId': 'ID', 'userGameId': 'Игровой ID',
-                'userRole': 'Роль', 'userStatus': 'Статус', 'statusActive': 'Активен',
-                'statusBanned': 'Забанен', 'banForever': 'Навсегда', 'banUntil': 'до {date}',
-                'unbanConfirm': 'Разбанить пользователя "{name}"?', 'userUnbanned': 'Пользователь "{name}" разбанен',
-                'userBanned': 'Пользователь "{name}" забанен', 'userDeleted': 'Пользователь "{name}" удалён',
-                'saveElo': 'Сохранить', 'currentElo': 'Текущий ELO', 'setElo': 'Установить ELO',
-                'eloSaved': 'ELO сохранён', 'confirmDeleteUser': 'Точно удалить пользователя?',
-                'confirmBanUser': 'Точно забанить пользователя?', 'confirmUnbanUser': 'Точно разбанить пользователя?',
-                'confirmClearAll': 'Точно очистить все данные?', 'noUsers': 'Нет пользователей',
-                'noClansForRating': 'Нет кланов для рейтинга', 'ratingTop': 'Рейтинг кланов (по ELO)',
-                'leaderContact': 'Связь', 'clanChannel': 'Канал клана', 'noMembersInClan': 'Нет участников',
-                'membersList': 'Участники', 'clanInfo': 'Информация о клане', 'clanName': 'Название клана',
-                'clanTag': 'Тег клана', 'clanDescription': 'Описание клана', 'clanLeader': 'Глава клана',
-                'clanMembers': 'Участники клана', 'clanContact': 'Связь с главой', 'clanChannelLabel': 'Канал клана',
-                'editClan': 'Редактировать клан', 'createClan': 'Создать клан', 'deleteClan': 'Удалить клан',
-                'disbandClan': 'Распустить клан', 'leaveClanConfirm': 'Выйти из клана "{name}"?',
-                'applyToClan': 'Подать заявку в "{name}"?', 'acceptRequest': 'Принять заявку',
-                'rejectRequest': 'Отклонить заявку', 'memberKickConfirm': 'Кикнуть игрока?',
-                'transferLeadershipConfirm': 'Передать лидерство?', 'leadershipTransferred': 'Лидерство передано {name}',
-                'youAreNotLeader': 'Вы не глава клана', 'youAreNotAdmin': 'Вы не администратор',
-                'youAreInClan': 'Вы уже в клане', 'youAreNotInClan': 'Вы не в клане',
-                'clanNotFound': 'Клан не найден', 'userNotFound': 'Пользователь не найден',
-                'requestNotFound': 'Заявка не найдена', 'invalidInput': 'Некорректный ввод',
-                'saveSuccess': 'Сохранено', 'saveError': 'Ошибка сохранения', 'loadError': 'Ошибка загрузки',
-                'updateSuccess': 'Обновлено', 'updateError': 'Ошибка обновления', 'deleteSuccess': 'Удалено',
-                'deleteError': 'Ошибка удаления', 'banSuccess': 'Пользователь забанен', 'banError': 'Ошибка бана',
-                'unbanSuccess': 'Пользователь разбанен', 'unbanError': 'Ошибка разбана',
-                'cwSend': 'Отправить запрос', 'cwIncoming': 'Входящие CW запросы',
-                'cwOutgoing': 'Исходящие CW запросы', 'cwRequest': '⚔️ Клан {tag} хочет сыграть с вами!',
-                'cwAccept': '✅ Принять CW', 'cwReject': '❌ Отклонить CW',
-                'cwAccepted': '✅ Запрос на CW принят!', 'cwRejected': '❌ Запрос на CW отклонён',
-                'cwFinished': 'Матч завершён!', 'cwContacts': '📱 Контакты для CW',
-                'cwYourContacts': 'Ваши контакты:', 'cwOpponentContacts': 'Контакты соперника:',
-                'cwNoContacts': 'Нет контактов', 'cwFinishMatch': '✅ Завершить матч',
-                'cwConfirmFinish': 'Подтвердить завершение', 'cwFinishConfirm': 'Вы уверены, что матч завершён?',
-                'cwAdminContacts': 'Отправьте результаты игры администрации: @NoisyBoy141',
-                'cwDeclined': 'Клан {tag} отказался играть с вами',
-                'cwNoClans': 'Нет других кланов для CW',
-                'cwChooseClan': 'Выберите клан для CW'
+                loading:'Загрузка...',error:'Ошибка',close:'Закрыть',save:'Сохранить',
+                cancel:'Отмена',confirm:'Подтвердить',delete:'Удалить',edit:'Редактировать',
+                ban:'Забанить',unban:'Разбанить',kick:'Кикнуть',leave:'Покинуть',
+                view:'Просмотр',apply:'Подать заявку',create:'Создать',join:'Вступить',
+                leaveClan:'Покинуть клан',disband:'Распустить',clans:'КЛАНЫ',
+                requests:'ЗАЯВКИ',myclan:'МОЙ КЛАН',rating:'РЕЙТИНГ',cw:'CW',
+                chat:'ЧАТ',admin:'АДМИН',profile:'Профиль',editProfile:'Редактировать профиль',
+                logout:'Выйти',changeLang:'Сменить язык',botActive:'Бот активен',
+                creator:'Создатель: @NoisyBoy141',channel:'Канал',chatPlaceholder:'Напишите сообщение...',
+                chatSend:'Отправить',chatEmpty:'Сообщений пока нет. Будьте первым!',
+                loginRequired:'Войдите, чтобы участвовать в чате',adminPanel:'Админ-панель',
+                userManagement:'Управление пользователями',eloManagement:'Управление рейтингом',
+                noClans:'Нет кланов',noRequests:'Нет заявок',notInClan:'Вы не состоите в клане',
+                clansCount:'Кланов:',membersCount:'Участников:',requestsCount:'Заявок:',
+                leaderLabel:'Глава',eloLabel:'ELO',noMembers:'Нет участников',noData:'Нет данных',
+                welcome:'Добро пожаловать',register:'Зарегистрироваться',nickname:'Никнейм',
+                telegramUsername:'Telegram username (без @)',gameId:'Игровой ID',role:'Роль',
+                roleMember:'Игрок',roleLeader:'Лидер',roleVice:'Заместитель',
+                enterNickname:'Введите никнейм',enterTelegram:'Введите Telegram',
+                enterGameId:'Введите игровой ID',nicknameTaken:'Ник занят',
+                idMustBeNumber:'ID должен быть числом',welcomeUser:'Добро пожаловать, {name}',
+                profileUpdated:'Профиль обновлён',clanCreated:'Клан создан!',
+                clanDeleted:'Клан удалён',clanDisbanded:'Клан распущен',
+                youLeftClan:'Вы вышли из клана',youJoinedClan:'Вы вступили в клан',
+                requestSent:'Заявка отправлена',requestAccepted:'Заявка принята',
+                requestRejected:'Заявка отклонена',notClanLeader:'Вы не глава клана',
+                noPendingRequests:'Нет входящих заявок',pendingRequests:'Входящие заявки ({count})',
+                memberKicked:'Игрок кикнут',leaderTransferred:'Лидерство передано {name}',
+                eloUpdated:'ELO для "{name}" обновлён до {elo}',enterValidElo:'Введите корректное число (≥0)',
+                notFound:'не найден',noRights:'Нет прав',clearAllData:'Очистить всё',
+                clearAllConfirm:'⚠️ Очистить все данные?',allCleared:'Все данные очищены',
+                logoutConfirm:'Выйти из аккаунта?',youLoggedOut:'Вы вышли',
+                serverError:'Ошибка сервера',languageSelected:'Язык изменён на русский',
+                languageSelectedEn:'Language changed to English',selectLanguage:'🌐 Выберите язык',
+                selectLanguageHint:'Выберите язык для приложения.',
+                clansLabel:'Кланы',requestsLabel:'Заявки',myClanLabel:'Мой клан',
+                ratingLabel:'Рейтинг',adminLabel:'Админ',cwLabel:'CW',
+                changeLanguage:'Сменить язык',closeApp:'Закрыть',refresh:'Обновить',
+                usersList:'Пользователи',userId:'ID',userGameId:'Игровой ID',
+                userRole:'Роль',userStatus:'Статус',statusActive:'Активен',
+                statusBanned:'Забанен',banForever:'Навсегда',banUntil:'до {date}',
+                unbanConfirm:'Разбанить пользователя "{name}"?',userUnbanned:'Пользователь "{name}" разбанен',
+                userBanned:'Пользователь "{name}" забанен',userDeleted:'Пользователь "{name}" удалён',
+                saveElo:'Сохранить',currentElo:'Текущий ELO',setElo:'Установить ELO',
+                eloSaved:'ELO сохранён',confirmDeleteUser:'Точно удалить пользователя?',
+                confirmBanUser:'Точно забанить пользователя?',confirmUnbanUser:'Точно разбанить пользователя?',
+                confirmClearAll:'Точно очистить все данные?',noUsers:'Нет пользователей',
+                noClansForRating:'Нет кланов для рейтинга',ratingTop:'Рейтинг кланов (по ELO)',
+                leaderContact:'Связь',clanChannel:'Канал клана',noMembersInClan:'Нет участников',
+                membersList:'Участники',clanInfo:'Информация о клане',clanName:'Название клана',
+                clanTag:'Тег клана',clanDescription:'Описание клана',clanLeader:'Глава клана',
+                clanMembers:'Участники клана',clanContact:'Связь с главой',clanChannelLabel:'Канал клана',
+                editClan:'Редактировать клан',createClan:'Создать клан',deleteClan:'Удалить клан',
+                disbandClan:'Распустить клан',leaveClanConfirm:'Выйти из клана "{name}"?',
+                applyToClan:'Подать заявку в "{name}"?',acceptRequest:'Принять заявку',
+                rejectRequest:'Отклонить заявку',memberKickConfirm:'Кикнуть игрока?',
+                transferLeadershipConfirm:'Передать лидерство?',leadershipTransferred:'Лидерство передано {name}',
+                youAreNotLeader:'Вы не глава клана',youAreNotAdmin:'Вы не администратор',
+                youAreInClan:'Вы уже в клане',youAreNotInClan:'Вы не в клане',
+                clanNotFound:'Клан не найден',userNotFound:'Пользователь не найден',
+                requestNotFound:'Заявка не найдена',invalidInput:'Некорректный ввод',
+                saveSuccess:'Сохранено',saveError:'Ошибка сохранения',loadError:'Ошибка загрузки',
+                updateSuccess:'Обновлено',updateError:'Ошибка обновления',deleteSuccess:'Удалено',
+                deleteError:'Ошибка удаления',banSuccess:'Пользователь забанен',banError:'Ошибка бана',
+                unbanSuccess:'Пользователь разбанен',unbanError:'Ошибка разбана',
+                cwSend:'Отправить запрос',cwIncoming:'Входящие CW запросы',
+                cwOutgoing:'Исходящие CW запросы',cwRequest:'⚔️ Клан {tag} хочет сыграть с вами!',
+                cwAccept:'✅ Принять CW',cwReject:'❌ Отклонить CW',
+                cwAccepted:'✅ Запрос на CW принят!',cwRejected:'❌ Запрос на CW отклонён',
+                cwFinished:'Матч завершён!',cwContacts:'📱 Контакты для CW',
+                cwYourContacts:'Ваши контакты:',cwOpponentContacts:'Контакты соперника:',
+                cwNoContacts:'Нет контактов',cwFinishMatch:'✅ Завершить матч',
+                cwConfirmFinish:'Подтвердить завершение',cwFinishConfirm:'Вы уверены, что матч завершён?',
+                cwAdminContacts:'Отправьте результаты игры администрации: @NoisyBoy141',
+                cwDeclined:'Клан {tag} отказался играть с вами',
+                cwNoClans:'Нет других кланов для CW',
+                cwChooseClan:'Выберите клан для CW'
             },
             en: {
-                'loading': 'Loading...', 'error': 'Error', 'close': 'Close', 'save': 'Save',
-                'cancel': 'Cancel', 'confirm': 'Confirm', 'delete': 'Delete', 'edit': 'Edit',
-                'ban': 'Ban', 'unban': 'Unban', 'kick': 'Kick', 'leave': 'Leave',
-                'view': 'View', 'apply': 'Apply', 'create': 'Create', 'join': 'Join',
-                'leaveClan': 'Leave clan', 'disband': 'Disband', 'clans': 'CLANS',
-                'requests': 'REQUESTS', 'myclan': 'MY CLAN', 'rating': 'RATING', 'cw': 'CW',
-                'chat': 'CHAT', 'admin': 'ADMIN', 'profile': 'Profile', 'editProfile': 'Edit profile',
-                'logout': 'Logout', 'changeLang': 'Change language', 'botActive': 'Bot is active',
-                'creator': 'Creator: @NoisyBoy141', 'channel': 'Channel', 'chatPlaceholder': 'Type a message...',
-                'chatSend': 'Send', 'chatEmpty': 'No messages yet. Be the first!',
-                'loginRequired': 'Login to participate in the chat', 'adminPanel': 'Admin panel',
-                'userManagement': 'User management', 'eloManagement': 'ELO management',
-                'noClans': 'No clans', 'noRequests': 'No requests', 'notInClan': 'You are not in a clan',
-                'clansCount': 'Clans:', 'membersCount': 'Members:', 'requestsCount': 'Requests:',
-                'leaderLabel': 'Leader', 'eloLabel': 'ELO', 'noMembers': 'No members', 'noData': 'No data',
-                'welcome': 'Welcome', 'register': 'Register', 'nickname': 'Nickname',
-                'telegramUsername': 'Telegram username (without @)', 'gameId': 'Game ID', 'role': 'Role',
-                'roleMember': 'Member', 'roleLeader': 'Leader', 'roleVice': 'Vice Leader',
-                'enterNickname': 'Enter nickname', 'enterTelegram': 'Enter Telegram',
-                'enterGameId': 'Enter game ID', 'nicknameTaken': 'Nickname is taken',
-                'idMustBeNumber': 'ID must be a number', 'welcomeUser': 'Welcome, {name}',
-                'profileUpdated': 'Profile updated', 'clanCreated': 'Clan created!',
-                'clanDeleted': 'Clan deleted', 'clanDisbanded': 'Clan disbanded',
-                'youLeftClan': 'You left the clan', 'youJoinedClan': 'You joined the clan',
-                'requestSent': 'Request sent', 'requestAccepted': 'Request accepted',
-                'requestRejected': 'Request rejected', 'notClanLeader': 'You are not the clan leader',
-                'noPendingRequests': 'No incoming requests', 'pendingRequests': 'Incoming requests ({count})',
-                'memberKicked': 'Member kicked', 'leaderTransferred': 'Leadership transferred to {name}',
-                'eloUpdated': 'ELO for "{name}" updated to {elo}', 'enterValidElo': 'Enter a valid number (≥0)',
-                'notFound': 'not found', 'noRights': 'No rights', 'clearAllData': 'Clear all data',
-                'clearAllConfirm': '⚠️ Clear all data?', 'allCleared': 'All data cleared',
-                'logoutConfirm': 'Logout?', 'youLoggedOut': 'You logged out',
-                'serverError': 'Server error', 'languageSelected': 'Language changed to English',
-                'languageSelectedRu': 'Язык изменён на русский', 'selectLanguage': '🌐 Select language',
-                'selectLanguageHint': 'Select the language to be used in the app.',
-                'clansLabel': 'Clans', 'requestsLabel': 'Requests', 'myClanLabel': 'My Clan',
-                'ratingLabel': 'Rating', 'adminLabel': 'Admin', 'cwLabel': 'CW',
-                'changeLanguage': 'Change language', 'closeApp': 'Close', 'refresh': 'Refresh',
-                'usersList': 'Users', 'userId': 'ID', 'userGameId': 'Game ID',
-                'userRole': 'Role', 'userStatus': 'Status', 'statusActive': 'Active',
-                'statusBanned': 'Banned', 'banForever': 'Forever', 'banUntil': 'until {date}',
-                'unbanConfirm': 'Unban user "{name}"?', 'userUnbanned': 'User "{name}" unbanned',
-                'userBanned': 'User "{name}" banned', 'userDeleted': 'User "{name}" deleted',
-                'saveElo': 'Save', 'currentElo': 'Current ELO', 'setElo': 'Set ELO',
-                'eloSaved': 'ELO saved', 'confirmDeleteUser': 'Delete user?',
-                'confirmBanUser': 'Ban user?', 'confirmUnbanUser': 'Unban user?',
-                'confirmClearAll': 'Clear all data?', 'noUsers': 'No users',
-                'noClansForRating': 'No clans for rating', 'ratingTop': 'Clan rating (by ELO)',
-                'leaderContact': 'Contact', 'clanChannel': 'Clan channel', 'noMembersInClan': 'No members',
-                'membersList': 'Members', 'clanInfo': 'Clan info', 'clanName': 'Clan name',
-                'clanTag': 'Clan tag', 'clanDescription': 'Clan description', 'clanLeader': 'Clan leader',
-                'clanMembers': 'Clan members', 'clanContact': 'Leader contact', 'clanChannelLabel': 'Clan channel',
-                'editClan': 'Edit clan', 'createClan': 'Create clan', 'deleteClan': 'Delete clan',
-                'disbandClan': 'Disband clan', 'leaveClanConfirm': 'Leave clan "{name}"?',
-                'applyToClan': 'Apply to "{name}"?', 'acceptRequest': 'Accept request',
-                'rejectRequest': 'Reject request', 'memberKickConfirm': 'Kick member?',
-                'transferLeadershipConfirm': 'Transfer leadership?', 'leadershipTransferred': 'Leadership transferred to {name}',
-                'youAreNotLeader': 'You are not the clan leader', 'youAreNotAdmin': 'You are not an admin',
-                'youAreInClan': 'You are already in a clan', 'youAreNotInClan': 'You are not in a clan',
-                'clanNotFound': 'Clan not found', 'userNotFound': 'User not found',
-                'requestNotFound': 'Request not found', 'invalidInput': 'Invalid input',
-                'saveSuccess': 'Saved', 'saveError': 'Save error', 'loadError': 'Load error',
-                'updateSuccess': 'Updated', 'updateError': 'Update error', 'deleteSuccess': 'Deleted',
-                'deleteError': 'Delete error', 'banSuccess': 'User banned', 'banError': 'Ban error',
-                'unbanSuccess': 'User unbanned', 'unbanError': 'Unban error',
-                'cwSend': 'Send CW request', 'cwIncoming': 'Incoming CW requests',
-                'cwOutgoing': 'Outgoing CW requests', 'cwRequest': '⚔️ Clan {tag} wants to play with you!',
-                'cwAccept': '✅ Accept CW', 'cwReject': '❌ Reject CW',
-                'cwAccepted': '✅ CW request accepted!', 'cwRejected': '❌ CW request rejected',
-                'cwFinished': 'Match finished!', 'cwContacts': '📱 CW contacts',
-                'cwYourContacts': 'Your contacts:', 'cwOpponentContacts': 'Opponent contacts:',
-                'cwNoContacts': 'No contacts', 'cwFinishMatch': '✅ Finish match',
-                'cwConfirmFinish': 'Confirm finish', 'cwFinishConfirm': 'Are you sure the match is finished?',
-                'cwAdminContacts': 'Send match results to admin: @NoisyBoy141',
-                'cwDeclined': 'Clan {tag} declined to play with you',
-                'cwNoClans': 'No other clans for CW',
-                'cwChooseClan': 'Choose a clan for CW'
+                loading:'Loading...',error:'Error',close:'Close',save:'Save',
+                cancel:'Cancel',confirm:'Confirm',delete:'Delete',edit:'Edit',
+                ban:'Ban',unban:'Unban',kick:'Kick',leave:'Leave',
+                view:'View',apply:'Apply',create:'Create',join:'Join',
+                leaveClan:'Leave clan',disband:'Disband',clans:'CLANS',
+                requests:'REQUESTS',myclan:'MY CLAN',rating:'RATING',cw:'CW',
+                chat:'CHAT',admin:'ADMIN',profile:'Profile',editProfile:'Edit profile',
+                logout:'Logout',changeLang:'Change language',botActive:'Bot is active',
+                creator:'Creator: @NoisyBoy141',channel:'Channel',chatPlaceholder:'Type a message...',
+                chatSend:'Send',chatEmpty:'No messages yet. Be the first!',
+                loginRequired:'Login to participate in the chat',adminPanel:'Admin panel',
+                userManagement:'User management',eloManagement:'ELO management',
+                noClans:'No clans',noRequests:'No requests',notInClan:'You are not in a clan',
+                clansCount:'Clans:',membersCount:'Members:',requestsCount:'Requests:',
+                leaderLabel:'Leader',eloLabel:'ELO',noMembers:'No members',noData:'No data',
+                welcome:'Welcome',register:'Register',nickname:'Nickname',
+                telegramUsername:'Telegram username (without @)',gameId:'Game ID',role:'Role',
+                roleMember:'Member',roleLeader:'Leader',roleVice:'Vice Leader',
+                enterNickname:'Enter nickname',enterTelegram:'Enter Telegram',
+                enterGameId:'Enter game ID',nicknameTaken:'Nickname is taken',
+                idMustBeNumber:'ID must be a number',welcomeUser:'Welcome, {name}',
+                profileUpdated:'Profile updated',clanCreated:'Clan created!',
+                clanDeleted:'Clan deleted',clanDisbanded:'Clan disbanded',
+                youLeftClan:'You left the clan',youJoinedClan:'You joined the clan',
+                requestSent:'Request sent',requestAccepted:'Request accepted',
+                requestRejected:'Request rejected',notClanLeader:'You are not the clan leader',
+                noPendingRequests:'No incoming requests',pendingRequests:'Incoming requests ({count})',
+                memberKicked:'Member kicked',leaderTransferred:'Leadership transferred to {name}',
+                eloUpdated:'ELO for "{name}" updated to {elo}',enterValidElo:'Enter a valid number (≥0)',
+                notFound:'not found',noRights:'No rights',clearAllData:'Clear all data',
+                clearAllConfirm:'⚠️ Clear all data?',allCleared:'All data cleared',
+                logoutConfirm:'Logout?',youLoggedOut:'You logged out',
+                serverError:'Server error',languageSelected:'Language changed to English',
+                languageSelectedRu:'Язык изменён на русский',selectLanguage:'🌐 Select language',
+                selectLanguageHint:'Select the language to be used in the app.',
+                clansLabel:'Clans',requestsLabel:'Requests',myClanLabel:'My Clan',
+                ratingLabel:'Rating',adminLabel:'Admin',cwLabel:'CW',
+                changeLanguage:'Change language',closeApp:'Close',refresh:'Refresh',
+                usersList:'Users',userId:'ID',userGameId:'Game ID',
+                userRole:'Role',userStatus:'Status',statusActive:'Active',
+                statusBanned:'Banned',banForever:'Forever',banUntil:'until {date}',
+                unbanConfirm:'Unban user "{name}"?',userUnbanned:'User "{name}" unbanned',
+                userBanned:'User "{name}" banned',userDeleted:'User "{name}" deleted',
+                saveElo:'Save',currentElo:'Current ELO',setElo:'Set ELO',
+                eloSaved:'ELO saved',confirmDeleteUser:'Delete user?',
+                confirmBanUser:'Ban user?',confirmUnbanUser:'Unban user?',
+                confirmClearAll:'Clear all data?',noUsers:'No users',
+                noClansForRating:'No clans for rating',ratingTop:'Clan rating (by ELO)',
+                leaderContact:'Contact',clanChannel:'Clan channel',noMembersInClan:'No members',
+                membersList:'Members',clanInfo:'Clan info',clanName:'Clan name',
+                clanTag:'Clan tag',clanDescription:'Clan description',clanLeader:'Clan leader',
+                clanMembers:'Clan members',clanContact:'Leader contact',clanChannelLabel:'Clan channel',
+                editClan:'Edit clan',createClan:'Create clan',deleteClan:'Delete clan',
+                disbandClan:'Disband clan',leaveClanConfirm:'Leave clan "{name}"?',
+                applyToClan:'Apply to "{name}"?',acceptRequest:'Accept request',
+                rejectRequest:'Reject request',memberKickConfirm:'Kick member?',
+                transferLeadershipConfirm:'Transfer leadership?',leadershipTransferred:'Leadership transferred to {name}',
+                youAreNotLeader:'You are not the clan leader',youAreNotAdmin:'You are not an admin',
+                youAreInClan:'You are already in a clan',youAreNotInClan:'You are not in a clan',
+                clanNotFound:'Clan not found',userNotFound:'User not found',
+                requestNotFound:'Request not found',invalidInput:'Invalid input',
+                saveSuccess:'Saved',saveError:'Save error',loadError:'Load error',
+                updateSuccess:'Updated',updateError:'Update error',deleteSuccess:'Deleted',
+                deleteError:'Delete error',banSuccess:'User banned',banError:'Ban error',
+                unbanSuccess:'User unbanned',unbanError:'Unban error',
+                cwSend:'Send CW request',cwIncoming:'Incoming CW requests',
+                cwOutgoing:'Outgoing CW requests',cwRequest:'⚔️ Clan {tag} wants to play with you!',
+                cwAccept:'✅ Accept CW',cwReject:'❌ Reject CW',
+                cwAccepted:'✅ CW request accepted!',cwRejected:'❌ CW request rejected',
+                cwFinished:'Match finished!',cwContacts:'📱 CW contacts',
+                cwYourContacts:'Your contacts:',cwOpponentContacts:'Opponent contacts:',
+                cwNoContacts:'No contacts',cwFinishMatch:'✅ Finish match',
+                cwConfirmFinish:'Confirm finish',cwFinishConfirm:'Are you sure the match is finished?',
+                cwAdminContacts:'Send match results to admin: @NoisyBoy141',
+                cwDeclined:'Clan {tag} declined to play with you',
+                cwNoClans:'No other clans for CW',
+                cwChooseClan:'Choose a clan for CW'
             }
-        };        // ============================================================
-        // НАСТРОЙКИ
+        };
+
         // ============================================================
-        const ADMIN_GAME_ID = '22887924';
-        const ADMIN_TG_ID = '180927119';
+        // НАСТРОЙКИ - ТВОИ ДАННЫЕ
+        // ============================================================
+        const MY_TELEGRAM_ID = '180927119';
+        const MY_NAME = 's1m1';
+        const MY_GAME_ID = '22887924';
 
         const firebaseConfig = {
             apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
@@ -591,9 +582,7 @@
         // ============================================================
         // ФУНКЦИИ ПЕРЕВОДА
         // ============================================================
-        function t(key) {
-            return LANG[currentLang] && LANG[currentLang][key] !== undefined ? LANG[currentLang][key] : key;
-        }
+        function t(key) { return LANG[currentLang] && LANG[currentLang][key] !== undefined ? LANG[currentLang][key] : key; }
 
         function applyLanguage() {
             document.getElementById('tabClans').textContent = t('clans');
@@ -634,7 +623,8 @@
         // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
         function isAdmin(user) {
-            return user && (user.gameId === ADMIN_GAME_ID || user.id === ADMIN_TG_ID || user.role === 'admin');
+            if (!user) return false;
+            return user.id === MY_TELEGRAM_ID || (user.name === MY_NAME && user.gameId === MY_GAME_ID);
         }
 
         function canManageClan(user, clan) {
@@ -642,41 +632,24 @@
             return clan.leaderId === user.id || user.role === 'vice' || isAdmin(user);
         }
 
-        function getUserName(id) {
-            const u = allUsers.find(x => x.id === id);
-            return u ? u.name : id;
-        }
-
-        function getUserTelegram(id) {
-            const u = allUsers.find(x => x.id === id);
-            return u ? u.telegramUsername || '' : '';
-        }
-
-        function getClanLeader(clan) {
-            return allUsers.find(u => u.id === clan.leaderId);
-        }
-
-        function getClanElo(clanId) {
-            const clan = allClans.find(c => c.id === clanId);
-            return clan && clan.elo !== undefined ? clan.elo : 0;
-        }
+        function getUserName(id) { const u = allUsers.find(x => x.id === id); return u ? u.name : id; }
+        function getUserTelegram(id) { const u = allUsers.find(x => x.id === id); return u ? u.telegramUsername || '' : ''; }
+        function getClanLeader(clan) { return allUsers.find(u => u.id === clan.leaderId); }
+        function getClanElo(clanId) { const c = allClans.find(c => c.id === clanId); return c && c.elo !== undefined ? c.elo : 0; }
 
         function isUserBanned(user) {
             if (!user.bannedUntil) return false;
             if (user.bannedUntil === 'forever') return true;
-            const now = Date.now();
-            const banDate = new Date(user.bannedUntil).getTime();
-            return banDate > now;
+            return new Date(user.bannedUntil).getTime() > Date.now();
         }
 
         function getBanStatusText(user) {
             if (!user.bannedUntil) return { text: t('statusActive'), class: 'active' };
             if (user.bannedUntil === 'forever') return { text: t('statusBanned'), class: 'banned' };
-            const now = Date.now();
-            const banDate = new Date(user.bannedUntil).getTime();
-            if (banDate > now) {
-                const remaining = Math.ceil((banDate - now) / (1000 * 60 * 60 * 24));
-                return { text: t('statusBanned') + ' (' + t('banUntil').replace('{date}', remaining + ' д.') + ')', class: 'banned' };
+            const d = new Date(user.bannedUntil).getTime();
+            if (d > Date.now()) {
+                const rem = Math.ceil((d - Date.now()) / 86400000);
+                return { text: t('statusBanned') + ' (' + t('banUntil').replace('{date}', rem + ' д.') + ')', class: 'banned' };
             } else {
                 return { text: t('statusActive'), class: 'active' };
             }
@@ -698,6 +671,9 @@
             document.getElementById('footerClansLabel').textContent = t('clansCount');
             document.getElementById('footerMembersLabel').textContent = t('membersCount');
         }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+        function toggleProfile() { document.getElementById('profileDropdown').classList.toggle('show'); }
 
         // ============================================================
         // РАБОТА С FIREBASE
@@ -721,12 +697,36 @@
             }
         }
 
-        async function saveData(data) {
-            await db.ref('/').set(data);
+        async function saveData(data) { await db.ref('/').set(data); }
+
+        // ============================================================
+        // ОЧИСТКА БАЗЫ ПРИ ПЕРВОМ ЗАПУСКЕ
+        // ============================================================
+        async function clearDatabase() {
+            try {
+                const data = await loadData();
+                // Очищаем все, кроме кланов (если они есть)
+                data.users = [];
+                data.requests = [];
+                data.cw = [];
+                // Кланы оставляем, но чистим участников
+                if (data.clans) {
+                    data.clans.forEach(c => {
+                        c.members = [];
+                        c.leaderId = null;
+                    });
+                }
+                await saveData(data);
+                console.log('✅ База данных очищена');
+                return true;
+            } catch (e) {
+                console.error('Ошибка очистки:', e);
+                return false;
+            }
         }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ (ЖЁСТКАЯ ПРИВЯЗКА ПРОФИЛЯ)
+        // ИНИЦИАЛИЗАЦИЯ (С ОЧИСТКОЙ И СОЗДАНИЕМ ТЕБЯ)
         // ============================================================
         async function initApp() {
             try {
@@ -739,7 +739,74 @@
                 }
                 applyLanguage();
 
+                // ⭐ ПРОВЕРЯЕМ: если в базе нет пользователей — очищаем и создаём тебя
                 const data = await loadData();
+                
+                // Если пользователей нет или только левые — очищаем всё
+                const hasValidUsers = data.users && data.users.length > 0;
+                if (!hasValidUsers || data.users.every(u => u.name !== MY_NAME)) {
+                    // Очищаем базу
+                    await clearDatabase();
+                    // Загружаем чистые данные
+                    const freshData = await loadData();
+                    
+                    // Создаём ТЕБЯ как главного админа и главу NAVI
+                    const myUser = {
+                        id: MY_TELEGRAM_ID,
+                        name: MY_NAME,
+                        telegramUsername: '@NoisyBoy141',
+                        gameId: MY_GAME_ID,
+                        role: 'admin',
+                        clanId: null
+                    };
+                    freshData.users.push(myUser);
+                    
+                    // Создаём клан NAVI, если его нет
+                    let navi = freshData.clans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
+                    if (!navi) {
+                        navi = {
+                            id: 'clan_navi',
+                            name: 'Natus Vincere',
+                            tag: 'NAVI',
+                            leaderId: MY_TELEGRAM_ID,
+                            members: [MY_TELEGRAM_ID],
+                            description: 'Born To Win',
+                            contact: 'NoisyBoy141',
+                            channel: '@OnlyTSL',
+                            elo: 0,
+                            created: new Date().toISOString()
+                        };
+                        freshData.clans.push(navi);
+                    } else {
+                        navi.leaderId = MY_TELEGRAM_ID;
+                        if (!navi.members) navi.members = [];
+                        if (!navi.members.includes(MY_TELEGRAM_ID)) navi.members.push(MY_TELEGRAM_ID);
+                    }
+                    
+                    myUser.clanId = navi.id;
+                    
+                    await saveData(freshData);
+                    
+                    // Сохраняем в localStorage
+                    localStorage.setItem('bsc_user', JSON.stringify(myUser));
+                    localStorage.setItem('bsc_test_id', MY_TELEGRAM_ID);
+                    localStorage.setItem('bsc_last_gameId', MY_GAME_ID);
+                    
+                    currentUser = myUser;
+                    allUsers = freshData.users;
+                    allClans = freshData.clans;
+                    allRequests = freshData.requests || [];
+                    allCw = freshData.cw || [];
+                    
+                    showToast('✅ База очищена! Ты создан как главный админ', 'success');
+                    updateUI();
+                    showTab('clans');
+                    renderMainActionButton();
+                    updateFooterStats();
+                    return;
+                }
+
+                // Если база уже есть — загружаем как обычно
                 allUsers = data.users || [];
                 allClans = data.clans || [];
                 allRequests = data.requests || [];
@@ -750,8 +817,7 @@
                 let changed = false;
                 allUsers.forEach(user => {
                     if (user.bannedUntil && user.bannedUntil !== 'forever') {
-                        const banDate = new Date(user.bannedUntil).getTime();
-                        if (banDate <= Date.now()) {
+                        if (new Date(user.bannedUntil).getTime() <= Date.now()) {
                             delete user.bannedUntil;
                             delete user.bannedReason;
                             changed = true;
@@ -764,7 +830,7 @@
                     await saveData(updatedData);
                 }
 
-                // Получаем ID пользователя
+                // Получаем Telegram ID
                 let tgId = null;
                 try {
                     const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -774,70 +840,38 @@
                 if (!tgId) {
                     let savedId = localStorage.getItem('bsc_test_id');
                     if (!savedId) {
-                        savedId = 'browser_' + Date.now();
+                        savedId = 'user_' + Date.now();
                         localStorage.setItem('bsc_test_id', savedId);
                     }
                     tgId = savedId;
                 }
 
-                // ЖЁСТКАЯ ПРИВЯЗКА — если это мой ID, всегда беру свой профиль
-                let user = null;
+                // Ищем пользователя
+                let user = allUsers.find(u => u.id === tgId);
                 
-                // Сначала проверяем — может уже есть пользователь с моим ID
-                user = allUsers.find(u => u.id === tgId);
-                
-                // Если не найден, ищем по gameId
-                if (!user) {
-                    user = allUsers.find(u => u.gameId === ADMIN_GAME_ID);
-                    if (user) {
-                        // Удаляем старого пользователя с моим ID, если есть
-                        allUsers = allUsers.filter(u => u.id !== tgId);
-                        // Обновляем ID у найденного
-                        user.id = tgId;
-                        // Сохраняем
-                        const updData = await loadData();
-                        updData.users = allUsers;
-                        await saveData(updData);
-                        localStorage.setItem('bsc_test_id', tgId);
-                        localStorage.setItem('bsc_user', JSON.stringify(user));
-                        showToast('✅ Профиль восстановлен', 'success');
-                    }
+                // Если не найден и это ты — создаём
+                if (!user && tgId === MY_TELEGRAM_ID) {
+                    user = {
+                        id: MY_TELEGRAM_ID,
+                        name: MY_NAME,
+                        telegramUsername: '@NoisyBoy141',
+                        gameId: MY_GAME_ID,
+                        role: 'admin',
+                        clanId: null
+                    };
+                    allUsers.push(user);
+                    const updData = await loadData();
+                    updData.users = allUsers;
+                    await saveData(updData);
+                    localStorage.setItem('bsc_user', JSON.stringify(user));
+                    localStorage.setItem('bsc_test_id', MY_TELEGRAM_ID);
+                    localStorage.setItem('bsc_last_gameId', MY_GAME_ID);
                 }
 
-                // Если всё ещё нет — создаём
+                // Если пользователь не найден — показываем регистрацию
                 if (!user) {
-                    // Проверяем, есть ли пользователь с ником s1m1
-                    let existing = allUsers.find(u => u.name === 's1m1');
-                    if (existing) {
-                        // Если есть — привязываем
-                        allUsers = allUsers.filter(u => u.id !== tgId);
-                        existing.id = tgId;
-                        existing.gameId = ADMIN_GAME_ID;
-                        existing.role = 'admin';
-                        user = existing;
-                        const updData = await loadData();
-                        updData.users = allUsers;
-                        await saveData(updData);
-                    } else {
-                        // Создаём новый профиль
-                        const newUser = {
-                            id: tgId,
-                            name: 's1m1',
-                            telegramUsername: '@NoisyBoy141',
-                            gameId: ADMIN_GAME_ID,
-                            role: 'admin',
-                            clanId: null
-                        };
-                        allUsers.push(newUser);
-                        const updData = await loadData();
-                        updData.users = allUsers;
-                        await saveData(updData);
-                        user = newUser;
-                    }
-                    localStorage.setItem('bsc_test_id', tgId);
-                    localStorage.setItem('bsc_user', JSON.stringify(user));
-                    localStorage.setItem('bsc_last_gameId', ADMIN_GAME_ID);
-                    showToast('✅ Профиль создан', 'success');
+                    document.getElementById('registerModal').classList.add('show');
+                    return;
                 }
 
                 // Проверяем бан
@@ -853,44 +887,38 @@
                     return;
                 }
 
-                // Убеждаемся, что роль админа
-                if (isAdmin(user) && user.role !== 'admin') {
-                    user.role = 'admin';
-                    const updData = await loadData();
-                    const target = updData.users.find(u => u.id === user.id);
-                    if (target) { target.role = 'admin';
-                        await saveData(updData); }
-                    allUsers = updData.users || [];
-                    updateFooterStats();
-                }
-
-                // Если лидер без клана — ищем его клан
-                if (user.role === 'leader' && !user.clanId) {
-                    const myClan = allClans.find(c => c.leaderId === user.id);
-                    if (myClan) {
-                        user.clanId = myClan.id;
-                        const updData = await loadData();
-                        const uu = updData.users.find(u => u.id === user.id);
-                        if (uu) { uu.clanId = myClan.id;
-                            await saveData(updData); }
-                        allUsers = updData.users || [];
-                        updateFooterStats();
+                // Защита: если кто-то стал админом не по праву — снимаем
+                allUsers.forEach(u => {
+                    if (u.role === 'admin' && u.id !== MY_TELEGRAM_ID && u.name !== MY_NAME) {
+                        u.role = 'member';
                     }
+                });
+
+                // Привязываем NAVI к тебе, если ты s1m1
+                if (user.name === MY_NAME || user.id === MY_TELEGRAM_ID) {
+                    const navi = allClans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
+                    if (navi) {
+                        navi.leaderId = user.id;
+                        if (!navi.members) navi.members = [];
+                        if (!navi.members.includes(user.id)) navi.members.push(user.id);
+                        user.clanId = navi.id;
+                        user.role = 'leader';
+                    }
+                    
+                    // Убеждаемся, что ты админ
+                    user.role = 'admin';
+                    
+                    // Сохраняем
+                    const updData = await loadData();
+                    updData.users = allUsers;
+                    updData.clans = allClans;
+                    await saveData(updData);
                 }
 
                 currentUser = user;
                 localStorage.setItem('bsc_user', JSON.stringify(currentUser));
                 if (currentUser.gameId) {
                     localStorage.setItem('bsc_last_gameId', currentUser.gameId);
-                }
-
-                // Очищаем лишние профили с тем же ником (защита от дубликатов)
-                const duplicates = allUsers.filter(u => u.name === 's1m1' && u.id !== currentUser.id);
-                if (duplicates.length > 0) {
-                    const updData = await loadData();
-                    updData.users = allUsers.filter(u => u.name !== 's1m1' || u.id === currentUser.id);
-                    await saveData(updData);
-                    allUsers = updData.users;
                 }
 
                 updateUI();
@@ -933,10 +961,16 @@
             if (!tgId) {
                 let savedId = localStorage.getItem('bsc_test_id');
                 if (!savedId) {
-                    savedId = 'browser_' + Date.now();
+                    savedId = 'user_' + Date.now();
                     localStorage.setItem('bsc_test_id', savedId);
                 }
                 tgId = savedId;
+            }
+
+            // Защита: ник s1m1 занят навсегда
+            if (name === MY_NAME && tgId !== MY_TELEGRAM_ID) {
+                showToast('❌ Ник s1m1 занят главным админом', 'error');
+                return;
             }
 
             // Проверка на занятость ника
@@ -944,20 +978,20 @@
                 return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
-            const isAdminUser = gameId === ADMIN_GAME_ID || tgId === ADMIN_TG_ID;
+            // Только ты можешь быть админом
+            const isAdminUser = (tgId === MY_TELEGRAM_ID || name === MY_NAME);
 
-            // Проверяем, есть ли уже пользователь с таким ID
-            let user = allUsers.find(u => u.id === tgId);
-            if (user) {
-                // Обновляем данные
-                user.name = name;
-                user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
-                user.gameId = gameId;
-                if (isAdminUser) user.role = 'admin';
-                const updData = await loadData();
-                updData.users = allUsers;
-                await saveData(updData);
-                currentUser = user;
+            // Проверяем существующего пользователя
+            let existingUser = allUsers.find(u => u.id === tgId);
+            if (existingUser) {
+                existingUser.name = name;
+                existingUser.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
+                existingUser.gameId = gameId;
+                existingUser.role = isAdminUser ? 'admin' : 'member';
+                const data = await loadData();
+                data.users = allUsers;
+                await saveData(data);
+                currentUser = existingUser;
                 localStorage.setItem('bsc_user', JSON.stringify(currentUser));
                 localStorage.setItem('bsc_last_gameId', gameId);
                 document.getElementById('registerModal').classList.remove('show');
@@ -969,12 +1003,13 @@
                 return;
             }
 
+            // Создаём нового пользователя
             const newUser = {
                 id: tgId,
                 name: name,
                 telegramUsername: tgName.startsWith('@') ? tgName : '@' + tgName,
                 gameId: gameId,
-                role: isAdminUser ? 'admin' : role,
+                role: isAdminUser ? 'admin' : 'member',
                 clanId: null
             };
 
@@ -993,67 +1028,6 @@
             renderMainActionButton();
             updateFooterStats();
         }
-
-        // ============================================================
-        // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ (КНОПКА В МЕНЮ)
-        // ============================================================
-        window.recoverProfile = async function() {
-            const gameId = prompt('🔑 Введите ваш игровой ID (число):');
-            if (!gameId || isNaN(gameId) || gameId.trim() === '') {
-                showToast('❌ Введите корректный ID', 'error');
-                return;
-            }
-            const data = await loadData();
-            const user = data.users.find(u => u.gameId === gameId.trim());
-            if (!user) {
-                showToast('❌ Пользователь с таким ID не найден', 'error');
-                return;
-            }
-            if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
-
-            let newId = null;
-            try {
-                const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                if (tg && tg.id) newId = tg.id.toString();
-            } catch(e) {}
-            if (!newId) {
-                let savedId = localStorage.getItem('bsc_test_id');
-                if (!savedId) {
-                    savedId = 'device_' + Date.now();
-                    localStorage.setItem('bsc_test_id', savedId);
-                }
-                newId = savedId;
-            }
-
-            data.users = data.users.filter(u => u.id !== newId);
-            user.id = newId;
-            await saveData(data);
-
-            currentUser = user;
-            localStorage.setItem('bsc_user', JSON.stringify(user));
-            localStorage.setItem('bsc_test_id', newId);
-            localStorage.setItem('bsc_last_gameId', user.gameId);
-            showToast('✅ Профиль восстановлен! Перезагружаем...', 'success');
-            setTimeout(() => location.reload(), 1000);
-        };
-
-        // Добавляем кнопку в меню профиля
-        (function() {
-            const dropdown = document.querySelector('.profile-dropdown .info');
-            if (!dropdown) return;
-            const parent = dropdown.parentNode;
-            const editBtn = parent.querySelector('.btn-secondary:first-of-type');
-            if (!editBtn) return;
-            const recoverBtn = document.createElement('button');
-            recoverBtn.className = 'btn btn-secondary btn-block btn-sm';
-            recoverBtn.textContent = '🔄 Восстановить профиль';
-            recoverBtn.onclick = function(e) {
-                e.preventDefault();
-                window.recoverProfile();
-                document.getElementById('profileDropdown').classList.remove('show');
-            };
-            editBtn.after(recoverBtn);
-        })();
 
         // ============================================================
         // ПРОФИЛЬ
@@ -1082,6 +1056,11 @@
                 const data = await loadData();
                 const user = data.users.find(u => u.id === currentUser.id);
                 if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+
+                // Защита: ник s1m1 нельзя занять
+                if (name === MY_NAME && currentUser.id !== MY_TELEGRAM_ID) {
+                    return showToast('❌ Ник s1m1 занят главным админом', 'error');
+                }
 
                 if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== currentUser.id)) {
                     return showToast('❌ ' + t('nicknameTaken'), 'error');
@@ -1156,33 +1135,13 @@
                 const btn = document.getElementById(id);
                 if (btn) btn.className = 'btn';
             });
-            const map = {
-                clans: 'tabClans',
-                requests: 'tabRequests',
-                myclan: 'tabMyClan',
-                rating: 'tabRating',
-                cw: 'tabCw',
-                chat: 'tabChat',
-                admin: 'tabAdmin'
-            };
+            const map = { clans: 'tabClans', requests: 'tabRequests', myclan: 'tabMyClan', rating: 'tabRating', cw: 'tabCw', chat: 'tabChat', admin: 'tabAdmin' };
             const active = document.getElementById(map[tab]);
             if (active) active.className = 'btn btn-primary';
 
             const container = document.getElementById('content');
-            
-            if (tab === 'chat') {
-                chatInitialized = false;
-            }
-            
-            const funcs = {
-                clans: renderClans,
-                requests: renderRequests,
-                myclan: renderMyClan,
-                rating: renderRating,
-                cw: renderCw,
-                chat: initChat,
-                admin: renderAdmin
-            };
+            if (tab === 'chat') { chatInitialized = false; }
+            const funcs = { clans: renderClans, requests: renderRequests, myclan: renderMyClan, rating: renderRating, cw: renderCw, chat: initChat, admin: renderAdmin };
             if (funcs[tab]) funcs[tab](container);
             else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
         }
@@ -1487,7 +1446,7 @@
         }
 
         // ============================================================
-        // CW (CLAN WARS)
+        // CW
         // ============================================================
         async function renderCw(container) {
             await refreshData();
@@ -1536,12 +1495,7 @@
                 html += `<div style="color:var(--text-secondary);font-size:13px;margin-top:12px;margin-bottom:8px;">${t('cwOutgoing')}:</div>`;
                 outgoing.forEach(cw => {
                     const toClan = allClans.find(c => c.id === cw.toClanId);
-                    const statusText = {
-                        'pending': '⏳ Ожидание',
-                        'accepted': '✅ Принят',
-                        'rejected': '❌ Отклонён',
-                        'finished': '🏁 Завершён'
-                    };
+                    const statusText = { 'pending': '⏳ Ожидание', 'accepted': '✅ Принят', 'rejected': '❌ Отклонён', 'finished': '🏁 Завершён' };
                     html += `
                         <div class="cw-item">
                             <div class="cw-header">
@@ -1555,9 +1509,7 @@
                                     <button class="btn btn-success btn-sm" onclick="finishCw('${cw.id}')">🏁 ${t('cwFinishMatch')}</button>
                                 </div>
                             ` : ''}
-                            ${cw.status === 'finished' ? `
-                                <div style="color:var(--text-secondary);font-size:13px;">✅ Матч завершён</div>
-                            ` : ''}
+                            ${cw.status === 'finished' ? `<div style="color:var(--text-secondary);font-size:13px;">✅ Матч завершён</div>` : ''}
                         </div>
                     `;
                 });
@@ -1743,7 +1695,7 @@
         }
 
         // ============================================================
-        // ЧАТ (ФИКС — НЕ СБРАСЫВАЕТСЯ)
+        // ЧАТ
         // ============================================================
         function initChat(container) {
             if (chatInitialized && container.innerHTML.includes('chat-container')) {
@@ -1788,10 +1740,8 @@
                 setTimeout(() => input.focus(), 300);
             }
 
-            // Загружаем сообщения с сохранением состояния
             loadChatMessages();
 
-            // Принудительное обновление
             setTimeout(() => {
                 if (chatInitialized) {
                     updateChatMessages();
@@ -1904,7 +1854,7 @@
         }
 
         // ============================================================
-        // АДМИН-ПАНЕЛЬ
+        // АДМИН
         // ============================================================
         async function renderAdmin(container) {
             if (!isAdmin(currentUser)) {
@@ -1936,12 +1886,15 @@
                     const status = getBanStatusText(user);
                     const isUserAdmin = isAdmin(user);
                     const isBanned = status.class === 'banned';
+                    const isCurrentUser = user.id === currentUser.id;
+                    
                     html += `
                         <div class="user-card">
                             <div class="user-header">
                                 <div class="user-name">
                                     ${user.name}
                                     ${isUserAdmin ? '👑' : ''}
+                                    ${isCurrentUser ? ' (Это вы)' : ''}
                                     <span class="user-status ${status.class}">${status.text}</span>
                                 </div>
                             </div>
@@ -1952,14 +1905,19 @@
                                 <span>🎭 ${user.role || 'member'}</span>
                             </div>
                             <div class="user-actions">
-                                ${!isUserAdmin ? `
+                                ${!isCurrentUser ? `
                                     <button class="btn btn-danger btn-sm" onclick="adminDeleteUser('${user.id}')">❌ ${t('delete')}</button>
                                     ${isBanned ? 
                                         `<button class="btn btn-success btn-sm" onclick="adminUnbanUser('${user.id}')">✅ ${t('unban')}</button>` :
                                         `<button class="btn btn-danger btn-sm" onclick="openBanModal('${user.id}')">🔨 ${t('ban')}</button>`
                                     }
+                                    ${isUserAdmin ? `
+                                        <button class="btn btn-gold btn-sm" onclick="removeAdmin('${user.id}')">👑 Снять админа</button>
+                                    ` : `
+                                        <button class="btn btn-gold btn-sm" onclick="makeAdmin('${user.id}')">👑 Назначить админом</button>
+                                    `}
                                 ` : `
-                                    <span style="color:var(--accent);font-size:12px;">👑 ${t('adminLabel')}</span>
+                                    <span style="color:var(--accent);font-size:12px;">👑 Главный админ</span>
                                 `}
                             </div>
                         </div>
@@ -2003,6 +1961,201 @@
             html += `</div>`;
             container.innerHTML = html;
             applyLanguage();
+        }
+
+        // ============================================================
+        // АДМИН ФУНКЦИИ
+        // ============================================================
+        window.makeAdmin = async function(userId) {
+            if (!isAdmin(currentUser)) {
+                showToast('⛔ Только главный админ может назначать админов', 'error');
+                return;
+            }
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) { showToast('❌ Пользователь не найден', 'error'); return; }
+            if (isAdmin(user)) { showToast('❌ Уже админ', 'error'); return; }
+            if (!confirm(`Назначить "${user.name}" админом?`)) return;
+            
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === userId);
+                if (target) {
+                    target.role = 'admin';
+                    await saveData(data);
+                    await refreshData();
+                    showToast(`✅ "${user.name}" назначен админом`, 'success');
+                    renderAdmin(document.getElementById('content'));
+                }
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        };
+
+        window.removeAdmin = async function(userId) {
+            if (!isAdmin(currentUser)) {
+                showToast('⛔ Только главный админ может снимать админов', 'error');
+                return;
+            }
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) { showToast('❌ Пользователь не найден', 'error'); return; }
+            if (!isAdmin(user)) { showToast('❌ Не админ', 'error'); return; }
+            if (user.id === MY_TELEGRAM_ID) {
+                showToast('❌ Нельзя снять самого себя', 'error');
+                return;
+            }
+            if (!confirm(`Снять права админа с "${user.name}"?`)) return;
+            
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === userId);
+                if (target) {
+                    target.role = 'member';
+                    await saveData(data);
+                    await refreshData();
+                    showToast(`✅ Права админа сняты с "${user.name}"`, 'success');
+                    renderAdmin(document.getElementById('content'));
+                }
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        };
+
+        async function adminDeleteUser(userId) {
+            if (!isAdmin(currentUser)) {
+                showToast('⛔ Только главный админ может удалять', 'error');
+                return;
+            }
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) { showToast('❌ ' + t('userNotFound'), 'error'); return; }
+            if (user.id === currentUser.id) {
+                showToast('❌ Нельзя удалить самого себя', 'error');
+                return;
+            }
+            if (!confirm(`Точно удалить пользователя "${user.name}"?`)) return;
+
+            try {
+                const data = await loadData();
+                data.users = data.users.filter(u => u.id !== userId);
+                data.clans.forEach(c => {
+                    if (c.members) c.members = c.members.filter(m => m !== userId);
+                    if (c.leaderId === userId) {
+                        const newL = c.members && c.members.length ? c.members[0] : null;
+                        if (newL) {
+                            const lu = data.users.find(u => u.id === newL);
+                            c.leaderId = newL;
+                            c.leaderName = lu ? lu.name : 'Неизвестен';
+                        } else {
+                            data.clans = data.clans.filter(cl => cl.id !== c.id);
+                        }
+                    }
+                });
+                data.requests = data.requests.filter(r => r.userId !== userId);
+                await saveData(data);
+                await refreshData();
+                showToast('✅ ' + t('userDeleted').replace('{name}', user.name), 'success');
+                renderAdmin(document.getElementById('content'));
+                updateFooterStats();
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        function openBanModal(userId) {
+            if (!isAdmin(currentUser)) return;
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            banTargetUserId = userId;
+            document.getElementById('banUserName').textContent = 'Пользователь: ' + user.name + ' (' + user.id + ')';
+            document.getElementById('banDays').value = 7;
+            document.getElementById('banReason').value = '';
+            document.getElementById('banModal').classList.add('show');
+            applyLanguage();
+        }
+
+        async function confirmBan() {
+            const days = parseInt(document.getElementById('banDays').value);
+            const reason = document.getElementById('banReason').value.trim();
+            if (isNaN(days) || days < 0) {
+                showToast('❌ ' + t('enterValidElo'), 'error');
+                return;
+            }
+            if (!banTargetUserId) return;
+
+            const user = allUsers.find(u => u.id === banTargetUserId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === banTargetUserId);
+                if (!target) return showToast('❌ ' + t('userNotFound'), 'error');
+
+                if (days === 0) {
+                    target.bannedUntil = 'forever';
+                } else {
+                    const until = new Date();
+                    until.setDate(until.getDate() + days);
+                    target.bannedUntil = until.toISOString();
+                }
+                target.bannedReason = reason || 'Нарушение правил';
+
+                await saveData(data);
+                await refreshData();
+                closeModal('banModal');
+                showToast('✅ ' + t('userBanned').replace('{name}', user.name), 'success');
+                renderAdmin(document.getElementById('content'));
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
+        }
+
+        async function adminUnbanUser(userId) {
+            if (!isAdmin(currentUser)) return;
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+            if (!confirm(t('unbanConfirm').replace('{name}', user.name))) return;
+
+            try {
+                const data = await loadData();
+                const target = data.users.find(u => u.id === userId);
+                if (target) {
+                    delete target.bannedUntil;
+                    delete target.bannedReason;
+                }
+                await saveData(data);
+                await refreshData();
+                showToast('✅ ' + t('userUnbanned').replace('{name}', user.name), 'success');
+                renderAdmin(document.getElementById('content'));
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function adminSetElo(clanId) {
+            const input = document.getElementById(`elo_input_${clanId}`);
+            if (!input) return;
+            const newElo = parseInt(input.value);
+            if (isNaN(newElo) || newElo < 0) {
+                showToast('❌ ' + t('enterValidElo'), 'error');
+                return;
+            }
+
+            try {
+                const data = await loadData();
+                const clan = data.clans.find(c => c.id === clanId);
+                if (!clan) {
+                    showToast('❌ ' + t('clanNotFound'), 'error');
+                    return;
+                }
+                clan.elo = newElo;
+                await saveData(data);
+                await refreshData();
+                showToast('✅ ' + t('eloUpdated').replace('{name}', clan.name).replace('{elo}', newElo), 'success');
+                renderAdmin(document.getElementById('content'));
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
+        }
+
+        async function clearAllData() {
+            if (!isAdmin(currentUser)) return;
+            if (!confirm(t('clearAllConfirm'))) return;
+            try {
+                await clearDatabase();
+                showToast('✅ ' + t('allCleared'), 'success');
+                location.reload();
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
         // ============================================================
@@ -2345,205 +2498,8 @@
         }
 
         // ============================================================
-        // АДМИН ФУНКЦИИ
-        // ============================================================
-        async function adminDeleteUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
-            if (!confirm(t('confirmDeleteUser'))) return;
-
-            try {
-                const data = await loadData();
-                data.users = data.users.filter(u => u.id !== userId);
-                data.clans.forEach(c => {
-                    if (c.members) c.members = c.members.filter(m => m !== userId);
-                    if (c.leaderId === userId) {
-                        const newL = c.members && c.members.length ? c.members[0] : null;
-                        if (newL) {
-                            const lu = data.users.find(u => u.id === newL);
-                            c.leaderId = newL;
-                            c.leaderName = lu ? lu.name : 'Неизвестен';
-                        } else {
-                            data.clans = data.clans.filter(cl => cl.id !== c.id);
-                        }
-                    }
-                });
-                data.requests = data.requests.filter(r => r.userId !== userId);
-                await saveData(data);
-                await refreshData();
-                showToast('✅ ' + t('userDeleted').replace('{name}', user.name), 'success');
-                showTab('admin');
-                updateFooterStats();
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
-        function openBanModal(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-            if (isAdmin(user)) return showToast('❌ ' + t('noRights'), 'error');
-            banTargetUserId = userId;
-            document.getElementById('banUserName').textContent = 'Пользователь: ' + user.name + ' (' + user.id + ')';
-            document.getElementById('banDays').value = 7;
-            document.getElementById('banReason').value = '';
-            document.getElementById('banModal').classList.add('show');
-            applyLanguage();
-        }
-
-        async function confirmBan() {
-            const days = parseInt(document.getElementById('banDays').value);
-            const reason = document.getElementById('banReason').value.trim();
-            if (isNaN(days) || days < 0) {
-                showToast('❌ ' + t('enterValidElo'), 'error');
-                return;
-            }
-            if (!banTargetUserId) return;
-
-            const user = allUsers.find(u => u.id === banTargetUserId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-
-            try {
-                const data = await loadData();
-                const target = data.users.find(u => u.id === banTargetUserId);
-                if (!target) return showToast('❌ ' + t('userNotFound'), 'error');
-
-                if (days === 0) {
-                    target.bannedUntil = 'forever';
-                } else {
-                    const until = new Date();
-                    until.setDate(until.getDate() + days);
-                    target.bannedUntil = until.toISOString();
-                }
-                target.bannedReason = reason || 'Нарушение правил';
-
-                await saveData(data);
-                await refreshData();
-                closeModal('banModal');
-                showToast('✅ ' + t('userBanned').replace('{name}', user.name), 'success');
-                showTab('admin');
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
-        }
-
-        async function adminUnbanUser(userId) {
-            if (!isAdmin(currentUser)) return showToast('⛔ ' + t('youAreNotAdmin'), 'error');
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-            if (!confirm(t('unbanConfirm').replace('{name}', user.name))) return;
-
-            try {
-                const data = await loadData();
-                const target = data.users.find(u => u.id === userId);
-                if (target) {
-                    delete target.bannedUntil;
-                    delete target.bannedReason;
-                }
-                await saveData(data);
-                await refreshData();
-                showToast('✅ ' + t('userUnbanned').replace('{name}', user.name), 'success');
-                showTab('admin');
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
-        async function adminSetElo(clanId) {
-            const input = document.getElementById(`elo_input_${clanId}`);
-            if (!input) return;
-            const newElo = parseInt(input.value);
-            if (isNaN(newElo) || newElo < 0) {
-                showToast('❌ ' + t('enterValidElo'), 'error');
-                return;
-            }
-
-            try {
-                const data = await loadData();
-                const clan = data.clans.find(c => c.id === clanId);
-                if (!clan) {
-                    showToast('❌ ' + t('clanNotFound'), 'error');
-                    return;
-                }
-                clan.elo = newElo;
-                await saveData(data);
-                await refreshData();
-                showToast('✅ ' + t('eloUpdated').replace('{name}', clan.name).replace('{elo}', newElo), 'success');
-                renderAdmin(document.getElementById('content'));
-                showTab('clans');
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
-        }
-
-        async function clearAllData() {
-            if (!isAdmin(currentUser)) return;
-            if (!confirm(t('clearAllConfirm'))) return;
-            try {
-                const data = await loadData();
-                data.users = [];
-                data.clans = [];
-                data.requests = [];
-                data.cw = [];
-                await saveData(data);
-                await refreshData();
-                showToast('✅ ' + t('allCleared'), 'success');
-                location.reload();
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
-        // ============================================================
         // ВСПОМОГАТЕЛЬНЫЕ
         // ============================================================
-        function updateUI() {
-            if (!currentUser) return;
-            document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
-            document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
-            const clan = allClans.find(c => c.id === currentUser.clanId);
-            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
-            const roleNames = { admin: t('adminLabel'), leader: t('roleLeader'), vice: t('roleVice'), member: t('roleMember') };
-            document.getElementById('profRole').textContent = t('role') + ': ' + (roleNames[currentUser.role] || t('roleMember'));
-
-            const adminTab = document.getElementById('tabAdmin');
-            if (isAdmin(currentUser)) {
-                adminTab.style.display = 'inline-block';
-            } else {
-                adminTab.style.display = 'none';
-            }
-
-            const pending = allRequests.filter(r => {
-                const c = allClans.find(cl => cl.id === r.clanId);
-                return c && c.leaderId === currentUser.id && r.status === 'pending';
-            });
-            const badge = document.getElementById('notifBadge');
-            if (pending.length > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = pending.length;
-            } else {
-                badge.style.display = 'none';
-            }
-            renderMainActionButton();
-            updateFooterStats();
-        }
-
-        function renderMainActionButton() {
-            const el = document.getElementById('mainActionButton');
-            if (!currentUser) { el.innerHTML = ''; return; }
-            if (!currentUser.clanId) {
-                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
-            } else {
-                el.innerHTML = '';
-            }
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('show');
-        }
-
-        function toggleProfile() {
-            const dd = document.getElementById('profileDropdown');
-            dd.classList.toggle('show');
-        }
-
         async function refreshData() {
             const data = await loadData();
             allUsers = data.users || [];
@@ -2585,6 +2541,89 @@
                 updateFooterStats();
             } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
+
+        // ============================================================
+        // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ
+        // ============================================================
+        window.recoverProfile = async function() {
+            const gameId = prompt('🔑 Введите ваш игровой ID (число):');
+            if (!gameId || isNaN(gameId) || gameId.trim() === '') {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+            const data = await loadData();
+            const user = data.users.find(u => u.gameId === gameId.trim());
+            if (!user) {
+                showToast('❌ Пользователь с таким ID не найден', 'error');
+                return;
+            }
+            if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
+
+            let newId = null;
+            try {
+                const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
+                if (tg && tg.id) newId = tg.id.toString();
+            } catch(e) {}
+            if (!newId) {
+                let savedId = localStorage.getItem('bsc_test_id');
+                if (!savedId) {
+                    savedId = 'device_' + Date.now();
+                    localStorage.setItem('bsc_test_id', savedId);
+                }
+                newId = savedId;
+            }
+
+            data.users = data.users.filter(u => u.id !== newId);
+            user.id = newId;
+            await saveData(data);
+
+            currentUser = user;
+            localStorage.setItem('bsc_user', JSON.stringify(user));
+            localStorage.setItem('bsc_test_id', newId);
+            localStorage.setItem('bsc_last_gameId', user.gameId);
+            showToast('✅ Профиль восстановлен! Перезагружаем...', 'success');
+            setTimeout(() => location.reload(), 1000);
+        };
+
+        // Добавляем кнопку в меню профиля
+        (function() {
+            const dropdown = document.querySelector('.profile-dropdown .info');
+            if (!dropdown) return;
+            const parent = dropdown.parentNode;
+            const editBtn = parent.querySelector('.btn-secondary:first-of-type');
+            if (!editBtn) return;
+            const recoverBtn = document.createElement('button');
+            recoverBtn.className = 'btn btn-secondary btn-block btn-sm';
+            recoverBtn.textContent = '🔄 Восстановить профиль';
+            recoverBtn.onclick = function(e) {
+                e.preventDefault();
+                window.recoverProfile();
+                document.getElementById('profileDropdown').classList.remove('show');
+            };
+            editBtn.after(recoverBtn);
+        })();
+
+        // ⭐ ЗАЩИТА: проверяем админов каждые 10 секунд
+        setInterval(async function() {
+            if (!currentUser) return;
+            const data = await loadData();
+            let needSave = false;
+            data.users.forEach(u => {
+                if (u.role === 'admin' && u.id !== MY_TELEGRAM_ID && u.name !== MY_NAME) {
+                    u.role = 'member';
+                    needSave = true;
+                }
+                if (u.gameId === MY_GAME_ID && u.id !== MY_TELEGRAM_ID) {
+                    u.gameId = 'user_' + Math.floor(Math.random() * 10000000);
+                    needSave = true;
+                }
+            });
+            if (needSave) {
+                await saveData(data);
+                allUsers = data.users;
+                updateUI();
+            }
+        }, 10000);
 
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
