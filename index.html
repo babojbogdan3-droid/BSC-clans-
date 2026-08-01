@@ -22,18 +22,21 @@
         .profile-btn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);color:var(--text-primary);font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;position:relative}
         .profile-btn:hover{border-color:var(--accent);box-shadow:0 0 24px var(--accent-glow)}
         .profile-btn .badge{position:absolute;top:-4px;right:-4px;background:#ff3d71;color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg)}
-        .profile-dropdown{position:absolute;top:54px;right:0;background:rgba(18,24,40,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:16px;min-width:210px;box-shadow:var(--shadow);display:none;z-index:1000;animation:fadeSlide .2s ease}
+        .profile-dropdown{position:absolute;top:54px;right:0;background:rgba(18,24,40,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:16px;min-width:200px;box-shadow:var(--shadow);display:none;z-index:1000;animation:fadeSlide .2s ease}
         .profile-dropdown.show{display:block}
         @keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
         .profile-dropdown .info{margin-bottom:12px}
         .profile-dropdown .info .name{font-weight:600;font-size:15px}
         .profile-dropdown .info .detail{color:var(--text-secondary);font-size:13px;margin-top:2px}
-        .menu{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
-        .menu .btn{flex:1;min-width:45px;padding:10px 4px;border-radius:10px;font-weight:600;font-size:11px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);color:var(--text-secondary);cursor:pointer;transition:all .2s;text-align:center;white-space:nowrap}
+        .menu{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;justify-content:center}
+        .menu .btn{flex:1;min-width:45px;padding:8px 4px;border-radius:10px;font-weight:600;font-size:11px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);color:var(--text-secondary);cursor:pointer;transition:all .2s;text-align:center;display:flex;align-items:center;justify-content:center;gap:3px;flex-direction:column;line-height:1.2}
+        .menu .btn .icon{font-size:16px;display:block}
+        .menu .btn .label{font-size:9px;display:block;font-weight:600}
         .menu .btn:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.12)}
         .menu .btn-primary{background:rgba(91,141,239,0.12);border-color:var(--accent);color:var(--text-primary);box-shadow:0 0 20px var(--accent-glow)}
         .menu .btn-primary:hover{background:rgba(91,141,239,0.2)}
-        @media (max-width:420px){.menu .btn{font-size:10px;padding:8px 2px;min-width:40px}}
+        @media (max-width:420px){.menu .btn{min-width:40px;padding:6px 2px}.menu .btn .icon{font-size:14px}.menu .btn .label{font-size:8px}}
+        @media (min-width:421px){.menu .btn{flex-direction:row;gap:4px;padding:8px 6px}.menu .btn .icon{font-size:14px}.menu .btn .label{font-size:10px}}
         .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow);transition:all .25s;animation:fadeUp .3s ease}
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
         .card:hover{border-color:rgba(91,141,239,0.2);transform:translateY(-2px)}
@@ -168,7 +171,7 @@
         .member-item .member-name .role-badge.member{background:rgba(255,255,255,0.04);color:var(--text-secondary)}
         .member-item .member-actions{display:flex;gap:4px;flex-wrap:wrap}
         .my-clan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--card-border)}
-        @media (max-width:480px){body{padding:12px}.header h1{font-size:28px}.menu .btn{font-size:10px;padding:6px 2px}.modal{padding:16px}.footer-top{flex-direction:column;align-items:flex-start}.footer-status{text-align:left;width:100%}.user-card .user-header{flex-direction:column;align-items:flex-start}.chat-container{height:65vh}.chat-input-row input{font-size:13px;padding:8px 12px}.chat-input-row .btn{padding:8px 14px;font-size:13px}}
+        @media (max-width:480px){body{padding:12px}.header h1{font-size:28px}.modal{padding:16px}.footer-top{flex-direction:column;align-items:flex-start}.footer-status{text-align:left;width:100%}.user-card .user-header{flex-direction:column;align-items:flex-start}.chat-container{height:65vh}.chat-input-row input{font-size:13px;padding:8px 12px}.chat-input-row .btn{padding:8px 14px;font-size:13px}}
     </style>
 </head>
 <body>
@@ -198,13 +201,13 @@
         </header>
 
         <div class="menu">
-            <button class="btn btn-primary" onclick="showTab('clans')" id="tabClans">🏰 КЛАНЫ</button>
-            <button class="btn" onclick="showTab('requests')" id="tabRequests">📩 ЗАЯВКИ</button>
-            <button class="btn" onclick="showTab('myclan')" id="tabMyClan">⭐ МОЙ</button>
-            <button class="btn" onclick="showTab('rating')" id="tabRating">🏆 РЕЙТИНГ</button>
-            <button class="btn" onclick="showTab('cw')" id="tabCw">⚔️ CW</button>
-            <button class="btn" onclick="showTab('chat')" id="tabChat">💬 ЧАТ</button>
-            <button class="btn" onclick="showTab('admin')" id="tabAdmin" style="display:none;">🛡️ АДМИН</button>
+            <button class="btn btn-primary" onclick="showTab('clans')" id="tabClans"><span class="icon">🏰</span><span class="label">КЛАНЫ</span></button>
+            <button class="btn" onclick="showTab('requests')" id="tabRequests"><span class="icon">📩</span><span class="label">ЗАЯВКИ</span></button>
+            <button class="btn" onclick="showTab('myclan')" id="tabMyClan"><span class="icon">⭐</span><span class="label">МОЙ</span></button>
+            <button class="btn" onclick="showTab('rating')" id="tabRating"><span class="icon">🏆</span><span class="label">РЕЙТИНГ</span></button>
+            <button class="btn" onclick="showTab('cw')" id="tabCw"><span class="icon">⚔️</span><span class="label">CW</span></button>
+            <button class="btn" onclick="showTab('chat')" id="tabChat"><span class="icon">💬</span><span class="label">ЧАТ</span></button>
+            <button class="btn" onclick="showTab('admin')" id="tabAdmin" style="display:none;"><span class="icon">🛡️</span><span class="label">АДМИН</span></button>
         </div>
 
         <div id="content">
@@ -252,10 +255,12 @@
             <h2 id="registerTitle">📝 Добро пожаловать</h2>
             <label id="registerNameLabel">Никнейм</label>
             <input type="text" id="regName" placeholder="s1m1" maxlength="20">
-            <label id="registerTelegramLabel">Telegram username (без @)</label>
+            <label id="registerTelegramLabel">Telegram (без @)</label>
             <input type="text" id="regTelegram" placeholder="NoisyBoy141" maxlength="32">
             <label id="registerGameIdLabel">Игровой ID</label>
             <input type="text" id="regGameId" placeholder="22887924" maxlength="15">
+            <label id="registerAdminCodeLabel">Секретный код (необязательно)</label>
+            <input type="password" id="regAdminCode" placeholder="Введите код для получения админки" maxlength="20">
             <label id="registerRoleLabel">Роль</label>
             <select id="regRole">
                 <option value="member" id="regRoleMember">Игрок</option>
@@ -383,7 +388,7 @@
         }
 
         // ============================================================
-        // ПЕРЕВОДЫ (СОКРАЩЕННЫЕ)
+        // ПЕРЕВОДЫ
         // ============================================================
         const LANG = {
             ru: {
@@ -549,10 +554,7 @@
         // ============================================================
         // НАСТРОЙКИ
         // ============================================================
-        const ADMIN_USERNAME = 'NoisyBoy141';
-        const MY_NAME = 's1m1';
-        const MY_GAME_ID = '22887924';
-
+        const ADMIN_CODE = '88005553535';
         const firebaseConfig = {
             apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
             authDomain: "bsc-chat-7288d.firebaseapp.com",
@@ -588,14 +590,14 @@
         function t(key) { return LANG[currentLang] && LANG[currentLang][key] !== undefined ? LANG[currentLang][key] : key; }
 
         function applyLanguage() {
-            document.getElementById('tabClans').textContent = t('clans');
-            document.getElementById('tabRequests').textContent = t('requests');
-            document.getElementById('tabMyClan').textContent = t('myclan');
-            document.getElementById('tabRating').textContent = t('rating');
-            document.getElementById('tabCw').textContent = t('cw');
-            document.getElementById('tabChat').textContent = t('chat');
+            document.getElementById('tabClans').innerHTML = '<span class="icon">🏰</span><span class="label">' + t('clans') + '</span>';
+            document.getElementById('tabRequests').innerHTML = '<span class="icon">📩</span><span class="label">' + t('requests') + '</span>';
+            document.getElementById('tabMyClan').innerHTML = '<span class="icon">⭐</span><span class="label">' + t('myclan') + '</span>';
+            document.getElementById('tabRating').innerHTML = '<span class="icon">🏆</span><span class="label">' + t('rating') + '</span>';
+            document.getElementById('tabCw').innerHTML = '<span class="icon">⚔️</span><span class="label">' + t('cw') + '</span>';
+            document.getElementById('tabChat').innerHTML = '<span class="icon">💬</span><span class="label">' + t('chat') + '</span>';
             const adminTab = document.getElementById('tabAdmin');
-            if (adminTab) adminTab.textContent = t('admin');
+            if (adminTab) adminTab.innerHTML = '<span class="icon">🛡️</span><span class="label">' + t('admin') + '</span>';
             document.getElementById('profileEditBtn').textContent = t('editProfile');
             document.getElementById('profileLangBtn').textContent = t('changeLang');
             document.querySelector('#profileDropdown .btn-danger').textContent = t('logout');
@@ -627,8 +629,7 @@
         // ============================================================
         function isAdmin(user) {
             if (!user) return false;
-            const username = user.telegramUsername ? user.telegramUsername.replace('@', '') : '';
-            return user.name === MY_NAME && username === ADMIN_USERNAME;
+            return user.role === 'admin';
         }
 
         function canManageClan(user, clan) {
@@ -704,7 +705,7 @@
         async function saveData(data) { await db.ref('/').set(data); }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ (ПУСКАЕТ ТОЛЬКО s1m1)
+        // ИНИЦИАЛИЗАЦИЯ
         // ============================================================
         async function initApp() {
             try {
@@ -748,13 +749,11 @@
 
                 let user = allUsers.find(u => u.id === userId);
 
-                // ⭐ ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН ИЛИ ЭТО НЕ s1m1 — ПОКАЗЫВАЕМ РЕГИСТРАЦИЮ
-                if (!user || user.name !== MY_NAME) {
+                if (!user) {
                     document.getElementById('registerModal').classList.add('show');
                     return;
                 }
 
-                // Проверяем бан
                 if (isUserBanned(user)) {
                     const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
                     document.getElementById('content').innerHTML = `
@@ -767,14 +766,12 @@
                     return;
                 }
 
-                // ⭐ ЗАЩИТА: если кто-то админ не по праву — снимаем
                 allUsers.forEach(u => {
                     if (u.role === 'admin' && !isAdmin(u)) {
                         u.role = 'member';
                     }
                 });
 
-                // ⭐ ЕСЛИ ТЫ АДМИН — ПРИВЯЗЫВАЕМ NAVI
                 if (isAdmin(user)) {
                     const navi = allClans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
                     if (navi) {
@@ -816,54 +813,45 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ (ТОЛЬКО ДЛЯ s1m1)
+        // РЕГИСТРАЦИЯ (С СЕКРЕТНЫМ КОДОМ)
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
             const tgName = document.getElementById('regTelegram').value.trim();
             const gameId = document.getElementById('regGameId').value.trim();
             const role = document.getElementById('regRole').value;
+            const adminCode = document.getElementById('regAdminCode').value.trim();
 
             if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
             if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
             if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
             if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
-            // ⭐ ТОЛЬКО s1m1 МОЖЕТ ЗАРЕГИСТРИРОВАТЬСЯ
-            if (name !== MY_NAME) {
-                showToast('❌ Регистрация закрыта. Только главный админ имеет доступ.', 'error');
-                return;
+            let isAdminUser = false;
+            
+            if (adminCode) {
+                if (adminCode === ADMIN_CODE) {
+                    isAdminUser = true;
+                    showToast('✅ Правильный код! Вы получили права администратора!', 'success');
+                } else {
+                    showToast('❌ Неверный секретный код! Регистрация отклонена.', 'error');
+                    return;
+                }
             }
 
-            // ⭐ ПРОВЕРКА: Telegram должен быть NoisyBoy141
-            if (tgName !== ADMIN_USERNAME) {
-                showToast('❌ Неверный Telegram username для s1m1', 'error');
-                return;
-            }
-
-            // ⭐ ПРОВЕРКА: ID должен быть 22887924
-            if (gameId !== MY_GAME_ID) {
-                showToast('❌ Неверный игровой ID для s1m1', 'error');
-                return;
-            }
-
-            // ⭐ СОЗДАЁМ УНИКАЛЬНЫЙ ID
-            let userId = 'admin_' + Date.now();
+            let userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
             localStorage.setItem('bsc_test_id', userId);
 
-            // Проверка на занятость ника
             if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                // Если s1m1 уже есть — удаляем старого и создаём нового
-                allUsers = allUsers.filter(u => u.name !== MY_NAME);
+                return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
-            // Создаём пользователя (всегда admin)
             const newUser = {
                 id: userId,
-                name: MY_NAME,
-                telegramUsername: '@' + ADMIN_USERNAME,
-                gameId: MY_GAME_ID,
-                role: 'admin',
+                name: name,
+                telegramUsername: tgName.startsWith('@') ? tgName : '@' + tgName,
+                gameId: gameId,
+                role: isAdminUser ? 'admin' : 'member',
                 clanId: null
             };
 
@@ -874,10 +862,10 @@
 
             currentUser = newUser;
             localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-            localStorage.setItem('bsc_last_gameId', MY_GAME_ID);
-            localStorage.setItem('bsc_username', ADMIN_USERNAME);
+            localStorage.setItem('bsc_last_gameId', gameId);
+            localStorage.setItem('bsc_username', tgName);
             document.getElementById('registerModal').classList.remove('show');
-            showToast('✅ ' + t('welcomeUser').replace('{name}', MY_NAME), 'success');
+            showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
             updateUI();
             showTab('clans');
             renderMainActionButton();
@@ -885,119 +873,118 @@
         }
 
         // ============================================================
-        // ВЫХОД (УДАЛЯЕТ ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ ИЗ БАЗЫ)
+        // ПРОФИЛЬ
         // ============================================================
-        async function logoutUser() {
-            if (!confirm(t('logoutConfirm'))) return;
+        function openEditProfile() {
+            if (!currentUser) return;
+            document.getElementById('editProfName').value = currentUser.name || '';
+            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
+            document.getElementById('editProfGameId').value = currentUser.gameId || '';
+            document.getElementById('editProfileModal').classList.add('show');
+            document.getElementById('profileDropdown').classList.remove('show');
+            applyLanguage();
+        }
+
+        async function saveProfile() {
+            const name = document.getElementById('editProfName').value.trim();
+            const tgName = document.getElementById('editProfTelegram').value.trim();
+            const gameId = document.getElementById('editProfGameId').value.trim();
+
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
+            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
+            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
+
             try {
                 const data = await loadData();
-                // Удаляем пользователя из базы
-                data.users = data.users.filter(u => u.id !== currentUser.id);
-                
-                // Если это был s1m1 — удаляем кланы и всё остальное
-                if (currentUser.name === MY_NAME) {
-                    data.clans = [];
-                    data.requests = [];
-                    data.cw = [];
+                const user = data.users.find(u => u.id === currentUser.id);
+                if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+
+                if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== currentUser.id)) {
+                    return showToast('❌ ' + t('nicknameTaken'), 'error');
                 }
-                
+
+                user.name = name;
+                user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
+                user.gameId = gameId;
+
                 await saveData(data);
-                
-                // Очищаем localStorage
-                localStorage.removeItem('bsc_user');
-                localStorage.removeItem('bsc_test_id');
-                localStorage.removeItem('bsc_last_gameId');
-                localStorage.removeItem('bsc_username');
-                
-                currentUser = null;
-                allUsers = data.users;
-                allClans = data.clans;
-                allRequests = data.requests;
-                allCw = data.cw;
-                
-                document.getElementById('registerModal').classList.add('show');
+                await refreshData();
+                closeModal('editProfileModal');
+                showToast('✅ ' + t('profileUpdated'), 'success');
                 updateUI();
-                showTab('clans');
-                renderMainActionButton();
-                showToast('✅ ' + t('youLoggedOut'), 'success');
+                showTab(currentTab);
                 updateFooterStats();
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
         }
 
         // ============================================================
-        // ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ)
+        // UI
         // ============================================================
-        // ... ВСЕ ОСТАЛЬНЫЕ ФУНКЦИИ (renderClans, renderRequests, renderMyClan, renderRating, renderCw, initChat, renderAdmin, openCreateClan, createClan, openEditClan, saveEditClan, viewClan, applyToClan, acceptRequest, rejectRequest, deleteClan, leaveClan, kickMember, transferLeadership, adminDeleteUser, openBanModal, confirmBan, adminUnbanUser, adminSetElo, clearAllData, refreshData, openEditProfile, saveProfile, updateUI, renderMainActionButton, showTab, setViceLeader, respondCw, sendCwRequest, showCwContacts, finishCw, sendChatMessageHandler, sendChatMessage, loadChatMessages, updateChatMessages, window.makeAdmin, window.removeAdmin)
-
-        // ============================================================
-        // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ
-        // ============================================================
-        window.recoverProfile = async function() {
-            const gameId = prompt('🔑 Введите ваш игровой ID (число):');
-            if (!gameId || isNaN(gameId) || gameId.trim() === '') {
-                showToast('❌ Введите корректный ID', 'error');
-                return;
-            }
-            const data = await loadData();
-            const user = data.users.find(u => u.gameId === gameId.trim());
-            if (!user) {
-                showToast('❌ Пользователь с таким ID не найден', 'error');
-                return;
-            }
-            if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
-
-            let newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-            
-            data.users = data.users.filter(u => u.id !== newId);
-            user.id = newId;
-            await saveData(data);
-
-            currentUser = user;
-            localStorage.setItem('bsc_user', JSON.stringify(user));
-            localStorage.setItem('bsc_test_id', newId);
-            localStorage.setItem('bsc_last_gameId', user.gameId);
-            showToast('✅ Профиль восстановлен! Перезагружаем...', 'success');
-            setTimeout(() => location.reload(), 1000);
-        };
-
-        // Добавляем кнопку в меню профиля
-        (function() {
-            const dropdown = document.querySelector('.profile-dropdown .info');
-            if (!dropdown) return;
-            const parent = dropdown.parentNode;
-            const editBtn = parent.querySelector('.btn-secondary:first-of-type');
-            if (!editBtn) return;
-            const recoverBtn = document.createElement('button');
-            recoverBtn.className = 'btn btn-secondary btn-block btn-sm';
-            recoverBtn.textContent = '🔄 Восстановить профиль';
-            recoverBtn.onclick = function(e) {
-                e.preventDefault();
-                window.recoverProfile();
-                document.getElementById('profileDropdown').classList.remove('show');
-            };
-            editBtn.after(recoverBtn);
-        })();
-
-        // ⭐ ЗАЩИТА: проверяем админов каждые 10 секунд
-        setInterval(async function() {
+        function updateUI() {
             if (!currentUser) return;
-            const data = await loadData();
-            let needSave = false;
-            data.users.forEach(u => {
-                if (u.role === 'admin' && !isAdmin(u)) {
-                    u.role = 'member';
-                    needSave = true;
-                }
-            });
-            if (needSave) {
-                await saveData(data);
-                allUsers = data.users;
-                updateUI();
-            }
-        }, 10000);
+            document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
+            document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
+            const clan = allClans.find(c => c.id === currentUser.clanId);
+            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
+            const roleNames = { admin: t('adminLabel'), leader: t('roleLeader'), vice: t('roleVice'), member: t('roleMember') };
+            document.getElementById('profRole').textContent = t('role') + ': ' + (roleNames[currentUser.role] || t('roleMember'));
 
-        document.addEventListener('DOMContentLoaded', initApp);
-                // ============================================================
+            const adminTab = document.getElementById('tabAdmin');
+            if (isAdmin(currentUser)) {
+                adminTab.style.display = 'inline-block';
+            } else {
+                adminTab.style.display = 'none';
+            }
+
+            const pending = allRequests.filter(r => {
+                const c = allClans.find(cl => cl.id === r.clanId);
+                return c && c.leaderId === currentUser.id && r.status === 'pending';
+            });
+            const badge = document.getElementById('notifBadge');
+            if (pending.length > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = pending.length;
+            } else {
+                badge.style.display = 'none';
+            }
+            renderMainActionButton();
+            updateFooterStats();
+        }
+
+        function renderMainActionButton() {
+            const el = document.getElementById('mainActionButton');
+            if (!currentUser) { el.innerHTML = ''; return; }
+            if (!currentUser.clanId) {
+                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
+            } else {
+                el.innerHTML = '';
+            }
+        }
+
+        // ============================================================
+        // ВКЛАДКИ
+        // ============================================================
+        function showTab(tab) {
+            currentTab = tab;
+            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabCw', 'tabChat', 'tabAdmin'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.className = 'btn';
+            });
+            const map = { clans: 'tabClans', requests: 'tabRequests', myclan: 'tabMyClan', rating: 'tabRating', cw: 'tabCw', chat: 'tabChat', admin: 'tabAdmin' };
+            const active = document.getElementById(map[tab]);
+            if (active) active.className = 'btn btn-primary';
+
+            const container = document.getElementById('content');
+            if (tab === 'chat') { chatInitialized = false; }
+            const funcs = { clans: renderClans, requests: renderRequests, myclan: renderMyClan, rating: renderRating, cw: renderCw, chat: initChat, admin: renderAdmin };
+            if (funcs[tab]) funcs[tab](container);
+            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
+        }
+
+        // ============================================================
         // РЕНДЕР КЛАНОВ
         // ============================================================
         async function renderClans(container) {
@@ -2373,126 +2360,99 @@
             updateFooterStats();
         }
 
-        // ============================================================
-        // ПРОФИЛЬ
-        // ============================================================
-        function openEditProfile() {
-            if (!currentUser) return;
-            document.getElementById('editProfName').value = currentUser.name || '';
-            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
-            document.getElementById('editProfGameId').value = currentUser.gameId || '';
-            document.getElementById('editProfileModal').classList.add('show');
-            document.getElementById('profileDropdown').classList.remove('show');
-            applyLanguage();
-        }
-
-        async function saveProfile() {
-            const name = document.getElementById('editProfName').value.trim();
-            const tgName = document.getElementById('editProfTelegram').value.trim();
-            const gameId = document.getElementById('editProfGameId').value.trim();
-
-            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
-            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
-            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
-            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
-
+        async function logoutUser() {
+            if (!confirm(t('logoutConfirm'))) return;
             try {
                 const data = await loadData();
-                const user = data.users.find(u => u.id === currentUser.id);
-                if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-
-                if (name === MY_NAME && user.telegramUsername !== '@' + ADMIN_USERNAME) {
-                    return showToast('❌ Ник s1m1 занят главным админом', 'error');
-                }
-
-                if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== currentUser.id)) {
-                    return showToast('❌ ' + t('nicknameTaken'), 'error');
-                }
-
-                user.name = name;
-                user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
-                user.gameId = gameId;
-
+                data.users = data.users.filter(u => u.id !== currentUser.id);
+                data.clans.forEach(c => { if (c.members) c.members = c.members.filter(m => m !== currentUser.id); if (c.leaderId === currentUser.id) { const nl = c.members && c.members.length ? c.members[0] : null; if (nl) { const lu = data.users.find(u => u.id === nl);
+                            c.leaderId = nl;
+                            c.leaderName = lu ? lu.name : 'Неизвестен'; } else { data.clans = data.clans.filter(cl => cl.id !== c.id); } } });
                 await saveData(data);
-                await refreshData();
-                closeModal('editProfileModal');
-                showToast('✅ ' + t('profileUpdated'), 'success');
+                localStorage.removeItem('bsc_user');
+                localStorage.removeItem('bsc_test_id');
+                currentUser = null;
+                allUsers = data.users;
+                allClans = data.clans;
+                allRequests = data.requests;
+                allCw = data.cw;
+                document.getElementById('registerModal').classList.add('show');
                 updateUI();
-                showTab(currentTab);
+                showTab('clans');
+                renderMainActionButton();
+                showToast('✅ ' + t('youLoggedOut'), 'success');
                 updateFooterStats();
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
         // ============================================================
-        // UI
+        // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ
         // ============================================================
-        function updateUI() {
+        window.recoverProfile = async function() {
+            const gameId = prompt('🔑 Введите ваш игровой ID (число):');
+            if (!gameId || isNaN(gameId) || gameId.trim() === '') {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+            const data = await loadData();
+            const user = data.users.find(u => u.gameId === gameId.trim());
+            if (!user) {
+                showToast('❌ Пользователь с таким ID не найден', 'error');
+                return;
+            }
+            if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
+
+            let newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            
+            data.users = data.users.filter(u => u.id !== newId);
+            user.id = newId;
+            await saveData(data);
+
+            currentUser = user;
+            localStorage.setItem('bsc_user', JSON.stringify(user));
+            localStorage.setItem('bsc_test_id', newId);
+            localStorage.setItem('bsc_last_gameId', user.gameId);
+            showToast('✅ Профиль восстановлен! Перезагружаем...', 'success');
+            setTimeout(() => location.reload(), 1000);
+        };
+
+        // Добавляем кнопку в меню профиля
+        (function() {
+            const dropdown = document.querySelector('.profile-dropdown .info');
+            if (!dropdown) return;
+            const parent = dropdown.parentNode;
+            const editBtn = parent.querySelector('.btn-secondary:first-of-type');
+            if (!editBtn) return;
+            const recoverBtn = document.createElement('button');
+            recoverBtn.className = 'btn btn-secondary btn-block btn-sm';
+            recoverBtn.textContent = '🔄 Восстановить профиль';
+            recoverBtn.onclick = function(e) {
+                e.preventDefault();
+                window.recoverProfile();
+                document.getElementById('profileDropdown').classList.remove('show');
+            };
+            editBtn.after(recoverBtn);
+        })();
+
+        // ⭐ ЗАЩИТА: проверяем админов каждые 10 секунд
+        setInterval(async function() {
             if (!currentUser) return;
-            document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
-            document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
-            const clan = allClans.find(c => c.id === currentUser.clanId);
-            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
-            const roleNames = { admin: t('adminLabel'), leader: t('roleLeader'), vice: t('roleVice'), member: t('roleMember') };
-            document.getElementById('profRole').textContent = t('role') + ': ' + (roleNames[currentUser.role] || t('roleMember'));
-
-            const adminTab = document.getElementById('tabAdmin');
-            if (isAdmin(currentUser)) {
-                adminTab.style.display = 'inline-block';
-            } else {
-                adminTab.style.display = 'none';
-            }
-
-            const pending = allRequests.filter(r => {
-                const c = allClans.find(cl => cl.id === r.clanId);
-                return c && c.leaderId === currentUser.id && r.status === 'pending';
+            const data = await loadData();
+            let needSave = false;
+            data.users.forEach(u => {
+                if (u.role === 'admin' && !isAdmin(u)) {
+                    u.role = 'member';
+                    needSave = true;
+                }
             });
-            const badge = document.getElementById('notifBadge');
-            if (pending.length > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = pending.length;
-            } else {
-                badge.style.display = 'none';
+            if (needSave) {
+                await saveData(data);
+                allUsers = data.users;
+                updateUI();
             }
-            renderMainActionButton();
-            updateFooterStats();
-        }
-
-        function renderMainActionButton() {
-            const el = document.getElementById('mainActionButton');
-            if (!currentUser) { el.innerHTML = ''; return; }
-            if (!currentUser.clanId) {
-                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
-            } else {
-                el.innerHTML = '';
-            }
-        }
-
-        // ============================================================
-        // ВКЛАДКИ
-        // ============================================================
-        function showTab(tab) {
-            currentTab = tab;
-            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabCw', 'tabChat', 'tabAdmin'].forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.className = 'btn';
-            });
-            const map = { clans: 'tabClans', requests: 'tabRequests', myclan: 'tabMyClan', rating: 'tabRating', cw: 'tabCw', chat: 'tabChat', admin: 'tabAdmin' };
-            const active = document.getElementById(map[tab]);
-            if (active) active.className = 'btn btn-primary';
-
-            const container = document.getElementById('content');
-            if (tab === 'chat') { chatInitialized = false; }
-            const funcs = { clans: renderClans, requests: renderRequests, myclan: renderMyClan, rating: renderRating, cw: renderCw, chat: initChat, admin: renderAdmin };
-            if (funcs[tab]) funcs[tab](container);
-            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
-        }
+        }, 10000);
 
         document.addEventListener('DOMContentLoaded', initApp);
-    </script>
-</body>
-</html>
     </script>
 </body>
 </html>
