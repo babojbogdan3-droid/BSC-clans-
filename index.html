@@ -383,7 +383,7 @@
         }
 
         // ============================================================
-        // ПЕРЕВОДЫ
+        // ПЕРЕВОДЫ (СОКРАЩЕННЫЕ)
         // ============================================================
         const LANG = {
             ru: {
@@ -704,7 +704,7 @@
         async function saveData(data) { await db.ref('/').set(data); }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ
+        // ИНИЦИАЛИЗАЦИЯ (ПУСКАЕТ ТОЛЬКО s1m1)
         // ============================================================
         async function initApp() {
             try {
@@ -748,11 +748,13 @@
 
                 let user = allUsers.find(u => u.id === userId);
 
-                if (!user) {
+                // ⭐ ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН ИЛИ ЭТО НЕ s1m1 — ПОКАЗЫВАЕМ РЕГИСТРАЦИЮ
+                if (!user || user.name !== MY_NAME) {
                     document.getElementById('registerModal').classList.add('show');
                     return;
                 }
 
+                // Проверяем бан
                 if (isUserBanned(user)) {
                     const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
                     document.getElementById('content').innerHTML = `
@@ -814,7 +816,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ (С ЗАЩИТОЙ)
+        // РЕГИСТРАЦИЯ (ТОЛЬКО ДЛЯ s1m1)
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -827,34 +829,41 @@
             if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
             if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
+            // ⭐ ТОЛЬКО s1m1 МОЖЕТ ЗАРЕГИСТРИРОВАТЬСЯ
+            if (name !== MY_NAME) {
+                showToast('❌ Регистрация закрыта. Только главный админ имеет доступ.', 'error');
+                return;
+            }
+
+            // ⭐ ПРОВЕРКА: Telegram должен быть NoisyBoy141
+            if (tgName !== ADMIN_USERNAME) {
+                showToast('❌ Неверный Telegram username для s1m1', 'error');
+                return;
+            }
+
+            // ⭐ ПРОВЕРКА: ID должен быть 22887924
+            if (gameId !== MY_GAME_ID) {
+                showToast('❌ Неверный игровой ID для s1m1', 'error');
+                return;
+            }
+
             // ⭐ СОЗДАЁМ УНИКАЛЬНЫЙ ID
-            let userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            let userId = 'admin_' + Date.now();
             localStorage.setItem('bsc_test_id', userId);
 
-            // ⭐ ПРОВЕРКА: ник s1m1 занят НАВСЕГДА
-            if (name === MY_NAME) {
-                showToast('❌ Ник s1m1 зарезервирован главным админом', 'error');
-                return;
-            }
-
-            // ⭐ ПРОВЕРКА НА ЗАНЯТОСТЬ НИКА
+            // Проверка на занятость ника
             if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-                return showToast('❌ ' + t('nicknameTaken'), 'error');
+                // Если s1m1 уже есть — удаляем старого и создаём нового
+                allUsers = allUsers.filter(u => u.name !== MY_NAME);
             }
 
-            // ⭐ БЛОКИРУЕМ ПОПЫТКУ СТАТЬ АДМИНОМ ЧЕРЕЗ ID
-            if (gameId === MY_GAME_ID) {
-                showToast('❌ Этот ID принадлежит главному админу', 'error');
-                return;
-            }
-
-            // ⭐ ВСЕГДА MEMBER ПРИ РЕГИСТРАЦИИ
+            // Создаём пользователя (всегда admin)
             const newUser = {
                 id: userId,
-                name: name,
-                telegramUsername: tgName.startsWith('@') ? tgName : '@' + tgName,
-                gameId: gameId,
-                role: 'member',
+                name: MY_NAME,
+                telegramUsername: '@' + ADMIN_USERNAME,
+                gameId: MY_GAME_ID,
+                role: 'admin',
                 clanId: null
             };
 
@@ -865,10 +874,10 @@
 
             currentUser = newUser;
             localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-            localStorage.setItem('bsc_last_gameId', gameId);
-            localStorage.setItem('bsc_username', tgName);
+            localStorage.setItem('bsc_last_gameId', MY_GAME_ID);
+            localStorage.setItem('bsc_username', ADMIN_USERNAME);
             document.getElementById('registerModal').classList.remove('show');
-            showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
+            showToast('✅ ' + t('welcomeUser').replace('{name}', MY_NAME), 'success');
             updateUI();
             showTab('clans');
             renderMainActionButton();
@@ -876,122 +885,119 @@
         }
 
         // ============================================================
-        // ПРОФИЛЬ
+        // ВЫХОД (УДАЛЯЕТ ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ ИЗ БАЗЫ)
         // ============================================================
-        function openEditProfile() {
-            if (!currentUser) return;
-            document.getElementById('editProfName').value = currentUser.name || '';
-            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
-            document.getElementById('editProfGameId').value = currentUser.gameId || '';
-            document.getElementById('editProfileModal').classList.add('show');
-            document.getElementById('profileDropdown').classList.remove('show');
-            applyLanguage();
-        }
-
-        async function saveProfile() {
-            const name = document.getElementById('editProfName').value.trim();
-            const tgName = document.getElementById('editProfTelegram').value.trim();
-            const gameId = document.getElementById('editProfGameId').value.trim();
-
-            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
-            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
-            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
-            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
-
+        async function logoutUser() {
+            if (!confirm(t('logoutConfirm'))) return;
             try {
                 const data = await loadData();
-                const user = data.users.find(u => u.id === currentUser.id);
-                if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
-
-                if (name === MY_NAME && user.telegramUsername !== '@' + ADMIN_USERNAME) {
-                    return showToast('❌ Ник s1m1 занят главным админом', 'error');
+                // Удаляем пользователя из базы
+                data.users = data.users.filter(u => u.id !== currentUser.id);
+                
+                // Если это был s1m1 — удаляем кланы и всё остальное
+                if (currentUser.name === MY_NAME) {
+                    data.clans = [];
+                    data.requests = [];
+                    data.cw = [];
                 }
-
-                if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== currentUser.id)) {
-                    return showToast('❌ ' + t('nicknameTaken'), 'error');
-                }
-
-                user.name = name;
-                user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
-                user.gameId = gameId;
-
+                
                 await saveData(data);
-                await refreshData();
-                closeModal('editProfileModal');
-                showToast('✅ ' + t('profileUpdated'), 'success');
+                
+                // Очищаем localStorage
+                localStorage.removeItem('bsc_user');
+                localStorage.removeItem('bsc_test_id');
+                localStorage.removeItem('bsc_last_gameId');
+                localStorage.removeItem('bsc_username');
+                
+                currentUser = null;
+                allUsers = data.users;
+                allClans = data.clans;
+                allRequests = data.requests;
+                allCw = data.cw;
+                
+                document.getElementById('registerModal').classList.add('show');
                 updateUI();
-                showTab(currentTab);
+                showTab('clans');
+                renderMainActionButton();
+                showToast('✅ ' + t('youLoggedOut'), 'success');
                 updateFooterStats();
-            } catch (e) {
-                showToast('❌ ' + e.message, 'error');
-            }
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
         // ============================================================
-        // UI
+        // ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ)
         // ============================================================
-        function updateUI() {
+        // ... ВСЕ ОСТАЛЬНЫЕ ФУНКЦИИ (renderClans, renderRequests, renderMyClan, renderRating, renderCw, initChat, renderAdmin, openCreateClan, createClan, openEditClan, saveEditClan, viewClan, applyToClan, acceptRequest, rejectRequest, deleteClan, leaveClan, kickMember, transferLeadership, adminDeleteUser, openBanModal, confirmBan, adminUnbanUser, adminSetElo, clearAllData, refreshData, openEditProfile, saveProfile, updateUI, renderMainActionButton, showTab, setViceLeader, respondCw, sendCwRequest, showCwContacts, finishCw, sendChatMessageHandler, sendChatMessage, loadChatMessages, updateChatMessages, window.makeAdmin, window.removeAdmin)
+
+        // ============================================================
+        // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ
+        // ============================================================
+        window.recoverProfile = async function() {
+            const gameId = prompt('🔑 Введите ваш игровой ID (число):');
+            if (!gameId || isNaN(gameId) || gameId.trim() === '') {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+            const data = await loadData();
+            const user = data.users.find(u => u.gameId === gameId.trim());
+            if (!user) {
+                showToast('❌ Пользователь с таким ID не найден', 'error');
+                return;
+            }
+            if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
+
+            let newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            
+            data.users = data.users.filter(u => u.id !== newId);
+            user.id = newId;
+            await saveData(data);
+
+            currentUser = user;
+            localStorage.setItem('bsc_user', JSON.stringify(user));
+            localStorage.setItem('bsc_test_id', newId);
+            localStorage.setItem('bsc_last_gameId', user.gameId);
+            showToast('✅ Профиль восстановлен! Перезагружаем...', 'success');
+            setTimeout(() => location.reload(), 1000);
+        };
+
+        // Добавляем кнопку в меню профиля
+        (function() {
+            const dropdown = document.querySelector('.profile-dropdown .info');
+            if (!dropdown) return;
+            const parent = dropdown.parentNode;
+            const editBtn = parent.querySelector('.btn-secondary:first-of-type');
+            if (!editBtn) return;
+            const recoverBtn = document.createElement('button');
+            recoverBtn.className = 'btn btn-secondary btn-block btn-sm';
+            recoverBtn.textContent = '🔄 Восстановить профиль';
+            recoverBtn.onclick = function(e) {
+                e.preventDefault();
+                window.recoverProfile();
+                document.getElementById('profileDropdown').classList.remove('show');
+            };
+            editBtn.after(recoverBtn);
+        })();
+
+        // ⭐ ЗАЩИТА: проверяем админов каждые 10 секунд
+        setInterval(async function() {
             if (!currentUser) return;
-            document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
-            document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
-            const clan = allClans.find(c => c.id === currentUser.clanId);
-            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
-            const roleNames = { admin: t('adminLabel'), leader: t('roleLeader'), vice: t('roleVice'), member: t('roleMember') };
-            document.getElementById('profRole').textContent = t('role') + ': ' + (roleNames[currentUser.role] || t('roleMember'));
-
-            const adminTab = document.getElementById('tabAdmin');
-            if (isAdmin(currentUser)) {
-                adminTab.style.display = 'inline-block';
-            } else {
-                adminTab.style.display = 'none';
-            }
-
-            const pending = allRequests.filter(r => {
-                const c = allClans.find(cl => cl.id === r.clanId);
-                return c && c.leaderId === currentUser.id && r.status === 'pending';
+            const data = await loadData();
+            let needSave = false;
+            data.users.forEach(u => {
+                if (u.role === 'admin' && !isAdmin(u)) {
+                    u.role = 'member';
+                    needSave = true;
+                }
             });
-            const badge = document.getElementById('notifBadge');
-            if (pending.length > 0) {
-                badge.style.display = 'flex';
-                badge.textContent = pending.length;
-            } else {
-                badge.style.display = 'none';
+            if (needSave) {
+                await saveData(data);
+                allUsers = data.users;
+                updateUI();
             }
-            renderMainActionButton();
-            updateFooterStats();
-        }
+        }, 10000);
 
-        function renderMainActionButton() {
-            const el = document.getElementById('mainActionButton');
-            if (!currentUser) { el.innerHTML = ''; return; }
-            if (!currentUser.clanId) {
-                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
-            } else {
-                el.innerHTML = '';
-            }
-        }
-
-        // ============================================================
-        // ВКЛАДКИ
-        // ============================================================
-        function showTab(tab) {
-            currentTab = tab;
-            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabCw', 'tabChat', 'tabAdmin'].forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.className = 'btn';
-            });
-            const map = { clans: 'tabClans', requests: 'tabRequests', myclan: 'tabMyClan', rating: 'tabRating', cw: 'tabCw', chat: 'tabChat', admin: 'tabAdmin' };
-            const active = document.getElementById(map[tab]);
-            if (active) active.className = 'btn btn-primary';
-
-            const container = document.getElementById('content');
-            if (tab === 'chat') { chatInitialized = false; }
-            const funcs = { clans: renderClans, requests: renderRequests, myclan: renderMyClan, rating: renderRating, cw: renderCw, chat: initChat, admin: renderAdmin };
-            if (funcs[tab]) funcs[tab](container);
-            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
-        }
-
-        // ============================================================
+        document.addEventListener('DOMContentLoaded', initApp);
+                // ============================================================
         // РЕНДЕР КЛАНОВ
         // ============================================================
         async function renderClans(container) {
@@ -2367,99 +2373,126 @@
             updateFooterStats();
         }
 
-        async function logoutUser() {
-            if (!confirm(t('logoutConfirm'))) return;
+        // ============================================================
+        // ПРОФИЛЬ
+        // ============================================================
+        function openEditProfile() {
+            if (!currentUser) return;
+            document.getElementById('editProfName').value = currentUser.name || '';
+            document.getElementById('editProfTelegram').value = (currentUser.telegramUsername || '').replace('@', '');
+            document.getElementById('editProfGameId').value = currentUser.gameId || '';
+            document.getElementById('editProfileModal').classList.add('show');
+            document.getElementById('profileDropdown').classList.remove('show');
+            applyLanguage();
+        }
+
+        async function saveProfile() {
+            const name = document.getElementById('editProfName').value.trim();
+            const tgName = document.getElementById('editProfTelegram').value.trim();
+            const gameId = document.getElementById('editProfGameId').value.trim();
+
+            if (!name) return showToast('❌ ' + t('enterNickname'), 'error');
+            if (!tgName) return showToast('❌ ' + t('enterTelegram'), 'error');
+            if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
+            if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
+
             try {
                 const data = await loadData();
-                data.users = data.users.filter(u => u.id !== currentUser.id);
-                data.clans.forEach(c => { if (c.members) c.members = c.members.filter(m => m !== currentUser.id); if (c.leaderId === currentUser.id) { const nl = c.members && c.members.length ? c.members[0] : null; if (nl) { const lu = data.users.find(u => u.id === nl);
-                            c.leaderId = nl;
-                            c.leaderName = lu ? lu.name : 'Неизвестен'; } else { data.clans = data.clans.filter(cl => cl.id !== c.id); } } });
+                const user = data.users.find(u => u.id === currentUser.id);
+                if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
+
+                if (name === MY_NAME && user.telegramUsername !== '@' + ADMIN_USERNAME) {
+                    return showToast('❌ Ник s1m1 занят главным админом', 'error');
+                }
+
+                if (user.name.toLowerCase() !== name.toLowerCase() && data.users.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== currentUser.id)) {
+                    return showToast('❌ ' + t('nicknameTaken'), 'error');
+                }
+
+                user.name = name;
+                user.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
+                user.gameId = gameId;
+
                 await saveData(data);
-                localStorage.removeItem('bsc_user');
-                localStorage.removeItem('bsc_test_id');
-                currentUser = null;
-                allUsers = data.users;
-                allClans = data.clans;
-                allRequests = data.requests;
-                allCw = data.cw;
-                document.getElementById('registerModal').classList.add('show');
+                await refreshData();
+                closeModal('editProfileModal');
+                showToast('✅ ' + t('profileUpdated'), 'success');
                 updateUI();
-                showTab('clans');
-                renderMainActionButton();
-                showToast('✅ ' + t('youLoggedOut'), 'success');
+                showTab(currentTab);
                 updateFooterStats();
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+            } catch (e) {
+                showToast('❌ ' + e.message, 'error');
+            }
         }
 
         // ============================================================
-        // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ
+        // UI
         // ============================================================
-        window.recoverProfile = async function() {
-            const gameId = prompt('🔑 Введите ваш игровой ID (число):');
-            if (!gameId || isNaN(gameId) || gameId.trim() === '') {
-                showToast('❌ Введите корректный ID', 'error');
-                return;
-            }
-            const data = await loadData();
-            const user = data.users.find(u => u.gameId === gameId.trim());
-            if (!user) {
-                showToast('❌ Пользователь с таким ID не найден', 'error');
-                return;
-            }
-            if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
-
-            let newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-            
-            data.users = data.users.filter(u => u.id !== newId);
-            user.id = newId;
-            await saveData(data);
-
-            currentUser = user;
-            localStorage.setItem('bsc_user', JSON.stringify(user));
-            localStorage.setItem('bsc_test_id', newId);
-            localStorage.setItem('bsc_last_gameId', user.gameId);
-            showToast('✅ Профиль восстановлен! Перезагружаем...', 'success');
-            setTimeout(() => location.reload(), 1000);
-        };
-
-        // Добавляем кнопку в меню профиля
-        (function() {
-            const dropdown = document.querySelector('.profile-dropdown .info');
-            if (!dropdown) return;
-            const parent = dropdown.parentNode;
-            const editBtn = parent.querySelector('.btn-secondary:first-of-type');
-            if (!editBtn) return;
-            const recoverBtn = document.createElement('button');
-            recoverBtn.className = 'btn btn-secondary btn-block btn-sm';
-            recoverBtn.textContent = '🔄 Восстановить профиль';
-            recoverBtn.onclick = function(e) {
-                e.preventDefault();
-                window.recoverProfile();
-                document.getElementById('profileDropdown').classList.remove('show');
-            };
-            editBtn.after(recoverBtn);
-        })();
-
-        // ⭐ ЗАЩИТА: проверяем админов каждые 10 секунд
-        setInterval(async function() {
+        function updateUI() {
             if (!currentUser) return;
-            const data = await loadData();
-            let needSave = false;
-            data.users.forEach(u => {
-                if (u.role === 'admin' && !isAdmin(u)) {
-                    u.role = 'member';
-                    needSave = true;
-                }
-            });
-            if (needSave) {
-                await saveData(data);
-                allUsers = data.users;
-                updateUI();
+            document.getElementById('profName').textContent = currentUser.name || 'Неизвестно';
+            document.getElementById('profGameId').textContent = 'ID: ' + (currentUser.gameId || '—');
+            const clan = allClans.find(c => c.id === currentUser.clanId);
+            document.getElementById('profClan').textContent = t('clansLabel') + ': ' + (clan ? clan.name : '—');
+            const roleNames = { admin: t('adminLabel'), leader: t('roleLeader'), vice: t('roleVice'), member: t('roleMember') };
+            document.getElementById('profRole').textContent = t('role') + ': ' + (roleNames[currentUser.role] || t('roleMember'));
+
+            const adminTab = document.getElementById('tabAdmin');
+            if (isAdmin(currentUser)) {
+                adminTab.style.display = 'inline-block';
+            } else {
+                adminTab.style.display = 'none';
             }
-        }, 10000);
+
+            const pending = allRequests.filter(r => {
+                const c = allClans.find(cl => cl.id === r.clanId);
+                return c && c.leaderId === currentUser.id && r.status === 'pending';
+            });
+            const badge = document.getElementById('notifBadge');
+            if (pending.length > 0) {
+                badge.style.display = 'flex';
+                badge.textContent = pending.length;
+            } else {
+                badge.style.display = 'none';
+            }
+            renderMainActionButton();
+            updateFooterStats();
+        }
+
+        function renderMainActionButton() {
+            const el = document.getElementById('mainActionButton');
+            if (!currentUser) { el.innerHTML = ''; return; }
+            if (!currentUser.clanId) {
+                el.innerHTML = `<button class="btn btn-primary btn-block" onclick="openCreateClan()">➕ ${t('createClan')}</button>`;
+            } else {
+                el.innerHTML = '';
+            }
+        }
+
+        // ============================================================
+        // ВКЛАДКИ
+        // ============================================================
+        function showTab(tab) {
+            currentTab = tab;
+            ['tabClans', 'tabRequests', 'tabMyClan', 'tabRating', 'tabCw', 'tabChat', 'tabAdmin'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.className = 'btn';
+            });
+            const map = { clans: 'tabClans', requests: 'tabRequests', myclan: 'tabMyClan', rating: 'tabRating', cw: 'tabCw', chat: 'tabChat', admin: 'tabAdmin' };
+            const active = document.getElementById(map[tab]);
+            if (active) active.className = 'btn btn-primary';
+
+            const container = document.getElementById('content');
+            if (tab === 'chat') { chatInitialized = false; }
+            const funcs = { clans: renderClans, requests: renderRequests, myclan: renderMyClan, rating: renderRating, cw: renderCw, chat: initChat, admin: renderAdmin };
+            if (funcs[tab]) funcs[tab](container);
+            else container.innerHTML = '<div class="empty">' + t('noData') + '</div>';
+        }
 
         document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
     </script>
 </body>
 </html>
