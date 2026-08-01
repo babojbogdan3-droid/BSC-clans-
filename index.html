@@ -369,12 +369,12 @@
 
     <script>
         // ============================================================
-        // ЭМУЛЯЦИЯ TELEGRAM (ТОЛЬКО ДЛЯ БРАУЗЕРА)
+        // ЭМУЛЯЦИЯ TELEGRAM
         // ============================================================
         if (!window.Telegram) { window.Telegram = {}; }
         if (!window.Telegram.WebApp) {
             window.Telegram.WebApp = {
-                initDataUnsafe: { user: { id: null } },
+                initDataUnsafe: { user: { id: null, username: null } },
                 ready: function() {},
                 expand: function() {},
                 close: function() {}
@@ -546,9 +546,9 @@
         };
 
         // ============================================================
-        // НАСТРОЙКИ - ТВОИ ДАННЫЕ
+        // НАСТРОЙКИ
         // ============================================================
-        const MY_TELEGRAM_ID = '180927119';
+        const ADMIN_USERNAME = 'NoisyBoy141';
         const MY_NAME = 's1m1';
         const MY_GAME_ID = '22887924';
 
@@ -626,7 +626,8 @@
         // ============================================================
         function isAdmin(user) {
             if (!user) return false;
-            return user.id === MY_TELEGRAM_ID || (user.name === MY_NAME && user.gameId === MY_GAME_ID);
+            const username = user.telegramUsername ? user.telegramUsername.replace('@', '') : '';
+            return username === ADMIN_USERNAME;
         }
 
         function canManageClan(user, clan) {
@@ -702,7 +703,26 @@
         async function saveData(data) { await db.ref('/').set(data); }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ (ИСПРАВЛЕНА)
+        // ОЧИСТКА БАЗЫ ПРИ ПЕРВОМ ЗАПУСКЕ
+        // ============================================================
+        async function clearDatabase() {
+            try {
+                const data = await loadData();
+                data.users = [];
+                data.clans = [];
+                data.requests = [];
+                data.cw = [];
+                await saveData(data);
+                console.log('✅ База данных очищена');
+                return true;
+            } catch (e) {
+                console.error('Ошибка очистки:', e);
+                return false;
+            }
+        }
+
+        // ============================================================
+        // ИНИЦИАЛИЗАЦИЯ
         // ============================================================
         async function initApp() {
             try {
@@ -739,53 +759,21 @@
                     await saveData(updatedData);
                 }
 
-                // ⭐ ПОЛУЧАЕМ РЕАЛЬНЫЙ ID ПОЛЬЗОВАТЕЛЯ
-                let tgId = null;
-                try {
-                    const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                    if (tg && tg.id) {
-                        tgId = tg.id.toString();
-                        console.log('✅ Telegram ID получен:', tgId);
-                    }
-                } catch(e) {
-                    console.warn('⚠️ Ошибка получения Telegram ID:', e);
+                // ⭐ ПОЛУЧАЕМ ID ИЗ LOCALSTORAGE
+                let userId = localStorage.getItem('bsc_test_id');
+                if (!userId) {
+                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                    localStorage.setItem('bsc_test_id', userId);
                 }
 
-                // ⭐ ЕСЛИ ID НЕТ — СОЗДАЁМ НОВЫЙ, НЕ ИСПОЛЬЗУЯ ТВОЙ!
-                if (!tgId) {
-                    let savedId = localStorage.getItem('bsc_test_id');
-                    if (savedId && savedId !== MY_TELEGRAM_ID) {
-                        tgId = savedId;
-                    } else {
-                        tgId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-                        localStorage.setItem('bsc_test_id', tgId);
-                    }
-                    console.log('⚠️ Используем эмулированный ID:', tgId);
-                }
+                // ⭐ ИЩЕМ ПОЛЬЗОВАТЕЛЯ ПО ID
+                let user = allUsers.find(u => u.id === userId);
 
-                // ⭐ ИЩЕМ ПОЛЬЗОВАТЕЛЯ ПО ЕГО РЕАЛЬНОМУ ID
-                let user = allUsers.find(u => u.id === tgId);
-
-                // ⭐ ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ НАЙДЕН — ПОКАЗЫВАЕМ РЕГИСТРАЦИЮ
+                // ⭐ ЕСЛИ НЕ НАЙДЕН — ПОКАЗЫВАЕМ РЕГИСТРАЦИЮ
                 if (!user) {
                     console.log('ℹ️ Пользователь не найден, показываем регистрацию');
                     document.getElementById('registerModal').classList.add('show');
                     return;
-                }
-
-                // ⭐ ЗАЩИТА: ЕСЛИ У ПОЛЬЗОВАТЕЛЯ ID = 180927119, НО ОН НЕ s1m1 — МЕНЯЕМ
-                if (user.id === MY_TELEGRAM_ID && user.name !== MY_NAME) {
-                    const newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-                    const updData = await loadData();
-                    const target = updData.users.find(u => u.id === user.id);
-                    if (target) {
-                        target.id = newId;
-                        await saveData(updData);
-                        localStorage.setItem('bsc_test_id', newId);
-                        showToast('⚠️ Ваш ID был изменён, перезагрузите страницу', 'error');
-                        setTimeout(() => location.reload(), 1500);
-                        return;
-                    }
                 }
 
                 // Проверяем бан
@@ -801,15 +789,15 @@
                     return;
                 }
 
-                // Защита: если кто-то стал админом не по праву — снимаем
+                // ⭐ ЗАЩИТА: если кто-то админ не по праву — снимаем
                 allUsers.forEach(u => {
-                    if (u.role === 'admin' && u.id !== MY_TELEGRAM_ID && u.name !== MY_NAME) {
+                    if (u.role === 'admin' && !isAdmin(u)) {
                         u.role = 'member';
                     }
                 });
 
-                // Привязываем NAVI к тебе, если ты s1m1
-                if (user.name === MY_NAME || user.id === MY_TELEGRAM_ID) {
+                // ⭐ ЕСЛИ ТЫ АДМИН — ПРИВЯЗЫВАЕМ NAVI
+                if (isAdmin(user)) {
                     const navi = allClans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
                     if (navi) {
                         navi.leaderId = user.id;
@@ -818,7 +806,6 @@
                         user.clanId = navi.id;
                         user.role = 'leader';
                     }
-                    
                     user.role = 'admin';
                     
                     const updData = await loadData();
@@ -851,7 +838,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ (ИСПРАВЛЕНА)
+        // РЕГИСТРАЦИЯ
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -864,65 +851,27 @@
             if (!gameId) return showToast('❌ ' + t('enterGameId'), 'error');
             if (isNaN(gameId)) return showToast('❌ ' + t('idMustBeNumber'), 'error');
 
-            // ⭐ ПОЛУЧАЕМ РЕАЛЬНЫЙ ID ПОЛЬЗОВАТЕЛЯ
-            let tgId = null;
-            try {
-                const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                if (tg && tg.id) {
-                    tgId = tg.id.toString();
-                }
-            } catch(e) {}
+            // ⭐ СОЗДАЁМ УНИКАЛЬНЫЙ ID
+            let userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            localStorage.setItem('bsc_test_id', userId);
 
-            // ⭐ ЕСЛИ ID НЕТ — СОЗДАЁМ НОВЫЙ УНИКАЛЬНЫЙ
-            if (!tgId) {
-                let savedId = localStorage.getItem('bsc_test_id');
-                if (!savedId || savedId === MY_TELEGRAM_ID) {
-                    tgId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-                } else {
-                    tgId = savedId;
-                }
-                localStorage.setItem('bsc_test_id', tgId);
-            }
-
-            // ⭐ ЗАЩИТА: ник s1m1 занят навсегда
-            if (name === MY_NAME && tgId !== MY_TELEGRAM_ID) {
+            // ⭐ ПРОВЕРКА: ник s1m1 занят
+            if (name === MY_NAME && tgName !== ADMIN_USERNAME) {
                 showToast('❌ Ник s1m1 занят главным админом', 'error');
                 return;
             }
 
             // Проверка на занятость ника
-            if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase() && u.id !== tgId)) {
+            if (allUsers.find(u => u.name.toLowerCase() === name.toLowerCase())) {
                 return showToast('❌ ' + t('nicknameTaken'), 'error');
             }
 
-            // ⭐ ТОЛЬКО ТЫ МОЖЕШЬ БЫТЬ АДМИНОМ
-            const isAdminUser = (tgId === MY_TELEGRAM_ID || name === MY_NAME);
+            // ⭐ АДМИН ТОЛЬКО ПО ЮЗЕРНЕЙМУ
+            const isAdminUser = tgName === ADMIN_USERNAME || '@' + tgName === '@' + ADMIN_USERNAME;
 
-            // Проверяем существующего пользователя
-            let existingUser = allUsers.find(u => u.id === tgId);
-            if (existingUser) {
-                existingUser.name = name;
-                existingUser.telegramUsername = tgName.startsWith('@') ? tgName : '@' + tgName;
-                existingUser.gameId = gameId;
-                existingUser.role = isAdminUser ? 'admin' : 'member';
-                const data = await loadData();
-                data.users = allUsers;
-                await saveData(data);
-                currentUser = existingUser;
-                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-                localStorage.setItem('bsc_last_gameId', gameId);
-                document.getElementById('registerModal').classList.remove('show');
-                showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
-                updateUI();
-                showTab('clans');
-                renderMainActionButton();
-                updateFooterStats();
-                return;
-            }
-
-            // Создаём нового пользователя
+            // Создаём пользователя
             const newUser = {
-                id: tgId,
+                id: userId,
                 name: name,
                 telegramUsername: tgName.startsWith('@') ? tgName : '@' + tgName,
                 gameId: gameId,
@@ -938,6 +887,7 @@
             currentUser = newUser;
             localStorage.setItem('bsc_user', JSON.stringify(currentUser));
             localStorage.setItem('bsc_last_gameId', gameId);
+            localStorage.setItem('bsc_username', tgName);
             document.getElementById('registerModal').classList.remove('show');
             showToast('✅ ' + t('welcomeUser').replace('{name}', name), 'success');
             updateUI();
@@ -974,7 +924,7 @@
                 const user = data.users.find(u => u.id === currentUser.id);
                 if (!user) return showToast('❌ ' + t('userNotFound'), 'error');
 
-                if (name === MY_NAME && currentUser.id !== MY_TELEGRAM_ID) {
+                if (name === MY_NAME && currentUser.telegramUsername !== '@' + ADMIN_USERNAME) {
                     return showToast('❌ Ник s1m1 занят главным админом', 'error');
                 }
 
@@ -1913,7 +1863,7 @@
             const user = allUsers.find(u => u.id === userId);
             if (!user) { showToast('❌ Пользователь не найден', 'error'); return; }
             if (!isAdmin(user)) { showToast('❌ Не админ', 'error'); return; }
-            if (user.id === MY_TELEGRAM_ID) {
+            if (user.id === currentUser.id) {
                 showToast('❌ Нельзя снять самого себя', 'error');
                 return;
             }
@@ -2480,20 +2430,8 @@
             }
             if (!confirm(`Найден профиль "${user.name}" (ID: ${user.gameId}). Привязать к текущему устройству?`)) return;
 
-            let newId = null;
-            try {
-                const tg = window.Telegram?.WebApp?.initDataUnsafe?.user;
-                if (tg && tg.id) newId = tg.id.toString();
-            } catch(e) {}
-            if (!newId) {
-                let savedId = localStorage.getItem('bsc_test_id');
-                if (!savedId) {
-                    savedId = 'device_' + Date.now();
-                    localStorage.setItem('bsc_test_id', savedId);
-                }
-                newId = savedId;
-            }
-
+            let newId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+            
             data.users = data.users.filter(u => u.id !== newId);
             user.id = newId;
             await saveData(data);
@@ -2530,12 +2468,8 @@
             const data = await loadData();
             let needSave = false;
             data.users.forEach(u => {
-                if (u.role === 'admin' && u.id !== MY_TELEGRAM_ID && u.name !== MY_NAME) {
+                if (u.role === 'admin' && !isAdmin(u)) {
                     u.role = 'member';
-                    needSave = true;
-                }
-                if (u.gameId === MY_GAME_ID && u.id !== MY_TELEGRAM_ID) {
-                    u.gameId = 'user_' + Math.floor(Math.random() * 10000000);
                     needSave = true;
                 }
             });
